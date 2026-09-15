@@ -56,7 +56,7 @@ export function ShoppingTiers({
                       {money.format(link.price)}
                     </span>
                   </span>
-                  <span className="mt-0.5 block text-xs text-muted capitalize">
+                  <span className="mt-0.5 block text-xs text-muted">
                     {pick(link.label)}
                   </span>
                 </a>

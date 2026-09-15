@@ -26,9 +26,10 @@ export function MomentumChart({
   const color = LIFECYCLE_STYLES[lifecycle].hex;
   const locale = lang === "es" ? "es-ES" : "en-GB";
 
+  // Dominio redondeado a múltiplos de 5 para que las marcas del eje queden parejas.
   const scores = series.map((point) => point.score);
-  const min = Math.floor(Math.min(...scores) - 4);
-  const max = Math.ceil(Math.max(...scores) + 4);
+  const min = Math.max(0, Math.floor((Math.min(...scores) - 4) / 5) * 5);
+  const max = Math.min(100, Math.ceil((Math.max(...scores) + 4) / 5) * 5);
 
   const formatDate = (value: string, long = false) =>
     new Date(`${value}T12:00:00Z`).toLocaleDateString(locale, {

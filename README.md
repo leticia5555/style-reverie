@@ -21,7 +21,10 @@ npm install
 npm run dev    # http://localhost:3000  → redirige a /trending
 npm run build  # build de producción
 npm run lint
+npm run seed   # regenera data/trends.seed.json (determinista)
 ```
+
+Rutas: `/` redirige a `/trending`; cada tendencia vive en `/trends/<id>`.
 
 ## Estructura
 
@@ -34,6 +37,7 @@ components/             Shell, nav, badges, gráficas
 data/trends.seed.json   25 tendencias SS26/FW26 con 90 días de señales
 lib/scoring.ts          Score compuesto ponderado por fuente
 lib/lifecycle.ts        Ciclo de vida derivado de score + momentum
+scripts/generate-seed.ts  Generador del seed (npm run seed)
 ```
 
 ## Idioma

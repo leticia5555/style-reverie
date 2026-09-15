@@ -123,8 +123,8 @@ function sourceProfile(rng: Rng) {
   const biasRaw = {} as Record<SourceKey, number>;
   const offsetRaw = {} as Record<SourceKey, number>;
   for (const source of SOURCES) {
-    biasRaw[source] = 1 + between(rng, -0.16, 0.16);
-    offsetRaw[source] = between(rng, -7, 7);
+    biasRaw[source] = 1 + between(rng, -0.12, 0.12);
+    offsetRaw[source] = between(rng, -5, 5);
   }
   const biasMean = SOURCES.reduce((a, s) => a + biasRaw[s] * SOURCE_WEIGHTS[s], 0);
   const offsetMean = SOURCES.reduce((a, s) => a + offsetRaw[s] * SOURCE_WEIGHTS[s], 0);
@@ -152,7 +152,7 @@ function buildHistory(spec: TrendSpec, attempt: number): SignalPoint[] {
         curve(i - SOURCE_LAG[source]) * bias[source] +
         offset[source] +
         between(noiseRng, -1.6, 1.6);
-      signals[source] = round1(clamp(value, 1, 99));
+      signals[source] = round1(clamp(value, 2, 98));
     }
     history.push({ date: isoDate(DAYS - 1 - i), signals });
   }
@@ -162,7 +162,7 @@ function buildHistory(spec: TrendSpec, attempt: number): SignalPoint[] {
 /** Score de hace un año: define la variación anual que verá el usuario. */
 function scoreYearAgo(target: Lifecycle, score: number, rng: Rng): number {
   const ratio: Record<Lifecycle, [number, number]> = {
-    EMERGIENDO: [0.18, 0.34],
+    EMERGIENDO: [0.26, 0.44],
     SUBIENDO: [0.42, 0.62],
     PICO: [0.62, 0.85],
     CAYENDO: [1.18, 1.55],
@@ -183,12 +183,12 @@ const VARIANTS: Record<string, { es: string; en: string }[]> = {
     { es: "en algodón", en: "in cotton" },
   ],
   textura: [
-    { es: "versión corta", en: "cropped cut" },
+    { es: "en versión corta", en: "cropped" },
     { es: "con cuello alto", en: "high-neck" },
     { es: "en tono crudo", en: "in ecru" },
   ],
   silueta: [
-    { es: "largo midi", en: "midi length" },
+    { es: "en largo midi", en: "midi length" },
     { es: "con hombreras", en: "with shoulder pads" },
     { es: "en negro", en: "in black" },
   ],
@@ -198,9 +198,9 @@ const VARIANTS: Record<string, { es: string; en: string }[]> = {
     { es: "en ante", en: "in suede" },
   ],
   estilo: [
-    { es: "pieza cápsula", en: "capsule piece" },
-    { es: "corte minimal", en: "minimal cut" },
-    { es: "clave de temporada", en: "seasonal key piece" },
+    { es: "en pieza cápsula", en: "as a capsule piece" },
+    { es: "en corte minimal", en: "in a minimal cut" },
+    { es: "en clave de temporada", en: "in a seasonal cut" },
   ],
 };
 
@@ -249,20 +249,21 @@ function buildShopping(spec: TrendSpec, rng: Rng): Record<ShopTier, ShopLink[]> 
     shopping[tier] = [first, second].map((index, slot) => {
       const retailer = pool[index];
       const raw = between(rng, min, max) * (slot === 0 ? 1 : 1.25);
+      const capped = clamp(raw, min, max * 1.2);
       const price =
         tier === "invest"
-          ? Math.round(clamp(raw, min, max * 1.2) / 10) * 10
-          : Math.round(clamp(raw, min, max * 1.2)) - 0.05;
+          ? Math.round(capped / 10) * 10
+          : Math.round(capped) - 0.05;
       return {
         retailer: retailer.name,
         label:
           slot === 0
-            ? { es: spec.term.es, en: spec.term.en }
+            ? { es: spec.name.es, en: spec.name.en }
             : {
-                es: `${spec.term.es} ${variant.es}`,
-                en: `${spec.term.en}, ${variant.en}`,
+                es: `${spec.name.es} ${variant.es}`,
+                en: `${spec.name.en}, ${variant.en}`,
               },
-        price: round1(price),
+        price: Math.round(price * 100) / 100,
         currency: "EUR" as const,
         url: retailer.url(query),
       };

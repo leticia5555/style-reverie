@@ -217,7 +217,7 @@ function Th({
   return (
     <th
       scope="col"
-      className={`pb-2 font-normal ${align === "right" ? "text-right" : "text-left"} ${className}`}
+      className={`pr-4 pb-2 font-normal last:pr-0 ${align === "right" ? "text-right" : "text-left"} ${className}`}
     >
       {onClick ? (
         <button

@@ -53,10 +53,15 @@ export function yoyChange(score: number, scoreYearAgo: number): number {
   return round1(((score - scoreYearAgo) / scoreYearAgo) * 100);
 }
 
-/** Cuántas fuentes están dando señal relevante hoy (>= 20). */
+/**
+ * Fuentes que hoy confirman la tendencia: las que superan el umbral de señal.
+ * Una tendencia emergente suele tener 2 o 3; una saturada, las seis.
+ */
+export const CONFIRMING_SIGNAL_THRESHOLD = 45;
+
 export function activeSourceCount(
   signals: Record<SourceKey, number>,
-  threshold = 20,
+  threshold = CONFIRMING_SIGNAL_THRESHOLD,
 ): number {
   return SOURCES.filter((source) => signals[source] >= threshold).length;
 }
