@@ -69,7 +69,6 @@ export function Sidebar() {
               <li
                 key={key}
                 className="cursor-default rounded-lg px-3 py-2 text-sm text-faint"
-                aria-disabled
               >
                 {t(key)}
               </li>

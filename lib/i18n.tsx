@@ -6,7 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
@@ -115,23 +115,51 @@ type I18nValue = {
 
 const I18nContext = createContext<I18nValue | null>(null);
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(DEFAULT_LANG);
+/**
+ * El idioma vive en localStorage, fuera de React: el servidor siempre renderiza
+ * en español y el cliente se sincroniza con la preferencia guardada.
+ */
+const listeners = new Set<() => void>();
 
-  // Se lee después del montaje para que el HTML del servidor siempre sea el mismo.
-  useEffect(() => {
+function subscribe(onChange: () => void) {
+  listeners.add(onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    listeners.delete(onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+function readStoredLang(): Lang {
+  try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === "es" || stored === "en") setLangState(stored);
-  }, []);
+    return stored === "es" || stored === "en" ? stored : DEFAULT_LANG;
+  } catch {
+    return DEFAULT_LANG;
+  }
+}
+
+function storeLang(next: Lang) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, next);
+  } catch {
+    // Navegación privada o storage bloqueado: el idioma dura la sesión.
+  }
+  for (const listener of listeners) listener();
+}
+
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const lang = useSyncExternalStore(
+    subscribe,
+    readStoredLang,
+    () => DEFAULT_LANG,
+  );
 
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const setLang = useCallback((next: Lang) => {
-    setLangState(next);
-    window.localStorage.setItem(STORAGE_KEY, next);
-  }, []);
+  const setLang = useCallback((next: Lang) => storeLang(next), []);
 
   const value = useMemo<I18nValue>(
     () => ({
