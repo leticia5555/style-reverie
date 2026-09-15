@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+/*
+ * Style Reverie — design tokens
+ * Terminal financiera, pero femenina: blanco limpio, pasteles sutiles,
+ * serif editorial para titulares, sans limpia para datos. Sin dark mode.
+ */
+@theme {
+  /* Superficies */
+  --color-canvas: #ffffff;
+  --color-surface: #fdfcfe;
+  --color-surface-warm: #fbf8f2;
+
+  /* Tinta y líneas */
+  --color-ink: #1c1a1f;
+  --color-ink-soft: #46414d;
+  --color-muted: #78727f;
+  --color-faint: #a49fac;
+  --color-line: #ecE9f0;
+  --color-line-strong: #dcd6e3;
+
+  /* Pasteles de marca */
+  --color-lavender: #b6a6da;
+  --color-lavender-soft: #efeaf9;
+  --color-lavender-ink: #63509a;
+
+  --color-rose: #e6b0bf;
+  --color-rose-soft: #fbedf1;
+  --color-rose-ink: #a44f65;
+
+  --color-sage: #a7c1a8;
+  --color-sage-soft: #e9f1e9;
+  --color-sage-ink: #4a6f4e;
+
+  --color-cream: #f0e7d3;
+  --color-cream-soft: #fbf6ec;
+  --color-cream-ink: #8a7343;
+
+  /* Gris del ciclo de vida CAYENDO */
+  --color-quiet: #bab5c1;
+  --color-quiet-soft: #f2f0f4;
+  --color-quiet-ink: #6a6472;
+
+  /* Tipografía */
+  --font-serif: var(--font-editorial), "Playfair Display", "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-ui), "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Escala editorial */
+  --text-display: 2.75rem;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Los números se leen como cotizaciones: ancho fijo, siempre alineados. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+::selection {
+  background: var(--color-lavender-soft);
+  color: var(--color-ink);
+}
