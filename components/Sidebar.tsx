@@ -5,16 +5,16 @@ import { usePathname } from "next/navigation";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 
-const LIVE_LINKS: { href: "/trending"; key: TranslationKey }[] = [
+type NavHref = "/trending" | "/compare" | "/alerts" | "/editorial";
+
+const LIVE_LINKS: { href: NavHref; key: TranslationKey }[] = [
   { href: "/trending", key: "nav.trending" },
+  { href: "/compare", key: "nav.compare" },
+  { href: "/alerts", key: "nav.alerts" },
+  { href: "/editorial", key: "nav.editorial" },
 ];
 
-const SOON_LINKS: TranslationKey[] = [
-  "nav.editorial",
-  "nav.compare",
-  "nav.heatmap",
-  "nav.alerts",
-];
+const SOON_LINKS: TranslationKey[] = ["nav.heatmap"];
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -39,7 +39,8 @@ export function Sidebar() {
           <ul className="space-y-0.5">
             {LIVE_LINKS.map((link) => {
               const active =
-                pathname === link.href || pathname.startsWith("/trends");
+                pathname === link.href ||
+                (link.href === "/trending" && pathname.startsWith("/trends/"));
               return (
                 <li key={link.href}>
                   <Link
