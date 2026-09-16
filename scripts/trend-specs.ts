@@ -13,6 +13,11 @@ export type TrendSpec = {
   summary: Localized;
   /** Término de búsqueda para los links de compra. */
   term: Localized;
+  /**
+   * Cómo nombra la prensa a esta tendencia, en ambos idiomas. Alimenta el
+   * match del feed editorial; el nombre y el término ya se incluyen solos.
+   */
+  synonyms: string[];
   target: Lifecycle;
 };
 
@@ -27,6 +32,14 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "The curved leg that replaced wide-leg. Now in mass retail, with search interest flattening out.",
     },
     term: { es: "pantalon barril", en: "barrel leg trousers" },
+    synonyms: [
+      "barrel jeans",
+      "barrel leg",
+      "pantalon barril",
+      "jeans barril",
+      "banana jeans",
+      "curved leg",
+    ],
     target: "PICO",
   },
   {
@@ -39,6 +52,14 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Knee-length waistcoat worn as a standalone piece. Editorial and Pinterest are pushing it together.",
     },
     term: { es: "chaleco sastre largo", en: "longline waistcoat" },
+    synonyms: [
+      "longline waistcoat",
+      "long waistcoat",
+      "chaleco largo",
+      "tailored vest",
+      "long vest",
+      "waistcoat",
+    ],
     target: "SUBIENDO",
   },
   {
@@ -51,6 +72,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Utility-driven and floor-length, with patch pockets. Still niche, but accelerating on TikTok.",
     },
     term: { es: "falda cargo maxi", en: "cargo maxi skirt" },
+    synonyms: [
+      "cargo skirt",
+      "falda cargo",
+      "utility skirt",
+      "falda utilitaria",
+      "maxi cargo",
+    ],
     target: "EMERGIENDO",
   },
   {
@@ -63,6 +91,7 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Sleeveless dramatic outerwear. Building hard as the cold season starts.",
     },
     term: { es: "abrigo capa", en: "cape coat" },
+    synonyms: ["cape coat", "abrigo capa", "capelet", "capa"],
     target: "SUBIENDO",
   },
   {
@@ -75,6 +104,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "The long tailored short had its big summer and is now easing off with the season change.",
     },
     term: { es: "bermuda sastre", en: "tailored bermuda shorts" },
+    synonyms: [
+      "tailored bermuda",
+      "bermuda shorts",
+      "bermudas",
+      "bermuda de sastre",
+      "long shorts",
+    ],
     target: "CAYENDO",
   },
   {
@@ -87,6 +123,12 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "The pastel that owned two seasons. Still in store, but the conversation has cooled.",
     },
     term: { es: "amarillo mantequilla", en: "butter yellow" },
+    synonyms: [
+      "butter yellow",
+      "amarillo mantequilla",
+      "buttery yellow",
+      "butter tone",
+    ],
     target: "CAYENDO",
   },
   {
@@ -99,6 +141,14 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "The winter neutral of record. Saturated in editorial and retail at the same time.",
     },
     term: { es: "burdeos", en: "burgundy" },
+    synonyms: [
+      "burgundy",
+      "burdeos",
+      "deep burgundy",
+      "vino tinto",
+      "wine red",
+      "bordeaux",
+    ],
     target: "PICO",
   },
   {
@@ -111,6 +161,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Muted green with a grey base. Moving from accessories into full garments.",
     },
     term: { es: "verde matcha", en: "matcha green" },
+    synonyms: [
+      "matcha green",
+      "verde matcha",
+      "matcha",
+      "pistachio green",
+      "verde pistache",
+    ],
     target: "SUBIENDO",
   },
   {
@@ -123,6 +180,7 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Powdery runway blue, not yet mainstream. Early signal coming from Pinterest.",
     },
     term: { es: "azul polvo", en: "powder blue" },
+    synonyms: ["powder blue", "azul polvo", "dusty blue", "azul empolvado"],
     target: "EMERGIENDO",
   },
   {
@@ -135,6 +193,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "The deep brown replacing black in outerwear.",
     },
     term: { es: "marron cacao", en: "cocoa brown" },
+    synonyms: [
+      "cocoa brown",
+      "marron cacao",
+      "chocolate brown",
+      "mocha",
+      "cafe chocolate",
+    ],
     target: "SUBIENDO",
   },
   {
@@ -147,6 +212,7 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Velvety-touch suede in jackets and boots. Exposure is at its ceiling.",
     },
     term: { es: "ante cepillado", en: "brushed suede" },
+    synonyms: ["brushed suede", "ante cepillado", "gamuza", "suede"],
     target: "PICO",
   },
   {
@@ -159,6 +225,7 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Tight-gauge crochet, far from the craft look. Growing steadily since spring.",
     },
     term: { es: "crochet fino", en: "fine crochet" },
+    synonyms: ["crochet", "fine crochet", "crochet fino", "ganchillo"],
     target: "SUBIENDO",
   },
   {
@@ -171,6 +238,12 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Shine without shine: opaque sequin for daytime. Early signal ahead of party season.",
     },
     term: { es: "lentejuela mate", en: "matte sequin" },
+    synonyms: [
+      "matte sequin",
+      "lentejuela mate",
+      "matte sequins",
+      "lentejuelas",
+    ],
     target: "EMERGIENDO",
   },
   {
@@ -183,6 +256,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Curly synthetic pile in cropped jackets and linings. Rises with every drop in temperature.",
     },
     term: { es: "borreguito", en: "faux shearling" },
+    synonyms: [
+      "faux shearling",
+      "borreguito",
+      "curly shearling",
+      "teddy coat",
+      "shearling",
+    ],
     target: "SUBIENDO",
   },
   {
@@ -195,6 +275,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "The defined shoulder pad is back, tailored rather than eighties.",
     },
     term: { es: "hombro estructurado", en: "structured shoulder blazer" },
+    synonyms: [
+      "structured shoulder",
+      "hombro estructurado",
+      "shoulder pads",
+      "hombreras",
+      "power shoulder",
+    ],
     target: "SUBIENDO",
   },
   {
@@ -207,6 +294,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Low waistline in dresses and skirts. Peak store presence; interest has stopped growing.",
     },
     term: { es: "vestido cintura caida", en: "drop waist dress" },
+    synonyms: [
+      "dropped waist",
+      "cintura caida",
+      "drop waist",
+      "low waist",
+      "talle bajo",
+    ],
     target: "PICO",
   },
   {
@@ -219,6 +313,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Straight, narrow silhouette top to bottom. First signals outside the runway.",
     },
     term: { es: "vestido columna", en: "column dress" },
+    synonyms: [
+      "column dress",
+      "linea columna",
+      "column silhouette",
+      "columna",
+      "column line",
+    ],
     target: "EMERGIENDO",
   },
   {
@@ -231,6 +332,12 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Loose volume is losing ground to autumn's closer silhouettes.",
     },
     term: { es: "camisa oversize", en: "oversized shirt" },
+    synonyms: [
+      "relaxed oversize",
+      "oversize",
+      "oversized fit",
+      "corte holgado",
+    ],
     target: "CAYENDO",
   },
   {
@@ -243,6 +350,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Unstructured shoulder bag in soft leather. Already across every price tier.",
     },
     term: { es: "bolso hobo", en: "hobo bag" },
+    synonyms: [
+      "hobo bag",
+      "bolso hobo",
+      "slouchy bag",
+      "bolsa hobo",
+      "slouchy hobo",
+    ],
     target: "PICO",
   },
   {
@@ -255,6 +369,12 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "The strap shoe lost momentum after two seasons in the lead.",
     },
     term: { es: "zapatos mary jane", en: "mary jane flats" },
+    synonyms: [
+      "mary jane",
+      "mary janes",
+      "mary jane flats",
+      "zapatos mary jane",
+    ],
     target: "CAYENDO",
   },
   {
@@ -267,6 +387,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Wide sash tied over coats and dresses. Very early stage.",
     },
     term: { es: "cinturon obi", en: "obi belt" },
+    synonyms: [
+      "obi belt",
+      "cinturon obi",
+      "wide belt",
+      "cinturon ancho",
+      "faja obi",
+    ],
     target: "EMERGIENDO",
   },
   {
@@ -279,6 +406,13 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Narrow feline frame. Taking over from the wraparound sport lens.",
     },
     term: { es: "gafas cat eye", en: "cat eye sunglasses" },
+    synonyms: [
+      "cat eye sunglasses",
+      "cat-eye",
+      "gafas cat eye",
+      "lentes cat eye",
+      "cat eye frames",
+    ],
     target: "SUBIENDO",
   },
   {
@@ -291,6 +425,12 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Expensive minimalism is worn out as a label; spend is moving to pieces with more character.",
     },
     term: { es: "quiet luxury", en: "quiet luxury" },
+    synonyms: [
+      "quiet luxury",
+      "lujo silencioso",
+      "stealth wealth",
+      "old money",
+    ],
     target: "CAYENDO",
   },
   {
@@ -303,6 +443,7 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Pared-back bohemian, no folklore. Editorial and retail coverage both maxed out.",
     },
     term: { es: "estilo boho", en: "boho style" },
+    synonyms: ["boho", "neo boho", "boho chic", "bohemian", "boho renovado"],
     target: "PICO",
   },
   {
@@ -315,6 +456,7 @@ export const TREND_SPECS: TrendSpec[] = [
       en: "Nineties secretary: sheer shirt, pencil skirt, narrow frames. Growing out of social.",
     },
     term: { es: "office siren", en: "office siren" },
+    synonyms: ["office siren", "corpcore", "officecore", "secretary chic"],
     target: "SUBIENDO",
   },
 ];

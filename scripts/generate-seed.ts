@@ -22,6 +22,7 @@ import {
   type Trend,
   type TrendSeed,
 } from "@/lib/types";
+import { normalizeTerm } from "@/lib/editorial-match";
 import { TREND_SPECS, type TrendSpec } from "./trend-specs";
 
 const DAYS = 90;
@@ -340,6 +341,22 @@ function buildShopping(spec: TrendSpec, rng: Rng): Record<ShopTier, ShopLink[]> 
   return shopping;
 }
 
+/**
+ * Términos con los que buscar esta tendencia en un titular: el nombre en los
+ * dos idiomas, el término de compra y los sinónimos escritos a mano. Se
+ * normalizan aquí para que el match en runtime sea una comparación directa.
+ */
+function buildKeywords(spec: TrendSpec): string[] {
+  const raw = [
+    spec.name.es,
+    spec.name.en,
+    spec.term.es,
+    spec.term.en,
+    ...spec.synonyms,
+  ];
+  return [...new Set(raw.map(normalizeTerm))].filter(Boolean).sort();
+}
+
 function buildTrend(spec: TrendSpec): Trend {
   for (let attempt = 0; attempt < 600; attempt += 1) {
     const history = buildHistory(spec, attempt);
@@ -356,6 +373,7 @@ function buildTrend(spec: TrendSpec): Trend {
       summary: spec.summary,
       history,
       scoreYearAgo: scoreYearAgo(spec.target, score, rng),
+      keywords: buildKeywords(spec),
       shopping: buildShopping(spec, rng),
     };
   }

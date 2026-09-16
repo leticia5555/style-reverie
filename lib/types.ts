@@ -68,6 +68,11 @@ export type Trend = {
   history: SignalPoint[];
   /** Score compuesto de hace 365 días, para la variación anual. */
   scoreYearAgo: number;
+  /**
+   * Términos con los que la prensa nombra esta tendencia, ya normalizados.
+   * Los usa el match del feed editorial.
+   */
+  keywords: string[];
   shopping: Record<ShopTier, ShopLink[]>;
 };
 

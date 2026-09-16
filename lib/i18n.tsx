@@ -128,6 +128,50 @@ const dict = {
     en: "Climbing and still under 60, but not yet at 3 points of momentum.",
   },
   "alerts.count": { es: "en alerta", en: "on alert" },
+  "badge.live": { es: "Fuentes reales", en: "Live sources" },
+  "badge.liveLong": {
+    es: "Titulares traídos por RSS de los medios, no datos de muestra",
+    en: "Headlines pulled by RSS from the outlets, not sample data",
+  },
+  "editorial.title": { es: "Feed editorial", en: "Editorial feed" },
+  "editorial.subtitle": {
+    es: "Titulares de Vogue, WWD, Business of Fashion y Who What Wear, con las tendencias que menciona cada uno.",
+    en: "Headlines from Vogue, WWD, Business of Fashion and Who What Wear, tagged with the trends each one mentions.",
+  },
+  "editorial.fetchedAt": { es: "Traído", en: "Fetched" },
+  "editorial.never": { es: "sin traer todavía", en: "not fetched yet" },
+  "editorial.refreshNote": {
+    es: "El feed se refresca como máximo una vez por hora.",
+    en: "The feed refreshes at most once an hour.",
+  },
+  "editorial.sources": { es: "Fuentes", en: "Sources" },
+  "editorial.mentions": { es: "Más mencionadas", en: "Most mentioned" },
+  "editorial.mentionsNote": {
+    es: "Tendencias del catálogo detectadas en los titulares de este feed.",
+    en: "Catalog trends detected in this feed's headlines.",
+  },
+  "editorial.noMentions": {
+    es: "Ningún titular menciona una tendencia del catálogo.",
+    en: "No headline mentions a catalog trend.",
+  },
+  "editorial.matchNote": {
+    es: "Los titulares son reales; las tendencias con las que se cruzan siguen siendo el catálogo de muestra.",
+    en: "Headlines are real; the trends they are matched against are still the sample catalog.",
+  },
+  "editorial.empty": {
+    es: "Todavía no hay titulares guardados.",
+    en: "No headlines stored yet.",
+  },
+  "editorial.emptyHow": {
+    es: "Corre npm run editorial para traer los feeds y guardar el caché.",
+    en: "Run npm run editorial to pull the feeds and write the cache.",
+  },
+  "editorial.onlyMatched": {
+    es: "Solo con tendencia detectada",
+    en: "Only with a detected trend",
+  },
+  "editorial.articles": { es: "titulares", en: "headlines" },
+  "editorial.failed": { es: "sin respuesta", en: "no response" },
   "lifecycle.EMERGIENDO": { es: "Emergiendo", en: "Emerging" },
   "lifecycle.SUBIENDO": { es: "Subiendo", en: "Rising" },
   "lifecycle.PICO": { es: "Pico", en: "Peak" },
