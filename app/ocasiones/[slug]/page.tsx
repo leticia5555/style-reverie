@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { trendImages } from "@/lib/trend-image";
 import { OcasionView } from "@/components/OcasionView";
 import { getOcasion, ocasionSlugs } from "@/lib/ocasiones";
 
@@ -25,5 +26,9 @@ export default async function OcasionPage({
   const ocasion = getOcasion(slug);
   if (!ocasion) notFound();
 
-  return <OcasionView ocasion={ocasion} />;
+  const images = Object.fromEntries(
+    trendImages(ocasion.trends.map((trend) => trend.summary.id)),
+  );
+
+  return <OcasionView ocasion={ocasion} images={images} />;
 }

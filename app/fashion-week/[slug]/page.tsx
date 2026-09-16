@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { trendImages } from "@/lib/trend-image";
 import { CollectionView } from "@/components/CollectionView";
 import { collectionSlugs, getCollection } from "@/lib/fashion-week";
 
@@ -27,5 +28,9 @@ export default async function CollectionPage({
   const collection = getCollection(slug);
   if (!collection) notFound();
 
-  return <CollectionView collection={collection} />;
+  const images = Object.fromEntries(
+    trendImages(collection.trends.map((trend) => trend.id)),
+  );
+
+  return <CollectionView collection={collection} images={images} />;
 }
