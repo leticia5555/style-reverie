@@ -31,6 +31,13 @@ export type Lifecycle = (typeof LIFECYCLES)[number];
 export const SHOP_TIERS = ["budget", "mid", "invest"] as const;
 export type ShopTier = (typeof SHOP_TIERS)[number];
 
+/**
+ * Mercado LATAM/México: los retailers locales cotizan en pesos y los de
+ * importación en dólares. Cada link lleva su moneda, no se convierte al vuelo.
+ */
+export const CURRENCIES = ["MXN", "USD"] as const;
+export type Currency = (typeof CURRENCIES)[number];
+
 export type Season = "SS26" | "FW26";
 
 export type Localized = { es: string; en: string };
@@ -39,7 +46,9 @@ export type ShopLink = {
   retailer: string;
   label: Localized;
   price: number;
-  currency: "EUR";
+  currency: Currency;
+  /** Precio aproximado en USD, solo para ordenar y comparar niveles. */
+  priceUsd: number;
   url: string;
 };
 
@@ -59,6 +68,11 @@ export type Trend = {
   history: SignalPoint[];
   /** Score compuesto de hace 365 días, para la variación anual. */
   scoreYearAgo: number;
+  /**
+   * Términos con los que la prensa nombra esta tendencia, ya normalizados.
+   * Los usa el match del feed editorial.
+   */
+  keywords: string[];
   shopping: Record<ShopTier, ShopLink[]>;
 };
 

@@ -1015,71 +1015,86 @@
         }
       ],
       "scoreYearAgo": 63.1,
+      "keywords": [
+        "banana jeans",
+        "barrel jeans",
+        "barrel leg",
+        "barrel leg trousers",
+        "curved leg",
+        "jeans barril",
+        "pantalon barril"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Zara",
+            "retailer": "Shein",
             "label": {
               "es": "Pantalón barril",
               "en": "Barrel-leg trousers"
             },
-            "price": 70.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=pantalon%20barril"
+            "price": 699,
+            "currency": "MXN",
+            "priceUsd": 38.71,
+            "url": "https://mx.shein.com/pdsearch/pantalon%20barril/"
           },
           {
-            "retailer": "ASOS",
+            "retailer": "Amazon México",
             "label": {
               "es": "Pantalón barril en sarga",
               "en": "Barrel-leg trousers, in twill"
             },
-            "price": 93.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=pantalon%20barril"
+            "price": 1099,
+            "currency": "MXN",
+            "priceUsd": 61.03,
+            "url": "https://www.amazon.com.mx/s?k=pantalon%20barril"
           }
         ],
         "mid": [
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "Liverpool",
             "label": {
               "es": "Pantalón barril",
               "en": "Barrel-leg trousers"
             },
-            "price": 168.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=pantalon%20barril"
+            "price": 2199,
+            "currency": "MXN",
+            "priceUsd": 124.44,
+            "url": "https://www.liverpool.com.mx/tienda/?s=pantalon%20barril"
           },
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Pantalón barril en lana fría",
               "en": "Barrel-leg trousers, in tropical wool"
             },
-            "price": 244.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=pantalon%20barril"
+            "price": 174.95,
+            "currency": "USD",
+            "priceUsd": 175.14,
+            "url": "https://www.revolve.com/r/Search.jsp?search=barrel%20leg%20trousers"
           }
         ],
         "invest": [
           {
-            "retailer": "Loewe",
+            "retailer": "Revolve",
             "label": {
               "es": "Pantalón barril",
               "en": "Barrel-leg trousers"
             },
-            "price": 1260,
-            "currency": "EUR",
-            "url": "https://www.loewe.com/es/es/search?q=pantalon%20barril"
+            "price": 850,
+            "currency": "USD",
+            "priceUsd": 847.69,
+            "url": "https://www.revolve.com/r/Search.jsp?search=barrel%20leg%20trousers"
           },
           {
-            "retailer": "Totême",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Pantalón barril en lana fría",
               "en": "Barrel-leg trousers, in tropical wool"
             },
-            "price": 2000,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=pantalon%20barril"
+            "price": 1290,
+            "currency": "USD",
+            "priceUsd": 1289.25,
+            "url": "https://www.nordstrom.com/sr?keyword=barrel%20leg%20trousers"
           }
         ]
       }
@@ -2089,71 +2104,87 @@
         }
       ],
       "scoreYearAgo": 41,
+      "keywords": [
+        "chaleco largo",
+        "chaleco sastre largo",
+        "long vest",
+        "long waistcoat",
+        "longline tailored waistcoat",
+        "longline waistcoat",
+        "tailored vest",
+        "waistcoat"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Zara",
+            "retailer": "Shein",
             "label": {
               "es": "Chaleco sastre largo",
               "en": "Longline tailored waistcoat"
             },
-            "price": 48.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=chaleco%20sastre%20largo"
+            "price": 499,
+            "currency": "MXN",
+            "priceUsd": 27.6,
+            "url": "https://mx.shein.com/pdsearch/chaleco%20sastre%20largo/"
           },
           {
-            "retailer": "Mango",
+            "retailer": "Zara México",
             "label": {
               "es": "Chaleco sastre largo en lino",
               "en": "Longline tailored waistcoat, in linen"
             },
-            "price": 24.95,
-            "currency": "EUR",
-            "url": "https://shop.mango.com/es/es/search?q=chaleco%20sastre%20largo"
+            "price": 599,
+            "currency": "MXN",
+            "priceUsd": 33.24,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=chaleco%20sastre%20largo"
           }
         ],
         "mid": [
           {
-            "retailer": "COS",
+            "retailer": "Liverpool",
             "label": {
               "es": "Chaleco sastre largo",
               "en": "Longline tailored waistcoat"
             },
-            "price": 130.95,
-            "currency": "EUR",
-            "url": "https://www.cos.com/es-es/search?q=chaleco%20sastre%20largo"
+            "price": 1819,
+            "currency": "MXN",
+            "priceUsd": 101.23,
+            "url": "https://www.liverpool.com.mx/tienda/?s=chaleco%20sastre%20largo"
           },
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "ASOS",
             "label": {
               "es": "Chaleco sastre largo en sarga",
               "en": "Longline tailored waistcoat, in twill"
             },
-            "price": 353.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=chaleco%20sastre%20largo"
+            "price": 160.95,
+            "currency": "USD",
+            "priceUsd": 160.83,
+            "url": "https://www.asos.com/us/search/?q=longline%20waistcoat"
           }
         ],
         "invest": [
           {
-            "retailer": "Totême",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Chaleco sastre largo",
               "en": "Longline tailored waistcoat"
             },
-            "price": 550,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=chaleco%20sastre%20largo"
+            "price": 400,
+            "currency": "USD",
+            "priceUsd": 402.1,
+            "url": "https://www.nordstrom.com/sr?keyword=longline%20waistcoat"
           },
           {
-            "retailer": "Jil Sander",
+            "retailer": "Revolve",
             "label": {
               "es": "Chaleco sastre largo en lino",
               "en": "Longline tailored waistcoat, in linen"
             },
-            "price": 2110,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=chaleco%20sastre%20largo"
+            "price": 620,
+            "currency": "USD",
+            "priceUsd": 621.49,
+            "url": "https://www.revolve.com/r/Search.jsp?search=longline%20waistcoat"
           }
         ]
       }
@@ -3163,71 +3194,86 @@
         }
       ],
       "scoreYearAgo": 15.5,
+      "keywords": [
+        "cargo maxi skirt",
+        "cargo skirt",
+        "falda cargo",
+        "falda cargo maxi",
+        "falda utilitaria",
+        "maxi cargo",
+        "utility skirt"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Uniqlo",
+            "retailer": "Amazon México",
             "label": {
               "es": "Falda cargo maxi",
               "en": "Cargo maxi skirt"
             },
-            "price": 54.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=falda%20cargo%20maxi"
+            "price": 549,
+            "currency": "MXN",
+            "priceUsd": 30.36,
+            "url": "https://www.amazon.com.mx/s?k=falda%20cargo%20maxi"
           },
           {
-            "retailer": "Mango",
+            "retailer": "Zara México",
             "label": {
               "es": "Falda cargo maxi en lana fría",
               "en": "Cargo maxi skirt, in tropical wool"
             },
-            "price": 55.95,
-            "currency": "EUR",
-            "url": "https://shop.mango.com/es/es/search?q=falda%20cargo%20maxi"
+            "price": 749,
+            "currency": "MXN",
+            "priceUsd": 41.62,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=falda%20cargo%20maxi"
           }
         ],
         "mid": [
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "ASOS",
             "label": {
               "es": "Falda cargo maxi",
               "en": "Cargo maxi skirt"
             },
-            "price": 259.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=falda%20cargo%20maxi"
+            "price": 180.95,
+            "currency": "USD",
+            "priceUsd": 181.32,
+            "url": "https://www.asos.com/us/search/?q=cargo%20maxi%20skirt"
           },
           {
-            "retailer": "Arket",
+            "retailer": "Revolve",
             "label": {
               "es": "Falda cargo maxi en lana fría",
               "en": "Cargo maxi skirt, in tropical wool"
             },
-            "price": 202.95,
-            "currency": "EUR",
-            "url": "https://www.arket.com/es/search.html?q=falda%20cargo%20maxi"
+            "price": 242.95,
+            "currency": "USD",
+            "priceUsd": 243.43,
+            "url": "https://www.revolve.com/r/Search.jsp?search=cargo%20maxi%20skirt"
           }
         ],
         "invest": [
           {
-            "retailer": "Jil Sander",
+            "retailer": "Revolve",
             "label": {
               "es": "Falda cargo maxi",
               "en": "Cargo maxi skirt"
             },
-            "price": 840,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=falda%20cargo%20maxi"
+            "price": 590,
+            "currency": "USD",
+            "priceUsd": 585.57,
+            "url": "https://www.revolve.com/r/Search.jsp?search=cargo%20maxi%20skirt"
           },
           {
-            "retailer": "Totême",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Falda cargo maxi en lino",
               "en": "Cargo maxi skirt, in linen"
             },
-            "price": 2190,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=falda%20cargo%20maxi"
+            "price": 910,
+            "currency": "USD",
+            "priceUsd": 914.77,
+            "url": "https://www.nordstrom.com/sr?keyword=cargo%20maxi%20skirt"
           }
         ]
       }
@@ -4237,71 +4283,83 @@
         }
       ],
       "scoreYearAgo": 32.8,
+      "keywords": [
+        "abrigo capa",
+        "capa",
+        "cape coat",
+        "capelet"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "H&M",
+            "retailer": "Zara México",
             "label": {
               "es": "Abrigo capa",
               "en": "Cape coat"
             },
-            "price": 72.95,
-            "currency": "EUR",
-            "url": "https://www2.hm.com/es_es/search-results.html?q=abrigo%20capa"
+            "price": 719,
+            "currency": "MXN",
+            "priceUsd": 40.06,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=abrigo%20capa"
           },
           {
-            "retailer": "ASOS",
+            "retailer": "Amazon México",
             "label": {
               "es": "Abrigo capa en lino",
               "en": "Cape coat, in linen"
             },
-            "price": 75.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=abrigo%20capa"
+            "price": 1069,
+            "currency": "MXN",
+            "priceUsd": 59.19,
+            "url": "https://www.amazon.com.mx/s?k=abrigo%20capa"
           }
         ],
         "mid": [
           {
-            "retailer": "COS",
+            "retailer": "Liverpool",
             "label": {
               "es": "Abrigo capa",
               "en": "Cape coat"
             },
-            "price": 222.95,
-            "currency": "EUR",
-            "url": "https://www.cos.com/es-es/search?q=abrigo%20capa"
+            "price": 2799,
+            "currency": "MXN",
+            "priceUsd": 157.98,
+            "url": "https://www.liverpool.com.mx/tienda/?s=abrigo%20capa"
           },
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Abrigo capa en lino",
               "en": "Cape coat, in linen"
             },
-            "price": 317.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=abrigo%20capa"
+            "price": 239.95,
+            "currency": "USD",
+            "priceUsd": 240.36,
+            "url": "https://www.revolve.com/r/Search.jsp?search=cape%20coat"
           }
         ],
         "invest": [
           {
-            "retailer": "Max Mara",
+            "retailer": "Revolve",
             "label": {
               "es": "Abrigo capa",
               "en": "Cape coat"
             },
-            "price": 1180,
-            "currency": "EUR",
-            "url": "https://es.maxmara.com/search?q=abrigo%20capa"
+            "price": 800,
+            "currency": "USD",
+            "priceUsd": 802.45,
+            "url": "https://www.revolve.com/r/Search.jsp?search=cape%20coat"
           },
           {
-            "retailer": "Totême",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Abrigo capa en sarga",
               "en": "Cape coat, in twill"
             },
-            "price": 1130,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=abrigo%20capa"
+            "price": 1070,
+            "currency": "USD",
+            "priceUsd": 1068.25,
+            "url": "https://www.nordstrom.com/sr?keyword=cape%20coat"
           }
         ]
       }
@@ -5311,71 +5369,86 @@
         }
       ],
       "scoreYearAgo": 59.7,
+      "keywords": [
+        "bermuda de sastre",
+        "bermuda sastre",
+        "bermuda shorts",
+        "bermudas",
+        "long shorts",
+        "tailored bermuda",
+        "tailored bermuda shorts"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Zara",
+            "retailer": "Shein",
             "label": {
               "es": "Bermuda de sastre",
               "en": "Tailored bermuda"
             },
-            "price": 64.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=bermuda%20sastre"
+            "price": 649,
+            "currency": "MXN",
+            "priceUsd": 35.86,
+            "url": "https://mx.shein.com/pdsearch/bermuda%20sastre/"
           },
           {
-            "retailer": "Uniqlo",
+            "retailer": "Amazon México",
             "label": {
               "es": "Bermuda de sastre en lana fría",
               "en": "Tailored bermuda, in tropical wool"
             },
-            "price": 68.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=bermuda%20sastre"
+            "price": 929,
+            "currency": "MXN",
+            "priceUsd": 51.78,
+            "url": "https://www.amazon.com.mx/s?k=bermuda%20sastre"
           }
         ],
         "mid": [
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "ASOS",
             "label": {
               "es": "Bermuda de sastre",
               "en": "Tailored bermuda"
             },
-            "price": 150.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=bermuda%20sastre"
+            "price": 112.95,
+            "currency": "USD",
+            "priceUsd": 113.2,
+            "url": "https://www.asos.com/us/search/?q=tailored%20bermuda%20shorts"
           },
           {
-            "retailer": "& Other Stories",
+            "retailer": "Revolve",
             "label": {
               "es": "Bermuda de sastre en lana fría",
               "en": "Tailored bermuda, in tropical wool"
             },
-            "price": 216.95,
-            "currency": "EUR",
-            "url": "https://www.stories.com/es_eur/search.html?q=bermuda%20sastre"
+            "price": 153.95,
+            "currency": "USD",
+            "priceUsd": 154.39,
+            "url": "https://www.revolve.com/r/Search.jsp?search=tailored%20bermuda%20shorts"
           }
         ],
         "invest": [
           {
-            "retailer": "Khaite",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Bermuda de sastre",
               "en": "Tailored bermuda"
             },
-            "price": 500,
-            "currency": "EUR",
-            "url": "https://khaite.com/search?q=bermuda%20sastre"
+            "price": 370,
+            "currency": "USD",
+            "priceUsd": 368.52,
+            "url": "https://www.nordstrom.com/sr?keyword=tailored%20bermuda%20shorts"
           },
           {
-            "retailer": "Totême",
+            "retailer": "Revolve",
             "label": {
               "es": "Bermuda de sastre en sarga",
               "en": "Tailored bermuda, in twill"
             },
-            "price": 940,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=bermuda%20sastre"
+            "price": 480,
+            "currency": "USD",
+            "priceUsd": 475.41,
+            "url": "https://www.revolve.com/r/Search.jsp?search=tailored%20bermuda%20shorts"
           }
         ]
       }
@@ -6385,71 +6458,83 @@
         }
       ],
       "scoreYearAgo": 73.1,
+      "keywords": [
+        "amarillo mantequilla",
+        "butter tone",
+        "butter yellow",
+        "buttery yellow"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "H&M",
+            "retailer": "Zara México",
             "label": {
               "es": "Amarillo mantequilla",
               "en": "Butter yellow"
             },
-            "price": 36.95,
-            "currency": "EUR",
-            "url": "https://www2.hm.com/es_es/search-results.html?q=amarillo%20mantequilla"
+            "price": 379,
+            "currency": "MXN",
+            "priceUsd": 21.06,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=amarillo%20mantequilla"
           },
           {
-            "retailer": "ASOS",
+            "retailer": "Amazon México",
             "label": {
               "es": "Amarillo mantequilla en algodón",
               "en": "Butter yellow, in cotton"
             },
-            "price": 53.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=amarillo%20mantequilla"
+            "price": 519,
+            "currency": "MXN",
+            "priceUsd": 28.69,
+            "url": "https://www.amazon.com.mx/s?k=amarillo%20mantequilla"
           }
         ],
         "mid": [
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Amarillo mantequilla",
               "en": "Butter yellow"
             },
-            "price": 207.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=amarillo%20mantequilla"
+            "price": 148.95,
+            "currency": "USD",
+            "priceUsd": 149.1,
+            "url": "https://www.revolve.com/r/Search.jsp?search=butter%20yellow"
           },
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "Liverpool",
             "label": {
               "es": "Amarillo mantequilla en seda lavada",
               "en": "Butter yellow, in washed silk"
             },
-            "price": 126.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=amarillo%20mantequilla"
+            "price": 3299,
+            "currency": "MXN",
+            "priceUsd": 182.5,
+            "url": "https://www.liverpool.com.mx/tienda/?s=amarillo%20mantequilla"
           }
         ],
         "invest": [
           {
-            "retailer": "Jil Sander",
+            "retailer": "Revolve",
             "label": {
               "es": "Amarillo mantequilla",
               "en": "Butter yellow"
             },
-            "price": 740,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=amarillo%20mantequilla"
+            "price": 520,
+            "currency": "USD",
+            "priceUsd": 521.56,
+            "url": "https://www.revolve.com/r/Search.jsp?search=butter%20yellow"
           },
           {
-            "retailer": "Loewe",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Amarillo mantequilla en punto fino",
               "en": "Butter yellow, in fine knit"
             },
-            "price": 1450,
-            "currency": "EUR",
-            "url": "https://www.loewe.com/es/es/search?q=amarillo%20mantequilla"
+            "price": 730,
+            "currency": "USD",
+            "priceUsd": 731.17,
+            "url": "https://www.nordstrom.com/sr?keyword=butter%20yellow"
           }
         ]
       }
@@ -7459,71 +7544,86 @@
         }
       ],
       "scoreYearAgo": 68.6,
+      "keywords": [
+        "bordeaux",
+        "burdeos",
+        "burdeos profundo",
+        "burgundy",
+        "deep burgundy",
+        "vino tinto",
+        "wine red"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "H&M",
+            "retailer": "Zara México",
             "label": {
               "es": "Burdeos profundo",
               "en": "Deep burgundy"
             },
-            "price": 26.95,
-            "currency": "EUR",
-            "url": "https://www2.hm.com/es_es/search-results.html?q=burdeos"
+            "price": 289,
+            "currency": "MXN",
+            "priceUsd": 16.1,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=burdeos"
           },
           {
-            "retailer": "Uniqlo",
+            "retailer": "Amazon México",
             "label": {
               "es": "Burdeos profundo en algodón",
               "en": "Deep burgundy, in cotton"
             },
-            "price": 27.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=burdeos"
+            "price": 349,
+            "currency": "MXN",
+            "priceUsd": 19.69,
+            "url": "https://www.amazon.com.mx/s?k=burdeos"
           }
         ],
         "mid": [
           {
-            "retailer": "COS",
+            "retailer": "Liverpool",
             "label": {
               "es": "Burdeos profundo",
               "en": "Deep burgundy"
             },
-            "price": 276.95,
-            "currency": "EUR",
-            "url": "https://www.cos.com/es-es/search?q=burdeos"
+            "price": 3499,
+            "currency": "MXN",
+            "priceUsd": 191.76,
+            "url": "https://www.liverpool.com.mx/tienda/?s=burdeos"
           },
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "ASOS",
             "label": {
               "es": "Burdeos profundo en seda lavada",
               "en": "Deep burgundy, in washed silk"
             },
-            "price": 325.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=burdeos"
+            "price": 293.95,
+            "currency": "USD",
+            "priceUsd": 294.19,
+            "url": "https://www.asos.com/us/search/?q=burgundy"
           }
         ],
         "invest": [
           {
-            "retailer": "Loewe",
+            "retailer": "Revolve",
             "label": {
               "es": "Burdeos profundo",
               "en": "Deep burgundy"
             },
-            "price": 1830,
-            "currency": "EUR",
-            "url": "https://www.loewe.com/es/es/search?q=burdeos"
+            "price": 1210,
+            "currency": "USD",
+            "priceUsd": 1207.36,
+            "url": "https://www.revolve.com/r/Search.jsp?search=burgundy"
           },
           {
-            "retailer": "Khaite",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Burdeos profundo en algodón",
               "en": "Deep burgundy, in cotton"
             },
-            "price": 990,
-            "currency": "EUR",
-            "url": "https://khaite.com/search?q=burdeos"
+            "price": 1570,
+            "currency": "USD",
+            "priceUsd": 1572.06,
+            "url": "https://www.nordstrom.com/sr?keyword=burgundy"
           }
         ]
       }
@@ -8533,71 +8633,84 @@
         }
       ],
       "scoreYearAgo": 31.3,
+      "keywords": [
+        "matcha",
+        "matcha green",
+        "pistachio green",
+        "verde matcha",
+        "verde pistache"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Mango",
+            "retailer": "Shein",
             "label": {
               "es": "Verde matcha",
               "en": "Matcha green"
             },
-            "price": 60.95,
-            "currency": "EUR",
-            "url": "https://shop.mango.com/es/es/search?q=verde%20matcha"
+            "price": 599,
+            "currency": "MXN",
+            "priceUsd": 33.4,
+            "url": "https://mx.shein.com/pdsearch/verde%20matcha/"
           },
           {
-            "retailer": "Uniqlo",
+            "retailer": "Zara México",
             "label": {
               "es": "Verde matcha en seda lavada",
               "en": "Matcha green, in washed silk"
             },
-            "price": 71.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=verde%20matcha"
+            "price": 879,
+            "currency": "MXN",
+            "priceUsd": 48.65,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=verde%20matcha"
           }
         ],
         "mid": [
           {
-            "retailer": "& Other Stories",
+            "retailer": "Revolve",
             "label": {
               "es": "Verde matcha",
               "en": "Matcha green"
             },
-            "price": 205.95,
-            "currency": "EUR",
-            "url": "https://www.stories.com/es_eur/search.html?q=verde%20matcha"
+            "price": 146.95,
+            "currency": "USD",
+            "priceUsd": 147.47,
+            "url": "https://www.revolve.com/r/Search.jsp?search=matcha%20green"
           },
           {
-            "retailer": "Arket",
+            "retailer": "ASOS",
             "label": {
               "es": "Verde matcha en punto fino",
               "en": "Matcha green, in fine knit"
             },
-            "price": 267.95,
-            "currency": "EUR",
-            "url": "https://www.arket.com/es/search.html?q=verde%20matcha"
+            "price": 212.95,
+            "currency": "USD",
+            "priceUsd": 212.91,
+            "url": "https://www.asos.com/us/search/?q=matcha%20green"
           }
         ],
         "invest": [
           {
-            "retailer": "Max Mara",
+            "retailer": "Revolve",
             "label": {
               "es": "Verde matcha",
               "en": "Matcha green"
             },
-            "price": 1640,
-            "currency": "EUR",
-            "url": "https://es.maxmara.com/search?q=verde%20matcha"
+            "price": 1090,
+            "currency": "USD",
+            "priceUsd": 1090.25,
+            "url": "https://www.revolve.com/r/Search.jsp?search=matcha%20green"
           },
           {
-            "retailer": "Totême",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Verde matcha en punto fino",
               "en": "Matcha green, in fine knit"
             },
-            "price": 640,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=verde%20matcha"
+            "price": 1340,
+            "currency": "USD",
+            "priceUsd": 1336.73,
+            "url": "https://www.nordstrom.com/sr?keyword=matcha%20green"
           }
         ]
       }
@@ -9607,71 +9720,84 @@
         }
       ],
       "scoreYearAgo": 11.8,
+      "keywords": [
+        "azul empolvado",
+        "azul polvo",
+        "dusty blue",
+        "dusty powder blue",
+        "powder blue"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Mango",
+            "retailer": "Shein",
             "label": {
               "es": "Azul polvo",
               "en": "Dusty powder blue"
             },
-            "price": 31.95,
-            "currency": "EUR",
-            "url": "https://shop.mango.com/es/es/search?q=azul%20polvo"
+            "price": 339,
+            "currency": "MXN",
+            "priceUsd": 18.79,
+            "url": "https://mx.shein.com/pdsearch/azul%20polvo/"
           },
           {
-            "retailer": "Uniqlo",
+            "retailer": "Zara México",
             "label": {
               "es": "Azul polvo en seda lavada",
               "en": "Dusty powder blue, in washed silk"
             },
-            "price": 27.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=azul%20polvo"
+            "price": 409,
+            "currency": "MXN",
+            "priceUsd": 22.98,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=azul%20polvo"
           }
         ],
         "mid": [
           {
-            "retailer": "Arket",
+            "retailer": "ASOS",
             "label": {
               "es": "Azul polvo",
               "en": "Dusty powder blue"
             },
-            "price": 276.95,
-            "currency": "EUR",
-            "url": "https://www.arket.com/es/search.html?q=azul%20polvo"
+            "price": 191.95,
+            "currency": "USD",
+            "priceUsd": 191.72,
+            "url": "https://www.asos.com/us/search/?q=powder%20blue"
           },
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Azul polvo en punto fino",
               "en": "Dusty powder blue, in fine knit"
             },
-            "price": 322.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=azul%20polvo"
+            "price": 292.95,
+            "currency": "USD",
+            "priceUsd": 293.13,
+            "url": "https://www.revolve.com/r/Search.jsp?search=powder%20blue"
           }
         ],
         "invest": [
           {
-            "retailer": "Jil Sander",
+            "retailer": "Revolve",
             "label": {
               "es": "Azul polvo",
               "en": "Dusty powder blue"
             },
-            "price": 540,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=azul%20polvo"
+            "price": 390,
+            "currency": "USD",
+            "priceUsd": 394.32,
+            "url": "https://www.revolve.com/r/Search.jsp?search=powder%20blue"
           },
           {
-            "retailer": "Max Mara",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Azul polvo en seda lavada",
               "en": "Dusty powder blue, in washed silk"
             },
-            "price": 650,
-            "currency": "EUR",
-            "url": "https://es.maxmara.com/search?q=azul%20polvo"
+            "price": 480,
+            "currency": "USD",
+            "priceUsd": 484.05,
+            "url": "https://www.nordstrom.com/sr?keyword=powder%20blue"
           }
         ]
       }
@@ -10681,71 +10807,84 @@
         }
       ],
       "scoreYearAgo": 41.1,
+      "keywords": [
+        "cafe chocolate",
+        "chocolate brown",
+        "cocoa brown",
+        "marron cacao",
+        "mocha"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Uniqlo",
+            "retailer": "Amazon México",
             "label": {
               "es": "Marrón cacao",
               "en": "Cocoa brown"
             },
-            "price": 33.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=marron%20cacao"
+            "price": 349,
+            "currency": "MXN",
+            "priceUsd": 19.6,
+            "url": "https://www.amazon.com.mx/s?k=marron%20cacao"
           },
           {
-            "retailer": "H&M",
+            "retailer": "Zara México",
             "label": {
               "es": "Marrón cacao en algodón",
               "en": "Cocoa brown, in cotton"
             },
-            "price": 70.95,
-            "currency": "EUR",
-            "url": "https://www2.hm.com/es_es/search-results.html?q=marron%20cacao"
+            "price": 509,
+            "currency": "MXN",
+            "priceUsd": 28.5,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=marron%20cacao"
           }
         ],
         "mid": [
           {
-            "retailer": "Arket",
+            "retailer": "ASOS",
             "label": {
               "es": "Marrón cacao",
               "en": "Cocoa brown"
             },
-            "price": 166.95,
-            "currency": "EUR",
-            "url": "https://www.arket.com/es/search.html?q=marron%20cacao"
+            "price": 122.95,
+            "currency": "USD",
+            "priceUsd": 123.19,
+            "url": "https://www.asos.com/us/search/?q=cocoa%20brown"
           },
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Marrón cacao en seda lavada",
               "en": "Cocoa brown, in washed silk"
             },
-            "price": 348.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=marron%20cacao"
+            "price": 192.95,
+            "currency": "USD",
+            "priceUsd": 193.25,
+            "url": "https://www.revolve.com/r/Search.jsp?search=cocoa%20brown"
           }
         ],
         "invest": [
           {
-            "retailer": "Jil Sander",
+            "retailer": "Revolve",
             "label": {
               "es": "Marrón cacao",
               "en": "Cocoa brown"
             },
-            "price": 1210,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=marron%20cacao"
+            "price": 820,
+            "currency": "USD",
+            "priceUsd": 817.69,
+            "url": "https://www.revolve.com/r/Search.jsp?search=cocoa%20brown"
           },
           {
-            "retailer": "Khaite",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Marrón cacao en seda lavada",
               "en": "Cocoa brown, in washed silk"
             },
-            "price": 1380,
-            "currency": "EUR",
-            "url": "https://khaite.com/search?q=marron%20cacao"
+            "price": 1130,
+            "currency": "USD",
+            "priceUsd": 1133.03,
+            "url": "https://www.nordstrom.com/sr?keyword=cocoa%20brown"
           }
         ]
       }
@@ -11755,71 +11894,83 @@
         }
       ],
       "scoreYearAgo": 57.9,
+      "keywords": [
+        "ante cepillado",
+        "brushed suede",
+        "gamuza",
+        "suede"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "ASOS",
+            "retailer": "Amazon México",
             "label": {
               "es": "Ante cepillado",
               "en": "Brushed suede"
             },
-            "price": 18.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=ante%20cepillado"
+            "price": 219,
+            "currency": "MXN",
+            "priceUsd": 12.01,
+            "url": "https://www.amazon.com.mx/s?k=ante%20cepillado"
           },
           {
-            "retailer": "H&M",
+            "retailer": "Zara México",
             "label": {
               "es": "Ante cepillado en tono crudo",
               "en": "Brushed suede, in ecru"
             },
-            "price": 75.95,
-            "currency": "EUR",
-            "url": "https://www2.hm.com/es_es/search-results.html?q=ante%20cepillado"
+            "price": 319,
+            "currency": "MXN",
+            "priceUsd": 17.78,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=ante%20cepillado"
           }
         ],
         "mid": [
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Ante cepillado",
               "en": "Brushed suede"
             },
-            "price": 140.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=ante%20cepillado"
+            "price": 106.95,
+            "currency": "USD",
+            "priceUsd": 107.05,
+            "url": "https://www.revolve.com/r/Search.jsp?search=brushed%20suede"
           },
           {
-            "retailer": "COS",
+            "retailer": "Liverpool",
             "label": {
               "es": "Ante cepillado en tono crudo",
               "en": "Brushed suede, in ecru"
             },
-            "price": 244.95,
-            "currency": "EUR",
-            "url": "https://www.cos.com/es-es/search?q=ante%20cepillado"
+            "price": 2699,
+            "currency": "MXN",
+            "priceUsd": 150.66,
+            "url": "https://www.liverpool.com.mx/tienda/?s=ante%20cepillado"
           }
         ],
         "invest": [
           {
-            "retailer": "Loewe",
+            "retailer": "Revolve",
             "label": {
               "es": "Ante cepillado",
               "en": "Brushed suede"
             },
-            "price": 1510,
-            "currency": "EUR",
-            "url": "https://www.loewe.com/es/es/search?q=ante%20cepillado"
+            "price": 1010,
+            "currency": "USD",
+            "priceUsd": 1006.62,
+            "url": "https://www.revolve.com/r/Search.jsp?search=brushed%20suede"
           },
           {
-            "retailer": "Totême",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Ante cepillado en tono crudo",
               "en": "Brushed suede, in ecru"
             },
-            "price": 1300,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=ante%20cepillado"
+            "price": 1380,
+            "currency": "USD",
+            "priceUsd": 1378.58,
+            "url": "https://www.nordstrom.com/sr?keyword=brushed%20suede"
           }
         ]
       }
@@ -12829,71 +12980,84 @@
         }
       ],
       "scoreYearAgo": 33.9,
+      "keywords": [
+        "crochet",
+        "crochet fino",
+        "fine crochet",
+        "fine gauge crochet",
+        "ganchillo"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "ASOS",
+            "retailer": "Amazon México",
             "label": {
               "es": "Crochet fino",
               "en": "Fine-gauge crochet"
             },
-            "price": 23.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=crochet%20fino"
+            "price": 259,
+            "currency": "MXN",
+            "priceUsd": 14.59,
+            "url": "https://www.amazon.com.mx/s?k=crochet%20fino"
           },
           {
-            "retailer": "Zara",
+            "retailer": "Shein",
             "label": {
               "es": "Crochet fino en tono crudo",
               "en": "Fine-gauge crochet, in ecru"
             },
-            "price": 48.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=crochet%20fino"
+            "price": 349,
+            "currency": "MXN",
+            "priceUsd": 19.44,
+            "url": "https://mx.shein.com/pdsearch/crochet%20fino/"
           }
         ],
         "mid": [
           {
-            "retailer": "COS",
+            "retailer": "Liverpool",
             "label": {
               "es": "Crochet fino",
               "en": "Fine-gauge crochet"
             },
-            "price": 249.95,
-            "currency": "EUR",
-            "url": "https://www.cos.com/es-es/search?q=crochet%20fino"
+            "price": 3099,
+            "currency": "MXN",
+            "priceUsd": 174.67,
+            "url": "https://www.liverpool.com.mx/tienda/?s=crochet%20fino"
           },
           {
-            "retailer": "& Other Stories",
+            "retailer": "Revolve",
             "label": {
               "es": "Crochet fino en versión corta",
               "en": "Fine-gauge crochet, cropped"
             },
-            "price": 275.95,
-            "currency": "EUR",
-            "url": "https://www.stories.com/es_eur/search.html?q=crochet%20fino"
+            "price": 253.95,
+            "currency": "USD",
+            "priceUsd": 254.34,
+            "url": "https://www.revolve.com/r/Search.jsp?search=fine%20crochet"
           }
         ],
         "invest": [
           {
-            "retailer": "Jil Sander",
+            "retailer": "Revolve",
             "label": {
               "es": "Crochet fino",
               "en": "Fine-gauge crochet"
             },
-            "price": 1400,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=crochet%20fino"
+            "price": 940,
+            "currency": "USD",
+            "priceUsd": 936.07,
+            "url": "https://www.revolve.com/r/Search.jsp?search=fine%20crochet"
           },
           {
-            "retailer": "Khaite",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Crochet fino en versión corta",
               "en": "Fine-gauge crochet, cropped"
             },
-            "price": 1600,
-            "currency": "EUR",
-            "url": "https://khaite.com/search?q=crochet%20fino"
+            "price": 1340,
+            "currency": "USD",
+            "priceUsd": 1341.36,
+            "url": "https://www.nordstrom.com/sr?keyword=fine%20crochet"
           }
         ]
       }
@@ -13903,71 +14067,83 @@
         }
       ],
       "scoreYearAgo": 20.9,
+      "keywords": [
+        "lentejuela mate",
+        "lentejuelas",
+        "matte sequin",
+        "matte sequins"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "H&M",
+            "retailer": "Zara México",
             "label": {
               "es": "Lentejuela mate",
               "en": "Matte sequin"
             },
-            "price": 76.95,
-            "currency": "EUR",
-            "url": "https://www2.hm.com/es_es/search-results.html?q=lentejuela%20mate"
+            "price": 759,
+            "currency": "MXN",
+            "priceUsd": 42.01,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=lentejuela%20mate"
           },
           {
-            "retailer": "ASOS",
+            "retailer": "Amazon México",
             "label": {
               "es": "Lentejuela mate en versión corta",
               "en": "Matte sequin, cropped"
             },
-            "price": 64.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=lentejuela%20mate"
+            "price": 1069,
+            "currency": "MXN",
+            "priceUsd": 59.59,
+            "url": "https://www.amazon.com.mx/s?k=lentejuela%20mate"
           }
         ],
         "mid": [
           {
-            "retailer": "& Other Stories",
+            "retailer": "Revolve",
             "label": {
               "es": "Lentejuela mate",
               "en": "Matte sequin"
             },
-            "price": 99.95,
-            "currency": "EUR",
-            "url": "https://www.stories.com/es_eur/search.html?q=lentejuela%20mate"
+            "price": 81.95,
+            "currency": "USD",
+            "priceUsd": 81.59,
+            "url": "https://www.revolve.com/r/Search.jsp?search=matte%20sequin"
           },
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "ASOS",
             "label": {
               "es": "Lentejuela mate en tono crudo",
               "en": "Matte sequin, in ecru"
             },
-            "price": 325.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=lentejuela%20mate"
+            "price": 124.95,
+            "currency": "USD",
+            "priceUsd": 125.11,
+            "url": "https://www.asos.com/us/search/?q=matte%20sequin"
           }
         ],
         "invest": [
           {
-            "retailer": "Totême",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Lentejuela mate",
               "en": "Matte sequin"
             },
-            "price": 760,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=lentejuela%20mate"
+            "price": 540,
+            "currency": "USD",
+            "priceUsd": 537.25,
+            "url": "https://www.nordstrom.com/sr?keyword=matte%20sequin"
           },
           {
-            "retailer": "Jil Sander",
+            "retailer": "Revolve",
             "label": {
               "es": "Lentejuela mate en versión corta",
               "en": "Matte sequin, cropped"
             },
-            "price": 2140,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=lentejuela%20mate"
+            "price": 830,
+            "currency": "USD",
+            "priceUsd": 833.09,
+            "url": "https://www.revolve.com/r/Search.jsp?search=matte%20sequin"
           }
         ]
       }
@@ -14977,71 +15153,86 @@
         }
       ],
       "scoreYearAgo": 40.5,
+      "keywords": [
+        "borreguito",
+        "borreguito rizado",
+        "curly faux shearling",
+        "curly shearling",
+        "faux shearling",
+        "shearling",
+        "teddy coat"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Mango",
+            "retailer": "Shein",
             "label": {
               "es": "Borreguito rizado",
               "en": "Curly faux shearling"
             },
-            "price": 67.95,
-            "currency": "EUR",
-            "url": "https://shop.mango.com/es/es/search?q=borreguito"
+            "price": 669,
+            "currency": "MXN",
+            "priceUsd": 37.35,
+            "url": "https://mx.shein.com/pdsearch/borreguito/"
           },
           {
-            "retailer": "Zara",
+            "retailer": "Amazon México",
             "label": {
               "es": "Borreguito rizado con cuello alto",
               "en": "Curly faux shearling, high-neck"
             },
-            "price": 41.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=borreguito"
+            "price": 869,
+            "currency": "MXN",
+            "priceUsd": 48.45,
+            "url": "https://www.amazon.com.mx/s?k=borreguito"
           }
         ],
         "mid": [
           {
-            "retailer": "Arket",
+            "retailer": "ASOS",
             "label": {
               "es": "Borreguito rizado",
               "en": "Curly faux shearling"
             },
-            "price": 245.95,
-            "currency": "EUR",
-            "url": "https://www.arket.com/es/search.html?q=borreguito"
+            "price": 171.95,
+            "currency": "USD",
+            "priceUsd": 172.24,
+            "url": "https://www.asos.com/us/search/?q=faux%20shearling"
           },
           {
-            "retailer": "COS",
+            "retailer": "Liverpool",
             "label": {
               "es": "Borreguito rizado en tono crudo",
               "en": "Curly faux shearling, in ecru"
             },
-            "price": 346.95,
-            "currency": "EUR",
-            "url": "https://www.cos.com/es-es/search?q=borreguito"
+            "price": 4899,
+            "currency": "MXN",
+            "priceUsd": 269.75,
+            "url": "https://www.liverpool.com.mx/tienda/?s=borreguito"
           }
         ],
         "invest": [
           {
-            "retailer": "Max Mara",
+            "retailer": "Revolve",
             "label": {
               "es": "Borreguito rizado",
               "en": "Curly faux shearling"
             },
-            "price": 1150,
-            "currency": "EUR",
-            "url": "https://es.maxmara.com/search?q=borreguito"
+            "price": 780,
+            "currency": "USD",
+            "priceUsd": 781.71,
+            "url": "https://www.revolve.com/r/Search.jsp?search=faux%20shearling"
           },
           {
-            "retailer": "Loewe",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Borreguito rizado en tono crudo",
               "en": "Curly faux shearling, in ecru"
             },
-            "price": 1410,
-            "currency": "EUR",
-            "url": "https://www.loewe.com/es/es/search?q=borreguito"
+            "price": 1090,
+            "currency": "USD",
+            "priceUsd": 1088.21,
+            "url": "https://www.nordstrom.com/sr?keyword=faux%20shearling"
           }
         ]
       }
@@ -16051,71 +16242,85 @@
         }
       ],
       "scoreYearAgo": 44.1,
+      "keywords": [
+        "hombreras",
+        "hombro estructurado",
+        "power shoulder",
+        "shoulder pads",
+        "structured shoulder",
+        "structured shoulder blazer"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "H&M",
+            "retailer": "Zara México",
             "label": {
               "es": "Hombro estructurado",
               "en": "Structured shoulder"
             },
-            "price": 18.95,
-            "currency": "EUR",
-            "url": "https://www2.hm.com/es_es/search-results.html?q=hombro%20estructurado"
+            "price": 219,
+            "currency": "MXN",
+            "priceUsd": 12.18,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=hombro%20estructurado"
           },
           {
-            "retailer": "Zara",
+            "retailer": "Shein",
             "label": {
               "es": "Hombro estructurado con hombreras",
               "en": "Structured shoulder, with shoulder pads"
             },
-            "price": 73.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=hombro%20estructurado"
+            "price": 319,
+            "currency": "MXN",
+            "priceUsd": 17.9,
+            "url": "https://mx.shein.com/pdsearch/hombro%20estructurado/"
           }
         ],
         "mid": [
           {
-            "retailer": "COS",
+            "retailer": "Liverpool",
             "label": {
               "es": "Hombro estructurado",
               "en": "Structured shoulder"
             },
-            "price": 153.95,
-            "currency": "EUR",
-            "url": "https://www.cos.com/es-es/search?q=hombro%20estructurado"
+            "price": 2099,
+            "currency": "MXN",
+            "priceUsd": 115.52,
+            "url": "https://www.liverpool.com.mx/tienda/?s=hombro%20estructurado"
           },
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "ASOS",
             "label": {
               "es": "Hombro estructurado con hombreras",
               "en": "Structured shoulder, with shoulder pads"
             },
-            "price": 171.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=hombro%20estructurado"
+            "price": 148.95,
+            "currency": "USD",
+            "priceUsd": 149.44,
+            "url": "https://www.asos.com/us/search/?q=structured%20shoulder%20blazer"
           }
         ],
         "invest": [
           {
-            "retailer": "Totême",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Hombro estructurado",
               "en": "Structured shoulder"
             },
-            "price": 700,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=hombro%20estructurado"
+            "price": 500,
+            "currency": "USD",
+            "priceUsd": 497.46,
+            "url": "https://www.nordstrom.com/sr?keyword=structured%20shoulder%20blazer"
           },
           {
-            "retailer": "Max Mara",
+            "retailer": "Revolve",
             "label": {
               "es": "Hombro estructurado en negro",
               "en": "Structured shoulder, in black"
             },
-            "price": 1370,
-            "currency": "EUR",
-            "url": "https://es.maxmara.com/search?q=hombro%20estructurado"
+            "price": 690,
+            "currency": "USD",
+            "priceUsd": 688.98,
+            "url": "https://www.revolve.com/r/Search.jsp?search=structured%20shoulder%20blazer"
           }
         ]
       }
@@ -17125,71 +17330,86 @@
         }
       ],
       "scoreYearAgo": 74.2,
+      "keywords": [
+        "cintura caida",
+        "drop waist",
+        "drop waist dress",
+        "dropped waist",
+        "low waist",
+        "talle bajo",
+        "vestido cintura caida"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "ASOS",
+            "retailer": "Amazon México",
             "label": {
               "es": "Cintura caída",
               "en": "Dropped waist"
             },
-            "price": 31.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=vestido%20cintura%20caida"
+            "price": 329,
+            "currency": "MXN",
+            "priceUsd": 18.54,
+            "url": "https://www.amazon.com.mx/s?k=vestido%20cintura%20caida"
           },
           {
-            "retailer": "Uniqlo",
+            "retailer": "Zara México",
             "label": {
               "es": "Cintura caída en negro",
               "en": "Dropped waist, in black"
             },
-            "price": 51.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=vestido%20cintura%20caida"
+            "price": 449,
+            "currency": "MXN",
+            "priceUsd": 24.99,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=vestido%20cintura%20caida"
           }
         ],
         "mid": [
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "Liverpool",
             "label": {
               "es": "Cintura caída",
               "en": "Dropped waist"
             },
-            "price": 273.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=vestido%20cintura%20caida"
+            "price": 3399,
+            "currency": "MXN",
+            "priceUsd": 189.73,
+            "url": "https://www.liverpool.com.mx/tienda/?s=vestido%20cintura%20caida"
           },
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Cintura caída en largo midi",
               "en": "Dropped waist, midi length"
             },
-            "price": 151.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=vestido%20cintura%20caida"
+            "price": 239.95,
+            "currency": "USD",
+            "priceUsd": 239.65,
+            "url": "https://www.revolve.com/r/Search.jsp?search=drop%20waist%20dress"
           }
         ],
         "invest": [
           {
-            "retailer": "Max Mara",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Cintura caída",
               "en": "Dropped waist"
             },
-            "price": 1020,
-            "currency": "EUR",
-            "url": "https://es.maxmara.com/search?q=vestido%20cintura%20caida"
+            "price": 700,
+            "currency": "USD",
+            "priceUsd": 701.48,
+            "url": "https://www.nordstrom.com/sr?keyword=drop%20waist%20dress"
           },
           {
-            "retailer": "Khaite",
+            "retailer": "Revolve",
             "label": {
               "es": "Cintura caída con hombreras",
               "en": "Dropped waist, with shoulder pads"
             },
-            "price": 1080,
-            "currency": "EUR",
-            "url": "https://khaite.com/search?q=vestido%20cintura%20caida"
+            "price": 930,
+            "currency": "USD",
+            "priceUsd": 926.82,
+            "url": "https://www.revolve.com/r/Search.jsp?search=drop%20waist%20dress"
           }
         ]
       }
@@ -18199,71 +18419,85 @@
         }
       ],
       "scoreYearAgo": 19.5,
+      "keywords": [
+        "column dress",
+        "column line",
+        "column silhouette",
+        "columna",
+        "linea columna",
+        "vestido columna"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Uniqlo",
+            "retailer": "Zara México",
             "label": {
               "es": "Línea columna",
               "en": "Column line"
             },
-            "price": 58.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=vestido%20columna"
+            "price": 589,
+            "currency": "MXN",
+            "priceUsd": 32.53,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=vestido%20columna"
           },
           {
-            "retailer": "Mango",
+            "retailer": "Shein",
             "label": {
               "es": "Línea columna con hombreras",
               "en": "Column line, with shoulder pads"
             },
-            "price": 41.95,
-            "currency": "EUR",
-            "url": "https://shop.mango.com/es/es/search?q=vestido%20columna"
+            "price": 759,
+            "currency": "MXN",
+            "priceUsd": 42.18,
+            "url": "https://mx.shein.com/pdsearch/vestido%20columna/"
           }
         ],
         "mid": [
           {
-            "retailer": "Arket",
+            "retailer": "ASOS",
             "label": {
               "es": "Línea columna",
               "en": "Column line"
             },
-            "price": 129.95,
-            "currency": "EUR",
-            "url": "https://www.arket.com/es/search.html?q=vestido%20columna"
+            "price": 99.95,
+            "currency": "USD",
+            "priceUsd": 100.35,
+            "url": "https://www.asos.com/us/search/?q=column%20dress"
           },
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Línea columna en largo midi",
               "en": "Column line, midi length"
             },
-            "price": 168.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=vestido%20columna"
+            "price": 128.95,
+            "currency": "USD",
+            "priceUsd": 129.4,
+            "url": "https://www.revolve.com/r/Search.jsp?search=column%20dress"
           }
         ],
         "invest": [
           {
-            "retailer": "Khaite",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Línea columna",
               "en": "Column line"
             },
-            "price": 1500,
-            "currency": "EUR",
-            "url": "https://khaite.com/search?q=vestido%20columna"
+            "price": 1000,
+            "currency": "USD",
+            "priceUsd": 998.85,
+            "url": "https://www.nordstrom.com/sr?keyword=column%20dress"
           },
           {
-            "retailer": "Jil Sander",
+            "retailer": "Revolve",
             "label": {
               "es": "Línea columna en largo midi",
               "en": "Column line, midi length"
             },
-            "price": 1740,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=vestido%20columna"
+            "price": 1460,
+            "currency": "USD",
+            "priceUsd": 1462.91,
+            "url": "https://www.revolve.com/r/Search.jsp?search=column%20dress"
           }
         ]
       }
@@ -19273,71 +19507,86 @@
         }
       ],
       "scoreYearAgo": 73.9,
+      "keywords": [
+        "camisa oversize",
+        "corte holgado",
+        "oversize",
+        "oversize relajado",
+        "oversized fit",
+        "oversized shirt",
+        "relaxed oversize"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "ASOS",
+            "retailer": "Amazon México",
             "label": {
               "es": "Oversize relajado",
               "en": "Relaxed oversize"
             },
-            "price": 65.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=camisa%20oversize"
+            "price": 649,
+            "currency": "MXN",
+            "priceUsd": 36.22,
+            "url": "https://www.amazon.com.mx/s?k=camisa%20oversize"
           },
           {
-            "retailer": "Zara",
+            "retailer": "Shein",
             "label": {
               "es": "Oversize relajado con hombreras",
               "en": "Relaxed oversize, with shoulder pads"
             },
-            "price": 76.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=camisa%20oversize"
+            "price": 969,
+            "currency": "MXN",
+            "priceUsd": 53.81,
+            "url": "https://mx.shein.com/pdsearch/camisa%20oversize/"
           }
         ],
         "mid": [
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Oversize relajado",
               "en": "Relaxed oversize"
             },
-            "price": 248.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=camisa%20oversize"
+            "price": 173.95,
+            "currency": "USD",
+            "priceUsd": 174.38,
+            "url": "https://www.revolve.com/r/Search.jsp?search=oversized%20shirt"
           },
           {
-            "retailer": "& Other Stories",
+            "retailer": "ASOS",
             "label": {
               "es": "Oversize relajado en negro",
               "en": "Relaxed oversize, in black"
             },
             "price": 244.95,
-            "currency": "EUR",
-            "url": "https://www.stories.com/es_eur/search.html?q=camisa%20oversize"
+            "currency": "USD",
+            "priceUsd": 245.38,
+            "url": "https://www.asos.com/us/search/?q=oversized%20shirt"
           }
         ],
         "invest": [
           {
-            "retailer": "Totême",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Oversize relajado",
               "en": "Relaxed oversize"
             },
-            "price": 1620,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=camisa%20oversize"
+            "price": 1080,
+            "currency": "USD",
+            "priceUsd": 1078.16,
+            "url": "https://www.nordstrom.com/sr?keyword=oversized%20shirt"
           },
           {
-            "retailer": "Jil Sander",
+            "retailer": "Revolve",
             "label": {
               "es": "Oversize relajado en negro",
               "en": "Relaxed oversize, in black"
             },
-            "price": 680,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=camisa%20oversize"
+            "price": 1330,
+            "currency": "USD",
+            "priceUsd": 1329.95,
+            "url": "https://www.revolve.com/r/Search.jsp?search=oversized%20shirt"
           }
         ]
       }
@@ -20347,71 +20596,86 @@
         }
       ],
       "scoreYearAgo": 64.1,
+      "keywords": [
+        "bolsa hobo",
+        "bolso hobo",
+        "bolso hobo suave",
+        "hobo bag",
+        "slouchy bag",
+        "slouchy hobo",
+        "slouchy hobo bag"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Mango",
+            "retailer": "Shein",
             "label": {
               "es": "Bolso hobo suave",
               "en": "Slouchy hobo bag"
             },
-            "price": 76.95,
-            "currency": "EUR",
-            "url": "https://shop.mango.com/es/es/search?q=bolso%20hobo"
+            "price": 759,
+            "currency": "MXN",
+            "priceUsd": 41.98,
+            "url": "https://mx.shein.com/pdsearch/bolso%20hobo/"
           },
           {
-            "retailer": "Uniqlo",
+            "retailer": "Zara México",
             "label": {
               "es": "Bolso hobo suave en piel",
               "en": "Slouchy hobo bag, in leather"
             },
-            "price": 30.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=bolso%20hobo"
+            "price": 939,
+            "currency": "MXN",
+            "priceUsd": 51.99,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=bolso%20hobo"
           }
         ],
         "mid": [
           {
-            "retailer": "& Other Stories",
+            "retailer": "Revolve",
             "label": {
               "es": "Bolso hobo suave",
               "en": "Slouchy hobo bag"
             },
-            "price": 201.95,
-            "currency": "EUR",
-            "url": "https://www.stories.com/es_eur/search.html?q=bolso%20hobo"
+            "price": 144.95,
+            "currency": "USD",
+            "priceUsd": 144.89,
+            "url": "https://www.revolve.com/r/Search.jsp?search=hobo%20bag"
           },
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "ASOS",
             "label": {
               "es": "Bolso hobo suave en charol",
               "en": "Slouchy hobo bag, in patent"
             },
-            "price": 177.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=bolso%20hobo"
+            "price": 188.95,
+            "currency": "USD",
+            "priceUsd": 188.89,
+            "url": "https://www.asos.com/us/search/?q=hobo%20bag"
           }
         ],
         "invest": [
           {
-            "retailer": "Max Mara",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Bolso hobo suave",
               "en": "Slouchy hobo bag"
             },
-            "price": 770,
-            "currency": "EUR",
-            "url": "https://es.maxmara.com/search?q=bolso%20hobo"
+            "price": 540,
+            "currency": "USD",
+            "priceUsd": 542.33,
+            "url": "https://www.nordstrom.com/sr?keyword=hobo%20bag"
           },
           {
-            "retailer": "Khaite",
+            "retailer": "Revolve",
             "label": {
               "es": "Bolso hobo suave en piel",
               "en": "Slouchy hobo bag, in leather"
             },
-            "price": 1780,
-            "currency": "EUR",
-            "url": "https://khaite.com/search?q=bolso%20hobo"
+            "price": 800,
+            "currency": "USD",
+            "priceUsd": 799.41,
+            "url": "https://www.revolve.com/r/Search.jsp?search=hobo%20bag"
           }
         ]
       }
@@ -21421,71 +21685,85 @@
         }
       ],
       "scoreYearAgo": 71.1,
+      "keywords": [
+        "flat mary janes",
+        "mary jane",
+        "mary jane flats",
+        "mary jane planas",
+        "mary janes",
+        "zapatos mary jane"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "H&M",
+            "retailer": "Zara México",
             "label": {
               "es": "Mary Jane planas",
               "en": "Flat Mary Janes"
             },
-            "price": 40.95,
-            "currency": "EUR",
-            "url": "https://www2.hm.com/es_es/search-results.html?q=zapatos%20mary%20jane"
+            "price": 419,
+            "currency": "MXN",
+            "priceUsd": 23.22,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=zapatos%20mary%20jane"
           },
           {
-            "retailer": "Mango",
+            "retailer": "Shein",
             "label": {
               "es": "Mary Jane planas en piel",
               "en": "Flat Mary Janes, in leather"
             },
-            "price": 45.95,
-            "currency": "EUR",
-            "url": "https://shop.mango.com/es/es/search?q=zapatos%20mary%20jane"
+            "price": 549,
+            "currency": "MXN",
+            "priceUsd": 30.57,
+            "url": "https://mx.shein.com/pdsearch/zapatos%20mary%20jane/"
           }
         ],
         "mid": [
           {
-            "retailer": "Arket",
+            "retailer": "ASOS",
             "label": {
               "es": "Mary Jane planas",
               "en": "Flat Mary Janes"
             },
-            "price": 121.95,
-            "currency": "EUR",
-            "url": "https://www.arket.com/es/search.html?q=zapatos%20mary%20jane"
+            "price": 94.95,
+            "currency": "USD",
+            "priceUsd": 95.46,
+            "url": "https://www.asos.com/us/search/?q=mary%20jane%20flats"
           },
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Mary Jane planas en charol",
               "en": "Flat Mary Janes, in patent"
             },
-            "price": 138.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=zapatos%20mary%20jane"
+            "price": 118.95,
+            "currency": "USD",
+            "priceUsd": 118.63,
+            "url": "https://www.revolve.com/r/Search.jsp?search=mary%20jane%20flats"
           }
         ],
         "invest": [
           {
-            "retailer": "Max Mara",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Mary Jane planas",
               "en": "Flat Mary Janes"
             },
-            "price": 1230,
-            "currency": "EUR",
-            "url": "https://es.maxmara.com/search?q=zapatos%20mary%20jane"
+            "price": 830,
+            "currency": "USD",
+            "priceUsd": 833.71,
+            "url": "https://www.nordstrom.com/sr?keyword=mary%20jane%20flats"
           },
           {
-            "retailer": "Totême",
+            "retailer": "Revolve",
             "label": {
               "es": "Mary Jane planas en ante",
               "en": "Flat Mary Janes, in suede"
             },
-            "price": 1810,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=zapatos%20mary%20jane"
+            "price": 1230,
+            "currency": "USD",
+            "priceUsd": 1234.07,
+            "url": "https://www.revolve.com/r/Search.jsp?search=mary%20jane%20flats"
           }
         ]
       }
@@ -22495,71 +22773,86 @@
         }
       ],
       "scoreYearAgo": 11.9,
+      "keywords": [
+        "cinturon ancho",
+        "cinturon obi",
+        "cinturon obi ancho",
+        "faja obi",
+        "obi belt",
+        "wide belt",
+        "wide obi belt"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Uniqlo",
+            "retailer": "Amazon México",
             "label": {
               "es": "Cinturón obi ancho",
               "en": "Wide obi belt"
             },
-            "price": 59.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=cinturon%20obi"
+            "price": 589,
+            "currency": "MXN",
+            "priceUsd": 32.89,
+            "url": "https://www.amazon.com.mx/s?k=cinturon%20obi"
           },
           {
-            "retailer": "Zara",
+            "retailer": "Shein",
             "label": {
               "es": "Cinturón obi ancho en ante",
               "en": "Wide obi belt, in suede"
             },
-            "price": 57.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=cinturon%20obi"
+            "price": 819,
+            "currency": "MXN",
+            "priceUsd": 45.51,
+            "url": "https://mx.shein.com/pdsearch/cinturon%20obi/"
           }
         ],
         "mid": [
           {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Cinturón obi ancho",
               "en": "Wide obi belt"
             },
-            "price": 197.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=cinturon%20obi"
+            "price": 141.95,
+            "currency": "USD",
+            "priceUsd": 142.39,
+            "url": "https://www.revolve.com/r/Search.jsp?search=obi%20belt"
           },
           {
-            "retailer": "COS",
+            "retailer": "Liverpool",
             "label": {
               "es": "Cinturón obi ancho en ante",
               "en": "Wide obi belt, in suede"
             },
-            "price": 141.95,
-            "currency": "EUR",
-            "url": "https://www.cos.com/es-es/search?q=cinturon%20obi"
+            "price": 3199,
+            "currency": "MXN",
+            "priceUsd": 177.56,
+            "url": "https://www.liverpool.com.mx/tienda/?s=cinturon%20obi"
           }
         ],
         "invest": [
           {
-            "retailer": "Khaite",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Cinturón obi ancho",
               "en": "Wide obi belt"
             },
-            "price": 480,
-            "currency": "EUR",
-            "url": "https://khaite.com/search?q=cinturon%20obi"
+            "price": 360,
+            "currency": "USD",
+            "priceUsd": 355.37,
+            "url": "https://www.nordstrom.com/sr?keyword=obi%20belt"
           },
           {
-            "retailer": "Max Mara",
+            "retailer": "Revolve",
             "label": {
               "es": "Cinturón obi ancho en piel",
               "en": "Wide obi belt, in leather"
             },
-            "price": 1030,
-            "currency": "EUR",
-            "url": "https://es.maxmara.com/search?q=cinturon%20obi"
+            "price": 470,
+            "currency": "USD",
+            "priceUsd": 465.63,
+            "url": "https://www.revolve.com/r/Search.jsp?search=obi%20belt"
           }
         ]
       }
@@ -23569,71 +23862,84 @@
         }
       ],
       "scoreYearAgo": 42.9,
+      "keywords": [
+        "cat eye",
+        "cat eye frames",
+        "cat eye sunglasses",
+        "gafas cat eye",
+        "lentes cat eye"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Zara",
+            "retailer": "Shein",
             "label": {
               "es": "Gafas cat eye",
               "en": "Cat-eye sunglasses"
             },
-            "price": 25.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=gafas%20cat%20eye"
+            "price": 279,
+            "currency": "MXN",
+            "priceUsd": 15.38,
+            "url": "https://mx.shein.com/pdsearch/gafas%20cat%20eye/"
           },
           {
-            "retailer": "ASOS",
+            "retailer": "Amazon México",
             "label": {
               "es": "Gafas cat eye en charol",
               "en": "Cat-eye sunglasses, in patent"
             },
-            "price": 79.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=gafas%20cat%20eye"
+            "price": 419,
+            "currency": "MXN",
+            "priceUsd": 23.07,
+            "url": "https://www.amazon.com.mx/s?k=gafas%20cat%20eye"
           }
         ],
         "mid": [
           {
-            "retailer": "COS",
+            "retailer": "Liverpool",
             "label": {
               "es": "Gafas cat eye",
               "en": "Cat-eye sunglasses"
             },
-            "price": 154.95,
-            "currency": "EUR",
-            "url": "https://www.cos.com/es-es/search?q=gafas%20cat%20eye"
+            "price": 2099,
+            "currency": "MXN",
+            "priceUsd": 115.65,
+            "url": "https://www.liverpool.com.mx/tienda/?s=gafas%20cat%20eye"
           },
           {
-            "retailer": "& Other Stories",
+            "retailer": "Revolve",
             "label": {
               "es": "Gafas cat eye en piel",
               "en": "Cat-eye sunglasses, in leather"
             },
-            "price": 353.95,
-            "currency": "EUR",
-            "url": "https://www.stories.com/es_eur/search.html?q=gafas%20cat%20eye"
+            "price": 182.95,
+            "currency": "USD",
+            "priceUsd": 183.28,
+            "url": "https://www.revolve.com/r/Search.jsp?search=cat%20eye%20sunglasses"
           }
         ],
         "invest": [
           {
-            "retailer": "Max Mara",
+            "retailer": "Revolve",
             "label": {
               "es": "Gafas cat eye",
               "en": "Cat-eye sunglasses"
             },
-            "price": 1220,
-            "currency": "EUR",
-            "url": "https://es.maxmara.com/search?q=gafas%20cat%20eye"
+            "price": 820,
+            "currency": "USD",
+            "priceUsd": 824.11,
+            "url": "https://www.revolve.com/r/Search.jsp?search=cat%20eye%20sunglasses"
           },
           {
-            "retailer": "Jil Sander",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Gafas cat eye en ante",
               "en": "Cat-eye sunglasses, in suede"
             },
-            "price": 1050,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=gafas%20cat%20eye"
+            "price": 1080,
+            "currency": "USD",
+            "priceUsd": 1082.9,
+            "url": "https://www.nordstrom.com/sr?keyword=cat%20eye%20sunglasses"
           }
         ]
       }
@@ -24643,71 +24949,83 @@
         }
       ],
       "scoreYearAgo": 80.9,
+      "keywords": [
+        "lujo silencioso",
+        "old money",
+        "quiet luxury",
+        "stealth wealth"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "Uniqlo",
+            "retailer": "Amazon México",
             "label": {
               "es": "Lujo silencioso",
               "en": "Quiet luxury"
             },
-            "price": 32.95,
-            "currency": "EUR",
-            "url": "https://www.uniqlo.com/es/es/search?q=quiet%20luxury"
+            "price": 349,
+            "currency": "MXN",
+            "priceUsd": 19.23,
+            "url": "https://www.amazon.com.mx/s?k=quiet%20luxury"
           },
           {
-            "retailer": "Zara",
+            "retailer": "Shein",
             "label": {
               "es": "Lujo silencioso en clave de temporada",
               "en": "Quiet luxury, in a seasonal cut"
             },
-            "price": 36.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=quiet%20luxury"
+            "price": 439,
+            "currency": "MXN",
+            "priceUsd": 24.44,
+            "url": "https://mx.shein.com/pdsearch/quiet%20luxury/"
           }
         ],
         "mid": [
           {
-            "retailer": "COS",
+            "retailer": "Liverpool",
             "label": {
               "es": "Lujo silencioso",
               "en": "Quiet luxury"
             },
-            "price": 99.95,
-            "currency": "EUR",
-            "url": "https://www.cos.com/es-es/search?q=quiet%20luxury"
+            "price": 1479,
+            "currency": "MXN",
+            "priceUsd": 81.96,
+            "url": "https://www.liverpool.com.mx/tienda/?s=quiet%20luxury"
           },
           {
-            "retailer": "Massimo Dutti",
+            "retailer": "ASOS",
             "label": {
               "es": "Lujo silencioso en corte minimal",
               "en": "Quiet luxury, in a minimal cut"
             },
-            "price": 290.95,
-            "currency": "EUR",
-            "url": "https://www.massimodutti.com/es/search?searchTerm=quiet%20luxury"
+            "price": 120.95,
+            "currency": "USD",
+            "priceUsd": 121.25,
+            "url": "https://www.asos.com/us/search/?q=quiet%20luxury"
           }
         ],
         "invest": [
           {
-            "retailer": "Totême",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Lujo silencioso",
               "en": "Quiet luxury"
             },
-            "price": 820,
-            "currency": "EUR",
-            "url": "https://toteme-studio.com/search?q=quiet%20luxury"
+            "price": 570,
+            "currency": "USD",
+            "priceUsd": 574.93,
+            "url": "https://www.nordstrom.com/sr?keyword=quiet%20luxury"
           },
           {
-            "retailer": "Jil Sander",
+            "retailer": "Revolve",
             "label": {
               "es": "Lujo silencioso en clave de temporada",
               "en": "Quiet luxury, in a seasonal cut"
             },
             "price": 710,
-            "currency": "EUR",
-            "url": "https://www.jilsander.com/es/search?q=quiet%20luxury"
+            "currency": "USD",
+            "priceUsd": 713.25,
+            "url": "https://www.revolve.com/r/Search.jsp?search=quiet%20luxury"
           }
         ]
       }
@@ -25717,71 +26035,86 @@
         }
       ],
       "scoreYearAgo": 66.3,
+      "keywords": [
+        "bohemian",
+        "boho",
+        "boho chic",
+        "boho renovado",
+        "boho style",
+        "estilo boho",
+        "neo boho"
+      ],
       "shopping": {
         "budget": [
           {
-            "retailer": "H&M",
+            "retailer": "Zara México",
             "label": {
               "es": "Boho renovado",
               "en": "Neo-boho"
             },
-            "price": 58.95,
-            "currency": "EUR",
-            "url": "https://www2.hm.com/es_es/search-results.html?q=estilo%20boho"
+            "price": 579,
+            "currency": "MXN",
+            "priceUsd": 32.34,
+            "url": "https://www.zara.com/mx/es/search?searchTerm=estilo%20boho"
           },
           {
-            "retailer": "ASOS",
+            "retailer": "Amazon México",
             "label": {
               "es": "Boho renovado en pieza cápsula",
               "en": "Neo-boho, as a capsule piece"
             },
-            "price": 78.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=estilo%20boho"
+            "price": 869,
+            "currency": "MXN",
+            "priceUsd": 48.32,
+            "url": "https://www.amazon.com.mx/s?k=estilo%20boho"
           }
         ],
         "mid": [
           {
-            "retailer": "& Other Stories",
+            "retailer": "Revolve",
             "label": {
               "es": "Boho renovado",
               "en": "Neo-boho"
             },
-            "price": 158.95,
-            "currency": "EUR",
-            "url": "https://www.stories.com/es_eur/search.html?q=estilo%20boho"
+            "price": 117.95,
+            "currency": "USD",
+            "priceUsd": 118.27,
+            "url": "https://www.revolve.com/r/Search.jsp?search=boho%20style"
           },
           {
-            "retailer": "Arket",
+            "retailer": "ASOS",
             "label": {
               "es": "Boho renovado en clave de temporada",
               "en": "Neo-boho, in a seasonal cut"
             },
-            "price": 353.95,
-            "currency": "EUR",
-            "url": "https://www.arket.com/es/search.html?q=estilo%20boho"
+            "price": 187.95,
+            "currency": "USD",
+            "priceUsd": 187.68,
+            "url": "https://www.asos.com/us/search/?q=boho%20style"
           }
         ],
         "invest": [
           {
-            "retailer": "Loewe",
+            "retailer": "Revolve",
             "label": {
               "es": "Boho renovado",
               "en": "Neo-boho"
             },
-            "price": 1440,
-            "currency": "EUR",
-            "url": "https://www.loewe.com/es/es/search?q=estilo%20boho"
+            "price": 960,
+            "currency": "USD",
+            "priceUsd": 961.01,
+            "url": "https://www.revolve.com/r/Search.jsp?search=boho%20style"
           },
           {
-            "retailer": "Khaite",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Boho renovado en pieza cápsula",
               "en": "Neo-boho, as a capsule piece"
             },
-            "price": 1850,
-            "currency": "EUR",
-            "url": "https://khaite.com/search?q=estilo%20boho"
+            "price": 1430,
+            "currency": "USD",
+            "priceUsd": 1431.45,
+            "url": "https://www.nordstrom.com/sr?keyword=boho%20style"
           }
         ]
       }
@@ -26791,71 +27124,83 @@
         }
       ],
       "scoreYearAgo": 41.5,
+      "keywords": [
+        "corpcore",
+        "office siren",
+        "officecore",
+        "secretary chic"
+      ],
       "shopping": {
         "budget": [
+          {
+            "retailer": "Amazon México",
+            "label": {
+              "es": "Office siren",
+              "en": "Office siren"
+            },
+            "price": 549,
+            "currency": "MXN",
+            "priceUsd": 30.32,
+            "url": "https://www.amazon.com.mx/s?k=office%20siren"
+          },
+          {
+            "retailer": "Shein",
+            "label": {
+              "es": "Office siren en corte minimal",
+              "en": "Office siren, in a minimal cut"
+            },
+            "price": 689,
+            "currency": "MXN",
+            "priceUsd": 38.39,
+            "url": "https://mx.shein.com/pdsearch/office%20siren/"
+          }
+        ],
+        "mid": [
           {
             "retailer": "ASOS",
             "label": {
               "es": "Office siren",
               "en": "Office siren"
             },
-            "price": 54.95,
-            "currency": "EUR",
-            "url": "https://www.asos.com/es/search/?q=office%20siren"
+            "price": 179.95,
+            "currency": "USD",
+            "priceUsd": 180.31,
+            "url": "https://www.asos.com/us/search/?q=office%20siren"
           },
           {
-            "retailer": "Zara",
-            "label": {
-              "es": "Office siren en corte minimal",
-              "en": "Office siren, in a minimal cut"
-            },
-            "price": 35.95,
-            "currency": "EUR",
-            "url": "https://www.zara.com/es/es/search?searchTerm=office%20siren"
-          }
-        ],
-        "mid": [
-          {
-            "retailer": "Arket",
-            "label": {
-              "es": "Office siren",
-              "en": "Office siren"
-            },
-            "price": 258.95,
-            "currency": "EUR",
-            "url": "https://www.arket.com/es/search.html?q=office%20siren"
-          },
-          {
-            "retailer": "Sandro",
+            "retailer": "Revolve",
             "label": {
               "es": "Office siren en pieza cápsula",
               "en": "Office siren, as a capsule piece"
             },
-            "price": 134.95,
-            "currency": "EUR",
-            "url": "https://es.sandro-paris.com/search?q=office%20siren"
+            "price": 222.95,
+            "currency": "USD",
+            "priceUsd": 223.11,
+            "url": "https://www.revolve.com/r/Search.jsp?search=office%20siren"
           }
         ],
         "invest": [
           {
-            "retailer": "Khaite",
+            "retailer": "Nordstrom",
             "label": {
               "es": "Office siren",
               "en": "Office siren"
             },
-            "price": 460,
-            "currency": "EUR",
-            "url": "https://khaite.com/search?q=office%20siren"
+            "price": 340,
+            "currency": "USD",
+            "priceUsd": 344.55,
+            "url": "https://www.nordstrom.com/sr?keyword=office%20siren"
           },
           {
-            "retailer": "Loewe",
+            "retailer": "Revolve",
             "label": {
               "es": "Office siren en clave de temporada",
               "en": "Office siren, in a seasonal cut"
             },
-            "price": 1030,
-            "currency": "EUR",
-            "url": "https://www.loewe.com/es/es/search?q=office%20siren"
+            "price": 450,
+            "currency": "USD",
+            "priceUsd": 451.47,
+            "url": "https://www.revolve.com/r/Search.jsp?search=office%20siren"
           }
         ]
       }

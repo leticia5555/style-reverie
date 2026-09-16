@@ -1,0 +1,32 @@
+import { EditorialView } from "@/components/EditorialView";
+import { getEditorial, trendMentions } from "@/lib/editorial";
+import { getTrends } from "@/lib/trends";
+
+export const metadata = {
+  title: "Feed editorial — Style Reverie",
+};
+
+/**
+ * El caché en disco ya limita el refresco a una vez por hora; esto evita
+ * además que cada visita vuelva a leerlo y a re-renderizar.
+ */
+export const revalidate = 3600;
+
+export default async function EditorialPage() {
+  const cache = await getEditorial();
+  const trends = getTrends();
+  const names = new Map(trends.map((trend) => [trend.id, trend.name]));
+
+  const mentions = trendMentions(cache.articles).map((row) => ({
+    ...row,
+    name: names.get(row.trendId) ?? { es: row.trendId, en: row.trendId },
+  }));
+
+  return (
+    <EditorialView
+      cache={cache}
+      mentions={mentions}
+      names={[...names.entries()]}
+    />
+  );
+}
