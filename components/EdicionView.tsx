@@ -79,7 +79,8 @@ function Pick({
             <TrendPhoto
               image={image}
               name={summary.name}
-              trendId={summary.id}
+              category={summary.category}
+                        swatch={summary.swatch}
               sizes="(max-width: 1024px) 100vw, 55vw"
               priority={index === 0}
             />
@@ -159,7 +160,8 @@ export function EdicionView({
             <TrendPhoto
               image={coverImage}
               name={cover.summary.name}
-              trendId={cover.summary.id}
+              category={cover.summary.category}
+                        swatch={cover.summary.swatch}
               sizes="100vw"
               priority
             />

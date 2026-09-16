@@ -143,4 +143,10 @@ export type TrendSummary = {
   /** Fuentes que participan y tienen valor hoy; el denominador de sourceCount. */
   sourceTotal: number;
   spark: number[];
+  /**
+   * Hex del color, solo en las de categoría color. Viaja en el resumen porque
+   * el fondo de una tendencia sin foto es su propio color, y la tabla y la
+   * edición trabajan con resúmenes, no con la tendencia entera.
+   */
+  swatch?: string;
 };

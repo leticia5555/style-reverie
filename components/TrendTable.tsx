@@ -168,7 +168,8 @@ export function TrendTable({
                       <TrendPhoto
                         image={images[row.id] ?? null}
                         name={row.name}
-                        trendId={row.id}
+                        category={row.category}
+                        swatch={row.swatch}
                         sizes="40px"
                         compact
                       />
@@ -285,7 +286,8 @@ function TrendCard({
               <TrendPhoto
                 image={image}
                 name={row.name}
-                trendId={row.id}
+                category={row.category}
+                        swatch={row.swatch}
                 sizes="40px"
                 compact
               />

@@ -66,6 +66,7 @@ export function toSummary(trend: Trend): TrendSummary {
     sourceCount: activeSourceCount(today.signals),
     sourceTotal: availableSourceCount(today.signals),
     spark: sparkline(scoreSeries(trend.history)),
+    ...(trend.swatch ? { swatch: trend.swatch } : {}),
   };
 }
 

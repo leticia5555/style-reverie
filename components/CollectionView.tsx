@@ -59,7 +59,6 @@ export function CollectionView({
             <TrendPhoto
               image={images[coverId]}
               name={{ es: collection.house, en: collection.house }}
-              trendId={collection.slug}
               sizes="100vw"
               priority
             />
@@ -118,7 +117,6 @@ export function CollectionView({
                   <TrendPhoto
                     image={lookImageId ? images[lookImageId] : null}
                     name={look.title}
-                    trendId={`${collection.slug}-${look.number}`}
                     sizes="(max-width: 640px) 100vw, 35vw"
                   />
                 </div>

@@ -34,7 +34,6 @@ export function FashionWeekIndex({
               <TrendPhoto
                 image={images[lead.slug]}
                 name={{ es: lead.house, en: lead.house }}
-                trendId={lead.slug}
                 sizes="100vw"
                 priority
               />

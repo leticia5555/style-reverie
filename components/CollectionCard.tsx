@@ -58,7 +58,6 @@ export function CollectionCard({
             <TrendPhoto
               image={image}
               name={{ es: collection.house, en: collection.house }}
-              trendId={collection.slug}
               sizes={wide ? "100vw" : "(max-width: 640px) 100vw, 45vw"}
             />
           ) : (

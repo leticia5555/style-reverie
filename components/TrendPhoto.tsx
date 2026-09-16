@@ -23,50 +23,105 @@ import type { Localized } from "@/lib/types";
  * editorial, donde la foto tiene tamaño para sostenerlo.
  */
 
-/** Cinco pasteles de marca, repartidos por el id para que no bailen. */
-const TINTS = [
-  "bg-lavender-soft text-lavender-ink",
-  "bg-rose-soft text-rose-ink",
-  "bg-sage-soft text-sage-ink",
-  "bg-cream-soft text-cream-ink",
-  "bg-quiet-soft text-quiet-ink",
-];
+/**
+ * El fondo cuando no hay foto.
+ *
+ * Un rectángulo plano a tamaño grande se lee como un hueco: la página parece
+ * rota, no parece que falte una foto. Así que nunca es plano.
+ *
+ * - **Color**: su propio hex. Es la tendencia; no hay nada que sustituya mejor
+ *   a una foto de un color que el color.
+ * - **Lo demás**: un degradado suave derivado de la categoría, para que las
+ *   prendas no se confundan con los accesorios de un vistazo.
+ *
+ * Los degradados se escriben con los tokens de marca, no con hex sueltos.
+ */
+type Category =
+  | "prenda"
+  | "color"
+  | "textura"
+  | "silueta"
+  | "accesorio"
+  | "estilo";
 
-export function tintFor(id: string): string {
-  let hash = 0;
-  for (let i = 0; i < id.length; i += 1) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
-  return TINTS[hash % TINTS.length];
+const CATEGORY_GRADIENT: Record<Category, string> = {
+  prenda:
+    "linear-gradient(150deg, var(--color-lavender-soft) 0%, var(--color-rose-soft) 100%)",
+  color:
+    "linear-gradient(150deg, var(--color-rose-soft) 0%, var(--color-cream-soft) 100%)",
+  textura:
+    "linear-gradient(150deg, var(--color-cream-soft) 0%, var(--color-sage-soft) 100%)",
+  silueta:
+    "linear-gradient(150deg, var(--color-quiet-soft) 0%, var(--color-lavender-soft) 100%)",
+  accesorio:
+    "linear-gradient(150deg, var(--color-sage-soft) 0%, var(--color-quiet-soft) 100%)",
+  estilo:
+    "linear-gradient(150deg, var(--color-lavender-soft) 0%, var(--color-cream-soft) 100%)",
+};
+
+/**
+ * ¿El texto va oscuro o claro encima? Se mide la luminancia del color, que es
+ * lo único que decide si algo se lee: un burdeos y un amarillo pueden tener el
+ * mismo "peso" a ojo y necesitar tinta opuesta.
+ */
+function isDark(hex: string): boolean {
+  const clean = hex.replace("#", "");
+  if (clean.length !== 6) return false;
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(clean.slice(i, i + 2), 16));
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.6;
 }
 
 export function TrendPhoto({
   image,
   name,
-  trendId,
   sizes,
   priority = false,
   /** Tamaño del nombre en el placeholder; la tira del terminal es diminuta. */
   compact = false,
   className = "",
+  category = "prenda",
+  swatch,
 }: {
   image: TrendImage | null;
   name: Localized;
-  trendId: string;
   sizes: string;
   priority?: boolean;
   compact?: boolean;
   className?: string;
+  category?: Category;
+  /** Hex de la tendencia, solo en las de categoría color. */
+  swatch?: string;
 }) {
   const { lang } = useI18n();
 
   if (!image) {
+    // Una tendencia de color se pinta de su color; el resto, del degradado.
+    const useSwatch = category === "color" && Boolean(swatch);
+    const background = useSwatch
+      ? swatch
+      : CATEGORY_GRADIENT[category] ?? CATEGORY_GRADIENT.prenda;
+    const dark = useSwatch && isDark(swatch as string);
+
     return (
       <div
-        className={`flex h-full w-full items-center justify-center overflow-hidden ${tintFor(trendId)} ${className}`}
+        className={`flex h-full w-full items-center justify-center overflow-hidden ${className}`}
+        style={{
+          ...(useSwatch ? { background } : { backgroundImage: background }),
+          // El nombre se mide contra el ancho de SU caja, no de la ventana:
+          // el mismo componente se usa en una miniatura de 160px y en una
+          // portada a sangre, y un tamaño fijo desbordaba la pequeña.
+          containerType: "inline-size",
+        }}
       >
         <span
-          className={`px-3 text-center font-serif leading-tight ${
-            compact ? "text-[10px]" : "text-base sm:text-lg"
+          className={`px-[6%] text-center font-serif leading-[1.05] hyphens-auto ${
+            dark ? "text-white" : "text-ink"
           }`}
+          style={
+            compact
+              ? { fontSize: "10px" }
+              : { fontSize: "clamp(0.85rem, 13cqw, 3.5rem)" }
+          }
         >
           {name[lang]}
         </span>

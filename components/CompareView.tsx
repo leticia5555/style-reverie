@@ -38,7 +38,8 @@ function SideCard({
           <TrendPhoto
             image={image}
             name={summary.name}
-            trendId={summary.id}
+            category={summary.category}
+                        swatch={summary.swatch}
             sizes="40px"
             compact
           />

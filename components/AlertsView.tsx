@@ -34,7 +34,8 @@ function AlertCard({
               <TrendPhoto
                 image={image}
                 name={alert.name}
-                trendId={alert.id}
+                category={alert.category}
+                        swatch={alert.swatch}
                 sizes="40px"
                 compact
               />

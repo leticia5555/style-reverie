@@ -53,7 +53,6 @@ export function OcasionView({
             <TrendPhoto
               image={images[lead.summary.id]}
               name={ocasion.name}
-              trendId={ocasion.slug}
               sizes="100vw"
               priority
             />
@@ -100,7 +99,8 @@ export function OcasionView({
                     <TrendPhoto
                       image={images[summary.id] ?? null}
                       name={summary.name}
-                      trendId={summary.id}
+                      category={summary.category}
+                        swatch={summary.swatch}
                       sizes="(max-width: 640px) 100vw, 35vw"
                     />
                   </div>

@@ -29,7 +29,6 @@ export function OcasionesIndex({
             <TrendPhoto
               image={images[lead.slug] ?? null}
               name={lead.name}
-              trendId={lead.slug}
               sizes="100vw"
               priority
             />
@@ -69,7 +68,6 @@ export function OcasionesIndex({
                   <TrendPhoto
                     image={images[ocasion.slug] ?? null}
                     name={ocasion.name}
-                    trendId={ocasion.slug}
                     sizes={wide ? "100vw" : "(max-width: 640px) 100vw, 45vw"}
                   />
                 </div>
