@@ -89,6 +89,14 @@ Tres reglas, y la primera no es negociable.
   las seis señales de arriba; es una decisión de producto que hay que tomar
   explícitamente, decidiendo los pesos nuevos y regenerando el test de oro.
 
+### Rutas de operación
+
+`/api/cron/daily` y `/api/admin/setup` se autorizan con `CRON_SECRET` vía
+`lib/auth.ts`, por cabecera `Bearer` o por `?secret=` en la URL. El parámetro
+en la URL existe para poder operar desde un navegador sin herramientas, pero
+queda en el historial y en los logs: conviene rotar el secreto después de
+usarlo así. Ambas rutas son idempotentes y no destruyen nada.
+
 ### Nunca en el request del usuario
 
 - **Ninguna fuente externa se llama durante un request.** Siempre se sirve
@@ -120,8 +128,15 @@ sí son seguros: se borran en compilación.
 
 ## Base de datos
 
-- Neon Postgres. `lib/db/schema.sql` es el esquema; `npm run db:migrate` lo
-  aplica y `npm run db:seed` carga el catálogo con origen `mock`.
+- Neon Postgres. `lib/db/schema.sql` es el esquema.
+- **No hace falta terminal.** `ensureDatabase()` aplica el esquema y siembra
+  solo si `trends` está vacía. Lo llaman dos sitios:
+  - `GET /api/admin/setup?secret=$CRON_SECRET` — a mano, desde un navegador.
+  - El cron diario, antes de correr las fuentes: un cambio de esquema futuro
+    entra solo con la siguiente corrida.
+- **El seed nunca pisa datos reales**: si `trends` tiene filas, no se siembra.
+- `npm run db:migrate` y `npm run db:seed` siguen existiendo para quien sí
+  tenga terminal.
 - **Los valores van en `numeric`, nunca en `real`.** float4 no representa 36.8
   exactamente y el round-trip movería los scores en el último decimal. El
   driver devuelve `numeric` como string: hay que parsearlo.

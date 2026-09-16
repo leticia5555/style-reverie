@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { authorizeOps } from "@/lib/auth";
 import { runDaily } from "@/lib/cron";
 import { googleTrendsConnector } from "@/lib/sources/google-trends";
 import { mercadoLibreConnector } from "@/lib/sources/mercadolibre";
@@ -15,17 +16,9 @@ export const maxDuration = 300;
  * incluidas las fuentes que ya escribieron bien.
  */
 export async function GET(request: Request) {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    return NextResponse.json(
-      { error: "CRON_SECRET no está configurado" },
-      { status: 503 },
-    );
-  }
-
-  const header = request.headers.get("authorization");
-  if (header !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "no autorizado" }, { status: 401 });
+  const auth = authorizeOps(request);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
   const outcome = await runDaily([

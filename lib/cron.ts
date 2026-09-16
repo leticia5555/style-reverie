@@ -1,7 +1,8 @@
 import { getDb } from "@/lib/db/client";
 import { finishRun, startRun, writeReadings } from "@/lib/db/runs";
+import { ensureDatabase } from "@/lib/db/setup";
 import type { Connector } from "@/lib/sources/types";
-import { getCatalog } from "@/lib/trends";
+import { getCatalog, getTrends, resetCatalogCache } from "@/lib/trends";
 
 export type SourceOutcome = {
   source: string;
@@ -15,6 +16,8 @@ export type CronOutcome = {
   ran: SourceOutcome[];
   /** true si alguna fuente falló; el cron sigue devolviendo 200. */
   hadErrors: boolean;
+  /** Qué hizo la puesta a punto del esquema antes de correr las fuentes. */
+  setup?: { schemaApplied: boolean; seeded: boolean; error?: string };
 };
 
 /**
@@ -39,6 +42,24 @@ export async function runDaily(
         detail: "sin DATABASE_URL",
       })),
       hadErrors: false,
+    };
+  }
+
+  /**
+   * El esquema se aplica en cada corrida. Es idempotente y cuesta unos
+   * milisegundos, y a cambio un cambio de esquema futuro entra solo con el
+   * siguiente cron en vez de requerir una terminal.
+   */
+  let setup: CronOutcome["setup"];
+  try {
+    const report = await ensureDatabase(db, getTrends());
+    setup = { schemaApplied: report.schemaApplied, seeded: report.seeded };
+    if (report.seeded) resetCatalogCache();
+  } catch (error) {
+    setup = {
+      schemaApplied: false,
+      seeded: false,
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 
@@ -76,5 +97,10 @@ export async function runDaily(
     }
   }
 
-  return { date, ran, hadErrors: ran.some((row) => row.status === "error") };
+  return {
+    date,
+    ran,
+    hadErrors: ran.some((row) => row.status === "error"),
+    setup,
+  };
 }
