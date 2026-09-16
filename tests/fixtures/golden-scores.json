@@ -1,0 +1,202 @@
+[
+  {
+    "id": "cintura-caida",
+    "score": 90,
+    "lifecycle": "PICO",
+    "momentum7d": -0.1,
+    "yoyPct": 21.3,
+    "sourceCount": 6
+  },
+  {
+    "id": "boho-renovado",
+    "score": 88.5,
+    "lifecycle": "PICO",
+    "momentum7d": 1,
+    "yoyPct": 33.5,
+    "sourceCount": 6
+  },
+  {
+    "id": "pantalon-barril",
+    "score": 86,
+    "lifecycle": "PICO",
+    "momentum7d": -0.7,
+    "yoyPct": 36.3,
+    "sourceCount": 6
+  },
+  {
+    "id": "bolso-hobo-suave",
+    "score": 85.2,
+    "lifecycle": "PICO",
+    "momentum7d": 0.7,
+    "yoyPct": 32.9,
+    "sourceCount": 6
+  },
+  {
+    "id": "burdeos-profundo",
+    "score": 82.9,
+    "lifecycle": "PICO",
+    "momentum7d": -0.1,
+    "yoyPct": 20.8,
+    "sourceCount": 6
+  },
+  {
+    "id": "ante-cepillado",
+    "score": 82.7,
+    "lifecycle": "PICO",
+    "momentum7d": 1,
+    "yoyPct": 42.8,
+    "sourceCount": 6
+  },
+  {
+    "id": "gafas-cat-eye",
+    "score": 77.5,
+    "lifecycle": "SUBIENDO",
+    "momentum7d": 2.3,
+    "yoyPct": 80.7,
+    "sourceCount": 6
+  },
+  {
+    "id": "office-siren",
+    "score": 77.3,
+    "lifecycle": "SUBIENDO",
+    "momentum7d": 1.7,
+    "yoyPct": 86.3,
+    "sourceCount": 6
+  },
+  {
+    "id": "chaleco-sastre-largo",
+    "score": 75.5,
+    "lifecycle": "SUBIENDO",
+    "momentum7d": 3.1,
+    "yoyPct": 84.1,
+    "sourceCount": 6
+  },
+  {
+    "id": "hombro-estructurado",
+    "score": 75.2,
+    "lifecycle": "SUBIENDO",
+    "momentum7d": 1.5,
+    "yoyPct": 70.5,
+    "sourceCount": 6
+  },
+  {
+    "id": "verde-matcha",
+    "score": 70,
+    "lifecycle": "SUBIENDO",
+    "momentum7d": 2.1,
+    "yoyPct": 123.6,
+    "sourceCount": 6
+  },
+  {
+    "id": "marron-cacao",
+    "score": 69,
+    "lifecycle": "SUBIENDO",
+    "momentum7d": 0.4,
+    "yoyPct": 67.9,
+    "sourceCount": 6
+  },
+  {
+    "id": "borreguito-rizado",
+    "score": 68.2,
+    "lifecycle": "SUBIENDO",
+    "momentum7d": 1.3,
+    "yoyPct": 68.4,
+    "sourceCount": 6
+  },
+  {
+    "id": "crochet-fino",
+    "score": 67,
+    "lifecycle": "SUBIENDO",
+    "momentum7d": 0.8,
+    "yoyPct": 97.6,
+    "sourceCount": 6
+  },
+  {
+    "id": "abrigo-capa",
+    "score": 65.4,
+    "lifecycle": "SUBIENDO",
+    "momentum7d": 0.2,
+    "yoyPct": 99.4,
+    "sourceCount": 6
+  },
+  {
+    "id": "mary-jane-planas",
+    "score": 59.4,
+    "lifecycle": "CAYENDO",
+    "momentum7d": -1.9,
+    "yoyPct": -16.5,
+    "sourceCount": 6
+  },
+  {
+    "id": "lujo-silencioso",
+    "score": 59.2,
+    "lifecycle": "CAYENDO",
+    "momentum7d": -1.8,
+    "yoyPct": -26.8,
+    "sourceCount": 6
+  },
+  {
+    "id": "oversize-relajado",
+    "score": 55.2,
+    "lifecycle": "CAYENDO",
+    "momentum7d": -2.7,
+    "yoyPct": -25.3,
+    "sourceCount": 6
+  },
+  {
+    "id": "lentejuela-mate",
+    "score": 52.8,
+    "lifecycle": "EMERGIENDO",
+    "momentum7d": 3.2,
+    "yoyPct": 152.6,
+    "sourceCount": 6
+  },
+  {
+    "id": "bermuda-sastre",
+    "score": 50.5,
+    "lifecycle": "CAYENDO",
+    "momentum7d": -2.3,
+    "yoyPct": -15.4,
+    "sourceCount": 5
+  },
+  {
+    "id": "amarillo-mantequilla",
+    "score": 49.4,
+    "lifecycle": "CAYENDO",
+    "momentum7d": -4,
+    "yoyPct": -32.4,
+    "sourceCount": 5
+  },
+  {
+    "id": "linea-columna",
+    "score": 48.9,
+    "lifecycle": "EMERGIENDO",
+    "momentum7d": 2.1,
+    "yoyPct": 150.8,
+    "sourceCount": 5
+  },
+  {
+    "id": "falda-cargo",
+    "score": 46.2,
+    "lifecycle": "EMERGIENDO",
+    "momentum7d": 3.8,
+    "yoyPct": 198.1,
+    "sourceCount": 3
+  },
+  {
+    "id": "cinturon-obi",
+    "score": 43.5,
+    "lifecycle": "EMERGIENDO",
+    "momentum7d": 2.7,
+    "yoyPct": 265.5,
+    "sourceCount": 2
+  },
+  {
+    "id": "azul-polvo",
+    "score": 42.1,
+    "lifecycle": "EMERGIENDO",
+    "momentum7d": 2.5,
+    "yoyPct": 256.8,
+    "sourceCount": 1
+  }
+]

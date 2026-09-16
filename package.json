@@ -8,9 +8,12 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx scripts/generate-seed.ts",
-    "editorial": "tsx scripts/fetch-editorial.ts"
+    "editorial": "tsx scripts/fetch-editorial.ts",
+    "test": "tsx --test tests/**/*.test.ts",
+    "golden": "tsx scripts/write-golden.ts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -18,6 +21,7 @@
     "rss-parser": "^3.13.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
