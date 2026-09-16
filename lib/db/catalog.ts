@@ -1,5 +1,12 @@
 import type { Db } from "@/lib/db/client";
-import { SOURCES, type SignalPoint, type SourceKey, type Trend } from "@/lib/types";
+import {
+  MIN_REAL_DAYS,
+  SOURCES,
+  type AccumulatingTrend,
+  type SignalPoint,
+  type SourceKey,
+  type Trend,
+} from "@/lib/types";
 
 /**
  * Lectura y escritura del catálogo en Postgres.
@@ -24,6 +31,7 @@ type TrendRow = {
   keywords: string[];
   swatch: string | null;
   shopping: Trend["shopping"];
+  promoted_at: string | Date | null;
 };
 
 type SignalRow = {
@@ -42,6 +50,15 @@ export type OriginByDate = Map<string, "mock" | "real">;
 
 export type DbCatalog = {
   trends: Trend[];
+  /**
+   * Promovidas que todavía no llegan a MIN_REAL_DAYS días de señal real.
+   *
+   * Van aparte y NO dentro de `trends` a propósito: todo lo que consume
+   * `trends` deriva score, ciclo de vida y momentum sin preguntar, y sobre
+   * tres días eso daría un número indistinguible de uno de noventa. Cuando
+   * junta los catorce días entra sola en `trends` y recibe todo.
+   */
+  accumulating: AccumulatingTrend[];
   /** trendId → (fecha → origen). Lo consume la UI para atenuar lo mock. */
   origins: Map<string, OriginByDate>;
 };
@@ -49,7 +66,7 @@ export type DbCatalog = {
 export async function loadCatalogFromDb(db: Db): Promise<DbCatalog | null> {
   const trendRows = await db.query<TrendRow>(
     `select id, name_es, name_en, category, season, summary_es, summary_en,
-            score_year_ago, keywords, swatch, shopping
+            score_year_ago, keywords, swatch, shopping, promoted_at
        from trends
       order by id`,
   );
@@ -60,7 +77,10 @@ export async function loadCatalogFromDb(db: Db): Promise<DbCatalog | null> {
        from signals
       order by trend_id, date`,
   );
-  if (!signalRows.length) return null;
+  // Una base recién promovida puede no tener ni una señal todavía: eso no la
+  // deja sin catálogo, solo sin tendencias derivables.
+  const soloPromovidas = trendRows.every((row) => row.promoted_at);
+  if (!signalRows.length && !soloPromovidas) return null;
 
   // Agrupa las señales por tendencia y día; cada día trae sus seis fuentes.
   const byTrend = new Map<string, Map<string, SignalPoint>>();
@@ -94,7 +114,43 @@ export async function loadCatalogFromDb(db: Db): Promise<DbCatalog | null> {
   }
 
   const trends: Trend[] = [];
+  const accumulating: AccumulatingTrend[] = [];
+
+  /** Días con al menos una señal real, que es lo que cuenta para graduarse. */
+  const realDaysOf = (trendId: string): number => {
+    const dayOrigins = origins.get(trendId);
+    if (!dayOrigins) return 0;
+    return [...dayOrigins.values()].filter((origin) => origin === "real").length;
+  };
+
+  const sourcesOf = (trendId: string): SourceKey[] => {
+    const days = byTrend.get(trendId);
+    if (!days) return [];
+    const seen = new Set<SourceKey>();
+    for (const point of days.values()) {
+      for (const key of Object.keys(point.signals)) seen.add(key as SourceKey);
+    }
+    return SOURCES.filter((source) => seen.has(source));
+  };
+
   for (const row of trendRows) {
+    // Promovida y todavía sin los catorce días de señal real: va aparte, con
+    // o sin señales. Que no tenga ninguna es el caso del primer día.
+    if (row.promoted_at && realDaysOf(row.id) < MIN_REAL_DAYS) {
+      accumulating.push({
+        id: row.id,
+        name: { es: row.name_es, en: row.name_en },
+        category: row.category as Trend["category"],
+        season: row.season as Trend["season"],
+        summary: { es: row.summary_es, en: row.summary_en },
+        keywords: row.keywords ?? [],
+        promotedAt: isoDate(row.promoted_at as string | Date),
+        realDays: realDaysOf(row.id),
+        sources: sourcesOf(row.id),
+      });
+      continue;
+    }
+
     const days = byTrend.get(row.id);
     if (!days) continue;
 
@@ -124,7 +180,11 @@ export async function loadCatalogFromDb(db: Db): Promise<DbCatalog | null> {
     });
   }
 
-  return trends.length ? { trends, origins } : null;
+  // Con solo promovidas no hay tabla que enseñar, pero sí hay catálogo: la
+  // sección de "nuevas" tiene que poder salir desde el primer día.
+  return trends.length || accumulating.length
+    ? { trends, accumulating, origins }
+    : null;
 }
 
 /**

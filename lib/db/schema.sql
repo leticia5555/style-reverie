@@ -21,8 +21,14 @@ create table if not exists trends (
   -- Hex del color; solo en las tendencias de categoría color.
   swatch          text,
   shopping        jsonb not null default '{}'::jsonb,
+  -- Se pone al promover una candidata desde /alerts. Null = venía del seed o
+  -- se catalogó a mano. Marca las que todavía no tienen histórico propio.
+  promoted_at     timestamptz,
   updated_at      timestamptz not null default now()
 );
+
+-- Para las bases anteriores a la promoción de candidatas.
+alter table trends add column if not exists promoted_at timestamptz;
 
 -- Una fila por tendencia, fuente y día. El origen viaja con el dato: la UI
 -- nunca mezcla mock y real en una serie sin marcar dónde está el corte.
@@ -80,9 +86,15 @@ create table if not exists trend_candidates (
   outlets       text[] not null default '{}',
   -- Titulares que la respaldan, los más recientes primero.
   evidence      jsonb not null default '[]'::jsonb,
-  -- Se marca al promover al catálogo; por ahora nunca se pone.
-  promoted_at   timestamptz
+  -- Se marca al promover al catálogo.
+  promoted_at   timestamptz,
+  -- Se marca al descartarla a mano: no vuelve a aparecer en /alerts, pero la
+  -- fila se queda para que el descubrimiento no la vuelva a proponer como
+  -- novedad cada semana.
+  discarded_at  timestamptz
 );
+
+alter table trend_candidates add column if not exists discarded_at timestamptz;
 
 -- Para las bases que se crearon antes de que outlets existiera.
 alter table trend_candidates

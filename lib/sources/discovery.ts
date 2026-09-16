@@ -616,7 +616,8 @@ export async function listCandidates(
     `select slug, name_es, category, mentions, outlets, first_seen, last_seen,
             evidence
        from trend_candidates
-      where promoted_at is null
+      -- Ni las promovidas ni las descartadas a mano: las dos ya se juzgaron.
+      where promoted_at is null and discarded_at is null
       -- Medios distintos primero: cinco candidatas sacadas del mismo listicle
       -- no valen lo que una que citan cinco redacciones.
       order by cardinality(outlets) desc, mentions desc, last_seen desc

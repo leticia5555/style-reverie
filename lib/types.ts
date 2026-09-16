@@ -39,7 +39,37 @@ export type ShopTier = (typeof SHOP_TIERS)[number];
 export const CURRENCIES = ["MXN", "USD"] as const;
 export type Currency = (typeof CURRENCIES)[number];
 
-export type Season = "SS26" | "FW26";
+export type Season = `SS${string}` | `FW${string}`;
+
+/**
+ * Días de señal REAL que necesita una tendencia promovida antes de recibir
+ * score, ciclo de vida, momentum y predicción.
+ *
+ * Dos semanas es el mínimo para que el momentum de 7 días tenga con qué
+ * compararse. Antes de eso la tendencia existe y se consulta, pero sale en su
+ * propia sección de /trending: un número derivado de tres días tiene la misma
+ * pinta que uno derivado de noventa, y esa confusión no puede existir aquí.
+ */
+export const MIN_REAL_DAYS = 14;
+
+/**
+ * Una tendencia promovida que todavía no llega a MIN_REAL_DAYS. No tiene
+ * ninguno de los campos derivados porque todavía no se pueden derivar.
+ */
+export type AccumulatingTrend = {
+  id: string;
+  name: Localized;
+  category: Category;
+  season: Season;
+  summary: Localized;
+  keywords: string[];
+  /** Día en que se promovió, ISO corto. */
+  promotedAt: string;
+  /** Días con al menos una señal real. */
+  realDays: number;
+  /** Fuentes que ya le respondieron alguna vez. */
+  sources: SourceKey[];
+};
 
 export type Localized = { es: string; en: string };
 

@@ -11,7 +11,12 @@ import {
   yoyChange,
   type SourceBreakdownRow,
 } from "@/lib/scoring";
-import type { Trend, TrendSeed, TrendSummary } from "@/lib/types";
+import type {
+  AccumulatingTrend,
+  Trend,
+  TrendSeed,
+  TrendSummary,
+} from "@/lib/types";
 
 const data = seed as unknown as TrendSeed;
 
@@ -264,6 +269,8 @@ import { loadCatalogFromDb, type OriginByDate } from "@/lib/db/catalog";
 
 export type Catalog = {
   trends: Trend[];
+  /** Promovidas sin los 14 días de señal real; ver DbCatalog. */
+  accumulating: AccumulatingTrend[];
   /** trendId → (fecha → origen). Vacío cuando se sirve el seed. */
   origins: Map<string, OriginByDate>;
   source: "db" | "seed";
@@ -301,6 +308,8 @@ export async function getCatalog(): Promise<Catalog> {
 
   cachedCatalog = {
     trends: data.trends,
+    // El seed no promueve nada: sin base, no hay tendencias acumulando.
+    accumulating: [],
     origins: new Map(),
     source: "seed",
   };
