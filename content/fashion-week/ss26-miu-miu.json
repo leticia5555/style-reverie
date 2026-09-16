@@ -1,0 +1,85 @@
+{
+  "house": "Miu Miu",
+  "season": "SS26",
+  "city": "París",
+  "showDate": "2026-03-10",
+  "designer": "Miuccia Prada",
+  "headline": { "es": "La oficina como disfraz", "en": "The office as costume" },
+  "summary": {
+    "es": "La colección que puso nombre al office siren y lo llevó al absurdo: gafas de pasta, falda lápiz y cárdigan abotonado mal a propósito. Seis meses después es el estilo con más momentum del catálogo.",
+    "en": "The collection that named office siren and pushed it to absurdity: heavy-framed glasses, pencil skirt, cardigan deliberately misbuttoned. Six months on it is the highest-momentum style in the catalog."
+  },
+  "looks": [
+    {
+      "number": 7,
+      "title": { "es": "Cárdigan mal abotonado", "en": "The misbuttoned cardigan" },
+      "description": {
+        "es": "Punto fino color mantequilla cerrado con un botón de desfase, sobre falda lápiz gris. El error es el diseño.",
+        "en": "Butter-colored fine knit closed one button off, over a grey pencil skirt. The mistake is the design."
+      },
+      "trendIds": ["office-siren", "amarillo-mantequilla"]
+    },
+    {
+      "number": 19,
+      "title": { "es": "Gafas antes que ropa", "en": "Glasses before clothes" },
+      "description": {
+        "es": "Cat eye de pasta gruesa en catorce de los cuarenta looks. Se vendieron antes de que la colección llegara a tienda.",
+        "en": "Heavy-framed cat-eye in fourteen of forty looks. They sold out before the collection hit stores."
+      },
+      "trendIds": ["gafas-cat-eye"]
+    },
+    {
+      "number": 28,
+      "title": { "es": "Cintura donde no va", "en": "Waist in the wrong place" },
+      "description": {
+        "es": "Falda de tiro bajísimo con camisa metida por dentro, el talle cayendo sobre la cadera. La silueta que arrastró toda la temporada.",
+        "en": "An ultra-low-rise skirt with the shirt tucked in, the waistline dropping onto the hip. The silhouette that pulled the whole season."
+      },
+      "trendIds": ["cintura-caida", "mary-jane-planas"]
+    }
+  ],
+  "palette": [
+    { "name": { "es": "Amarillo mantequilla", "en": "Butter yellow" }, "hex": "#F2E2A9", "note": { "es": "El color de la colección; hoy ya está cayendo.", "en": "The collection's color; already falling today." } },
+    { "name": { "es": "Gris oficina", "en": "Office grey" }, "hex": "#8C8A88" },
+    { "name": { "es": "Marrón cacao", "en": "Cocoa brown" }, "hex": "#6B4A35" },
+    { "name": { "es": "Burdeos", "en": "Burgundy" }, "hex": "#6E2438" }
+  ],
+  "shopping": [
+    {
+      "tier": "budget",
+      "retailer": "Shein",
+      "label": { "es": "Gafas cat eye de pasta", "en": "Heavy-frame cat-eye sunglasses" },
+      "price": 199,
+      "currency": "MXN",
+      "url": "https://mx.shein.com/pdsearch/gafas%20cat%20eye/",
+      "rationale": {
+        "es": "La única pieza de esta colección donde el precio no cambia el resultado: es forma, no material.",
+        "en": "The one piece here where price does not change the outcome: it is shape, not material."
+      }
+    },
+    {
+      "tier": "mid",
+      "retailer": "Liverpool",
+      "label": { "es": "Cárdigan de punto fino en mantequilla", "en": "Butter fine-knit cardigan" },
+      "price": 2499,
+      "currency": "MXN",
+      "url": "https://www.liverpool.com.mx/tienda/?s=cardigan%20punto%20fino",
+      "rationale": {
+        "es": "Con el amarillo mantequilla cayendo, esta es la última temporada para comprarlo a precio normal y no de archivo.",
+        "en": "With butter yellow falling, this is the last season to buy it at normal price rather than archive price."
+      }
+    },
+    {
+      "tier": "invest",
+      "retailer": "Revolve",
+      "label": { "es": "Mary Jane planas en piel", "en": "Flat Mary Janes in leather" },
+      "price": 395,
+      "currency": "USD",
+      "url": "https://www.revolve.com/r/Search.jsp?search=mary%20jane%20flats",
+      "rationale": {
+        "es": "Las Mary Jane ya están cayendo en el catálogo, pero en piel buena duran más que el ciclo. Es la excepción a comprar en bajada.",
+        "en": "Mary Janes are already falling in the catalog, but in good leather they outlast the cycle. The exception to buying on the way down."
+      }
+    }
+  ]
+}

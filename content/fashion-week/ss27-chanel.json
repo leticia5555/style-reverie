@@ -1,0 +1,98 @@
+{
+  "house": "Chanel",
+  "season": "SS27",
+  "city": "París",
+  "showDate": "2026-10-06",
+  "designer": "Matthieu Blazy",
+  "headline": {
+    "es": "El tweed se afloja",
+    "en": "Tweed loosens up"
+  },
+  "summary": {
+    "es": "Segunda colección de Blazy para la casa y la primera en la que suelta el tweed de su estructura: hombro caído, chaqueta sin forro y falda que cae sola. La casa deja de citarse a sí misma y empieza a vestir un cuerpo que se mueve.",
+    "en": "Blazy's second collection for the house, and the first where he lets tweed out of its structure: dropped shoulder, unlined jacket, a skirt that falls on its own. The house stops quoting itself and starts dressing a body that moves."
+  },
+  "looks": [
+    {
+      "number": 4,
+      "title": { "es": "Chaqueta sin forro sobre nada", "en": "Unlined jacket over nothing" },
+      "description": {
+        "es": "Tweed crudo deshilachado en el borde, sin botones, cerrada con un cinturón ancho anudado a la cadera. Debajo, piel.",
+        "en": "Raw tweed frayed at the edge, no buttons, closed with a wide belt knotted at the hip. Underneath, skin."
+      },
+      "trendIds": ["cinturon-obi", "oversize-relajado"]
+    },
+    {
+      "number": 17,
+      "title": { "es": "Columna de punto matcha", "en": "Matcha knit column" },
+      "description": {
+        "es": "Vestido tubo de punto fino en verde apagado, largo hasta el tobillo, sin costuras visibles. El color que más se repitió en la pasarela.",
+        "en": "Fine-knit column dress in muted green, ankle length, no visible seams. The color that repeated most on the runway."
+      },
+      "trendIds": ["verde-matcha", "linea-columna"]
+    },
+    {
+      "number": 31,
+      "title": { "es": "Chaleco largo y nada más", "en": "Long waistcoat, nothing else" },
+      "description": {
+        "es": "Chaleco de sastre hasta la rodilla en lana fría gris, abierto, con sandalia plana. La silueta que se va a copiar primero.",
+        "en": "Knee-length tailored waistcoat in grey tropical wool, open, with a flat sandal. The silhouette that gets copied first."
+      },
+      "trendIds": ["chaleco-sastre-largo"]
+    },
+    {
+      "number": 42,
+      "title": { "es": "Cierre en crochet", "en": "Crochet finale" },
+      "description": {
+        "es": "Dos piezas de crochet fino hechas a mano en hilo de algodón crudo, con transparencia calculada. Catorce semanas de taller por pieza.",
+        "en": "Two hand-worked fine-crochet pieces in raw cotton yarn, with calculated sheerness. Fourteen atelier weeks each."
+      },
+      "trendIds": ["crochet-fino"]
+    }
+  ],
+  "palette": [
+    { "name": { "es": "Crudo tweed", "en": "Raw tweed" }, "hex": "#E8E1D4", "note": { "es": "Base de dieciocho de los cincuenta looks.", "en": "Base of eighteen of the fifty looks." } },
+    { "name": { "es": "Verde matcha", "en": "Matcha green" }, "hex": "#A7B89A" },
+    { "name": { "es": "Gris perla", "en": "Pearl grey" }, "hex": "#C9C6C1" },
+    { "name": { "es": "Negro suavizado", "en": "Softened black" }, "hex": "#2B2A2E" },
+    { "name": { "es": "Rosa polvo", "en": "Dusty rose" }, "hex": "#D8B8B4", "note": { "es": "Solo en los tres últimos looks.", "en": "Only in the final three looks." } }
+  ],
+  "shopping": [
+    {
+      "tier": "budget",
+      "retailer": "Zara México",
+      "label": { "es": "Chaleco largo de sastre en lana fría", "en": "Longline tailored waistcoat in tropical wool" },
+      "price": 1299,
+      "currency": "MXN",
+      "url": "https://www.zara.com/mx/es/search?searchTerm=chaleco%20sastre%20largo",
+      "rationale": {
+        "es": "La versión directa del look 31. Busca el largo por debajo de la rodilla, que es lo que hace la silueta.",
+        "en": "The direct read of look 31. Look for the below-knee length, which is what makes the silhouette."
+      }
+    },
+    {
+      "tier": "mid",
+      "retailer": "ASOS",
+      "label": { "es": "Vestido columna de punto fino", "en": "Fine-knit column dress" },
+      "price": 148.95,
+      "currency": "USD",
+      "url": "https://www.asos.com/us/search/?q=fine%20knit%20column%20dress",
+      "rationale": {
+        "es": "El look 17 depende del peso del punto, no del precio. Uno de punto fino que no marque de más hace el mismo trabajo.",
+        "en": "Look 17 depends on the weight of the knit, not the price. A fine gauge that does not cling does the same job."
+      }
+    },
+    {
+      "tier": "invest",
+      "retailer": "Nordstrom",
+      "label": { "es": "Cinturón obi ancho en piel", "en": "Wide obi belt in leather" },
+      "price": 420,
+      "currency": "USD",
+      "url": "https://www.nordstrom.com/sr?keyword=wide%20obi%20belt",
+      "rationale": {
+        "es": "La pieza que sobrevive a la temporada. El cinturón del look 4 es lo que convierte cualquier chaqueta abierta en un look de pasarela.",
+        "en": "The piece that outlives the season. The belt from look 4 is what turns any open jacket into a runway look."
+      }
+    }
+  ]
+}

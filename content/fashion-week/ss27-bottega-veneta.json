@@ -1,0 +1,85 @@
+{
+  "house": "Bottega Veneta",
+  "season": "SS27",
+  "city": "Milán",
+  "showDate": "2026-09-26",
+  "designer": "Louise Trotter",
+  "headline": { "es": "Cuero que se comporta como tela", "en": "Leather behaving like cloth" },
+  "summary": {
+    "es": "Trotter no toca el intrecciato y en cambio trabaja el ante hasta que cae como lino. Una colección de treinta y ocho salidas donde casi no hay estructura: el volumen viene del material, no del patrón.",
+    "en": "Trotter leaves the intrecciato alone and instead works suede until it falls like linen. Thirty-eight exits with almost no structure: the volume comes from the material, not the pattern."
+  },
+  "looks": [
+    {
+      "number": 2,
+      "title": { "es": "Ante cepillado del cuello al tobillo", "en": "Brushed suede, neck to ankle" },
+      "description": {
+        "es": "Abrigo camisero en ante cacao cepillado a contrapelo, sin botones, sobre pantalón del mismo tono. El mate absoluto es el punto.",
+        "en": "A shirt-coat in cocoa suede brushed against the nap, buttonless, over trousers in the same tone. Absolute matte is the point."
+      },
+      "trendIds": ["ante-cepillado", "marron-cacao"]
+    },
+    {
+      "number": 11,
+      "title": { "es": "El hobo que se desploma", "en": "The hobo that collapses" },
+      "description": {
+        "es": "Bolso sin estructura en piel lavada, tan blando que cambia de forma al colgarlo. Se presentó en cinco tamaños.",
+        "en": "An unstructured bag in washed leather, so soft it changes shape when hung. Shown in five sizes."
+      },
+      "trendIds": ["bolso-hobo-suave"]
+    },
+    {
+      "number": 24,
+      "title": { "es": "Hombro que no existe", "en": "The shoulder that isn't there" },
+      "description": {
+        "es": "Chaqueta oversize cortada sin hombrera, apoyada a medio brazo. El contrapunto exacto del hombro estructurado que domina la temporada.",
+        "en": "An oversized jacket cut with no shoulder pad, sitting mid-arm. The exact counterpoint to the structured shoulder dominating the season."
+      },
+      "trendIds": ["oversize-relajado"]
+    }
+  ],
+  "palette": [
+    { "name": { "es": "Cacao", "en": "Cocoa" }, "hex": "#6B4A35", "note": { "es": "Veintidós de treinta y ocho salidas.", "en": "Twenty-two of thirty-eight exits." } },
+    { "name": { "es": "Arena", "en": "Sand" }, "hex": "#CDB99E" },
+    { "name": { "es": "Verde botella apagado", "en": "Muted bottle green" }, "hex": "#3F5044" },
+    { "name": { "es": "Blanco hueso", "en": "Bone white" }, "hex": "#EFE9DE" }
+  ],
+  "shopping": [
+    {
+      "tier": "budget",
+      "retailer": "Amazon México",
+      "label": { "es": "Bolso hobo suave sin estructura", "en": "Slouchy unstructured hobo bag" },
+      "price": 899,
+      "currency": "MXN",
+      "url": "https://www.amazon.com.mx/s?k=bolso%20hobo%20suave",
+      "rationale": {
+        "es": "El hobo es la pieza más copiable de la colección porque depende de la blandura, no del acabado. Busca piel sin forro rígido.",
+        "en": "The hobo is the most copyable piece here because it depends on softness, not finish. Look for leather with no stiff lining."
+      }
+    },
+    {
+      "tier": "mid",
+      "retailer": "Revolve",
+      "label": { "es": "Camisa-abrigo en ante cepillado", "en": "Brushed suede shirt-coat" },
+      "price": 268,
+      "currency": "USD",
+      "url": "https://www.revolve.com/r/Search.jsp?search=suede%20shirt%20jacket",
+      "rationale": {
+        "es": "El look 2 en una sola prenda. En ante sintético bueno se sostiene; en uno malo brilla y se cae todo.",
+        "en": "Look 2 in a single piece. Good faux suede holds it up; bad faux suede shines and the whole thing collapses."
+      }
+    },
+    {
+      "tier": "invest",
+      "retailer": "Nordstrom",
+      "label": { "es": "Pantalón de ante en cacao", "en": "Cocoa suede trousers" },
+      "price": 890,
+      "currency": "USD",
+      "url": "https://www.nordstrom.com/sr?keyword=suede%20trousers",
+      "rationale": {
+        "es": "Aquí sí paga la calidad: el ante barato en pantalón se deforma en la rodilla a la tercera puesta.",
+        "en": "Quality pays here: cheap suede trousers bag at the knee by the third wear."
+      }
+    }
+  ]
+}
