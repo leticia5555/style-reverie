@@ -132,7 +132,7 @@ usarlo así. Ambas rutas son idempotentes y no destruyen nada.
 ### API de Anthropic: descubrimiento de candidatas
 
 `lib/sources/discovery.ts` manda los titulares del feed a Claude
-(`claude-sonnet-4-6`) y extrae candidatas a tendencia. Reglas:
+(`claude-sonnet-5`) y extrae candidatas a tendencia. Reglas:
 
 - **Se filtra ANTES de mandar.** `lib/sources/fashion-filter.ts` descarta
   belleza, celebridades y negocio con reglas baratas. Mandar el lote entero

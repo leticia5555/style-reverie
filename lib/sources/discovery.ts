@@ -14,7 +14,11 @@ import { CATEGORIES, type Trend } from "@/lib/types";
  * catálogo solas — se acumulan con su conteo de menciones y su evidencia, y
  * promoverlas es una decisión humana.
  */
-export const DISCOVERY_MODEL = "claude-sonnet-4-6";
+/**
+ * Generación actual de Sonnet: más capaz y más barato que el 4.6 que estaba
+ * aquí antes ($2/$10 por millón contra $3/$15).
+ */
+export const DISCOVERY_MODEL = "claude-sonnet-5";
 const MAX_HEADLINES = 40;
 
 const CandidateSchema = z.object({
