@@ -136,7 +136,17 @@ usarlo así. Ambas rutas son idempotentes y no destruyen nada.
 
 - **Se filtra ANTES de mandar.** `lib/sources/fashion-filter.ts` descarta
   belleza, celebridades y negocio con reglas baratas. Mandar el lote entero
-  cuesta tokens y ensucia la extracción.
+  cuesta tokens y ensucia la extracción. El filtro tiene dos reglas que no son
+  negociables porque salieron de la primera corrida real: un **veto duro**
+  (nombramientos, aranceles, resultados, exposiciones — nada de eso es una
+  tendencia por muchas prendas que nombre) y la distinción entre **prenda
+  concreta y contexto** ("collection" o "runway" solos no bastan, que es lo que
+  dejaba pasar las notas de sillas musicales).
+- **Cada corrida registra su desglose** en `signal_runs.detail`: titulares
+  recibidos, cuántos pasaron el filtro y por qué cayeron los demás, cuántos se
+  mandaron, cuántas candidatas devolvió el modelo y cuántas tumbó cada uno de
+  los tres filtros de después. Una corrida "ok" con cero candidatas tiene que
+  poder explicarse sin volver a correrla.
 - **Las candidatas NO entran al catálogo solas.** Se acumulan en
   `trend_candidates` con su conteo de menciones y su evidencia; promoverlas es
   una decisión humana.

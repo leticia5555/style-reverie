@@ -2,7 +2,12 @@ import { getDb } from "@/lib/db/client";
 import { finishRun, startRun, writeReadings } from "@/lib/db/runs";
 import { ensureDatabase } from "@/lib/db/setup";
 import { freezeSundayEdicion } from "@/lib/edicion-archive";
-import { discoverCandidates, saveCandidates } from "@/lib/sources/discovery";
+import {
+  describeStats,
+  discoverCandidates,
+  saveCandidates,
+  type DiscoveryStats,
+} from "@/lib/sources/discovery";
 import { getEditorial } from "@/lib/editorial";
 import type { Connector } from "@/lib/sources/types";
 import { getCatalog, getTrends, resetCatalogCache } from "@/lib/trends";
@@ -29,6 +34,8 @@ export type CronOutcome = {
     found: number;
     sent?: number;
     reason?: string;
+    /** Dónde se quedó cada titular, para no tener que adivinarlo después. */
+    stats?: DiscoveryStats;
   };
 };
 
@@ -128,13 +135,32 @@ export async function runDaily(
     }));
 
     const result = await discoverCandidates(headlines, trends);
+    // El desglose va al detalle de la corrida pase lo que pase: una corrida
+    // "ok" con cero candidatas es justo la que hay que poder explicar.
+    const breakdown = describeStats(result.stats);
     if (result.status === "ok") {
       const saved = await saveCandidates(db, result.candidates, date);
-      discovery = { status: "ok", found: saved, sent: result.sent };
-      await finishRun(db, runId, "ok", saved);
+      discovery = {
+        status: "ok",
+        found: saved,
+        sent: result.sent,
+        stats: result.stats,
+      };
+      await finishRun(db, runId, "ok", saved, breakdown);
     } else {
-      discovery = { status: result.status, found: 0, reason: result.reason };
-      await finishRun(db, runId, result.status, 0, result.reason);
+      discovery = {
+        status: result.status,
+        found: 0,
+        reason: result.reason,
+        stats: result.stats,
+      };
+      await finishRun(
+        db,
+        runId,
+        result.status,
+        0,
+        `${result.reason} · ${breakdown}`,
+      );
     }
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);

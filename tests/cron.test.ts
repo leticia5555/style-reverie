@@ -126,3 +126,28 @@ test("lo que escribe el cron queda con origin real", async () => {
   assert.ok(rows.length);
   assert.ok(rows.every((row) => row.origin === "real"));
 });
+
+test("el paso de descubrimiento deja su desglose en signal_runs", async () => {
+  // Sin ANTHROPIC_API_KEY el paso se salta, pero el detalle tiene que decir
+  // igualmente cuántos titulares llegaron y dónde se quedaron: una corrida
+  // que termina sin candidatas es justo la que hay que poder explicar.
+  const anterior = process.env.ANTHROPIC_API_KEY;
+  delete process.env.ANTHROPIC_API_KEY;
+
+  try {
+    const outcome = await runDaily([fuenteQueEscribe("desglose", [42])], "2026-09-25");
+
+    assert.equal(outcome.discovery?.status, "skipped");
+    assert.ok(outcome.discovery?.stats, "la corrida devuelve el desglose");
+
+    const runs = await recentRuns(db);
+    const discovery = runs.find((run) => run.source === "discovery");
+    assert.ok(discovery, "hay una fila de discovery");
+    assert.match(discovery.detail ?? "", /falta ANTHROPIC_API_KEY/);
+    assert.match(discovery.detail ?? "", /titulares/);
+    assert.match(discovery.detail ?? "", /pasaron el filtro/);
+    assert.match(discovery.detail ?? "", /nuevas$/);
+  } finally {
+    if (anterior) process.env.ANTHROPIC_API_KEY = anterior;
+  }
+});

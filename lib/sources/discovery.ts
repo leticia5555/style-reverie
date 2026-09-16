@@ -3,7 +3,12 @@ import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import type { Db } from "@/lib/db/client";
 import { normalizeTerm } from "@/lib/editorial-match";
-import { filterFashion, type Headline } from "@/lib/sources/fashion-filter";
+import {
+  filterBreakdown,
+  filterFashion,
+  type FilterBreakdown,
+  type Headline,
+} from "@/lib/sources/fashion-filter";
 import { CATEGORIES, type Trend } from "@/lib/types";
 
 /**
@@ -40,10 +45,59 @@ export type Candidate = {
   evidence: { title: string; source: string; link: string }[];
 };
 
+/**
+ * El desglose de una corrida. Existe porque el primer cron real terminó "ok"
+ * con cero candidatas y no había forma de saber en qué punto se perdieron:
+ * si no llegaron titulares, si el filtro se los comió, si el modelo no
+ * devolvió nada o si los descartó alguno de los tres filtros de después.
+ */
+export type DiscoveryStats = {
+  /** Titulares que traía el caché editorial. */
+  received: number;
+  /** Los que pasaron el filtro de moda, y por qué cayeron los demás. */
+  filter: FilterBreakdown;
+  /** Los que de verdad se mandaron, ya con el tope de MAX_HEADLINES. */
+  sent: number;
+  /** Candidatas que devolvió el modelo, antes de los filtros de después. */
+  returned: number;
+  droppedShortName: number;
+  droppedKnown: number;
+  droppedNoEvidence: number;
+  /** Las que sobrevivieron a los tres. */
+  kept: number;
+};
+
 export type DiscoveryResult =
-  | { status: "ok"; candidates: Candidate[]; sent: number }
-  | { status: "skipped"; reason: string }
-  | { status: "error"; reason: string };
+  | { status: "ok"; candidates: Candidate[]; sent: number; stats: DiscoveryStats }
+  | { status: "skipped"; reason: string; stats: DiscoveryStats }
+  | { status: "error"; reason: string; stats: DiscoveryStats };
+
+const emptyStats = (received = 0): DiscoveryStats => ({
+  received,
+  filter: { ok: 0, bloqueado: 0, "sin-moda": 0, "otro-tema": 0 },
+  sent: 0,
+  returned: 0,
+  droppedShortName: 0,
+  droppedKnown: 0,
+  droppedNoEvidence: 0,
+  kept: 0,
+});
+
+/** Una línea legible desde el celular, que es donde se leerá. */
+export function describeStats(stats: DiscoveryStats): string {
+  const { filter } = stats;
+  return [
+    `${stats.received} titulares`,
+    `${filter.ok} pasaron el filtro (${filter.bloqueado} negocio, ` +
+      `${filter["sin-moda"]} sin moda, ${filter["otro-tema"]} otro tema)`,
+    `${stats.sent} al modelo`,
+    `${stats.returned} candidatas`,
+    `descartadas ${stats.droppedShortName} por nombre corto, ` +
+      `${stats.droppedKnown} ya en catálogo, ` +
+      `${stats.droppedNoEvidence} sin evidencia`,
+    `${stats.kept} nuevas`,
+  ].join(" · ");
+}
 
 /** Slug estable: dos extracciones del mismo nombre son la misma candidata. */
 export function toSlug(name: string): string {
@@ -102,16 +156,21 @@ export async function discoverCandidates(
   headlines: Headline[],
   trends: Trend[],
 ): Promise<DiscoveryResult> {
+  const stats = emptyStats(headlines.length);
+
   if (!process.env.ANTHROPIC_API_KEY) {
-    return { status: "skipped", reason: "falta ANTHROPIC_API_KEY" };
+    return { status: "skipped", reason: "falta ANTHROPIC_API_KEY", stats };
   }
 
   // El filtro corre ANTES de gastar tokens.
+  stats.filter = filterBreakdown(headlines);
   const fashion = filterFashion(headlines).slice(0, MAX_HEADLINES);
+  stats.sent = fashion.length;
   if (!fashion.length) {
     return {
       status: "skipped",
       reason: `ninguno de los ${headlines.length} titulares pasó el filtro de moda`,
+      stats,
     };
   }
 
@@ -128,12 +187,21 @@ export async function discoverCandidates(
 
     const parsed = response.parsed_output;
     if (!parsed) {
-      return { status: "error", reason: "la respuesta no se pudo parsear" };
+      return { status: "error", reason: "la respuesta no se pudo parsear", stats };
     }
 
+    stats.returned = parsed.candidatas.length;
     const candidates: Candidate[] = parsed.candidatas
-      .filter((candidate) => candidate.nombre.trim().length > 2)
-      .filter((candidate) => isNew(candidate.nombre, trends))
+      .filter((candidate) => {
+        const named = candidate.nombre.trim().length > 2;
+        if (!named) stats.droppedShortName += 1;
+        return named;
+      })
+      .filter((candidate) => {
+        const fresh = isNew(candidate.nombre, trends);
+        if (!fresh) stats.droppedKnown += 1;
+        return fresh;
+      })
       .map((candidate) => ({
         slug: toSlug(candidate.nombre),
         nameEs: candidate.nombre.trim(),
@@ -148,19 +216,25 @@ export async function discoverCandidates(
           })),
       }))
       // Sin evidencia no hay candidata: el modelo pudo alucinar un índice.
-      .filter((candidate) => candidate.evidence.length > 0);
+      .filter((candidate) => {
+        const backed = candidate.evidence.length > 0;
+        if (!backed) stats.droppedNoEvidence += 1;
+        return backed;
+      });
 
-    return { status: "ok", candidates, sent: fashion.length };
+    stats.kept = candidates.length;
+    return { status: "ok", candidates, sent: fashion.length, stats };
   } catch (error) {
     if (error instanceof Anthropic.RateLimitError) {
-      return { status: "error", reason: "rate limit de la API de Anthropic" };
+      return { status: "error", reason: "rate limit de la API de Anthropic", stats };
     }
     if (error instanceof Anthropic.AuthenticationError) {
-      return { status: "error", reason: "ANTHROPIC_API_KEY inválida" };
+      return { status: "error", reason: "ANTHROPIC_API_KEY inválida", stats };
     }
     return {
       status: "error",
       reason: error instanceof Error ? error.message : String(error),
+      stats,
     };
   }
 }

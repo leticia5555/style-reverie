@@ -139,6 +139,41 @@ con su variable: `SR_FEED_VOGUE_MX`, `SR_FEED_ELLE_MX`, `SR_FEED_GLAMOUR_MX`,
 `SR_FEED_BAZAAR`, `SR_FEED_FASHIONISTA`, `SR_FEED_VOGUE`, `SR_FEED_WWD` y
 `SR_FEED_WWW`. `SR_IMAGE_HOSTS` acepta hosts de imagen extra separados por coma.
 
+## Descubrimiento de candidatas
+
+El cron manda los titulares del día a Claude (`lib/sources/discovery.ts`) y
+extrae tendencias de las que la prensa habla y el catálogo todavía no tiene.
+Las candidatas **no entran al catálogo solas**: se acumulan en
+`trend_candidates` con su conteo de menciones y su evidencia, y aparecen en
+`/alerts` bajo *Detectadas en prensa, sin catalogar*. Promoverlas es una
+decisión humana.
+
+Antes de gastar tokens, `lib/sources/fashion-filter.ts` filtra. La primera
+corrida real llegó llena de notas de negocio —nombramientos, aranceles,
+exposiciones— porque una nota sobre el nuevo director creativo de una casa dice
+"collection" y eso contaba como señal de moda. Ahora el filtro:
+
+- **Veta en duro** lo que nunca es una tendencia por muchas prendas que nombre:
+  nombramientos, cadena de suministro, resultados, museos y premios. El veto
+  busca palabra completa, no subcadena, para que un falso positivo no tire un
+  titular de moda en silencio.
+- **Separa prenda de contexto.** Una prenda, color o textura concretos bastan;
+  "collection", "runway" o "style" describen el marco y hacen falta al menos
+  dos para seguir sin ninguna prenda.
+- **Pesa el otro tema**: un titular de belleza que además nombra un vestido
+  cae por belleza.
+
+Cada corrida deja su desglose en `signal_runs.detail`, en una línea:
+
+```
+120 titulares · 14 pasaron el filtro (40 negocio, 58 sin moda, 8 otro tema) ·
+14 al modelo · 6 candidatas · descartadas 1 por nombre corto, 2 ya en
+catálogo, 0 sin evidencia · 3 nuevas
+```
+
+Sin eso, una corrida que termina "ok" con cero candidatas no se puede explicar
+sin volver a correrla.
+
 ## Estructura
 
 ```
@@ -156,6 +191,7 @@ lib/lifecycle.ts        Ciclo de vida derivado de score + momentum
 lib/editorial.ts        Fetch de los RSS, caché de 1 hora y estado por fuente
 lib/editorial-match.ts  Normalización y match de tendencias en un titular
 lib/keyword-lang.ts     Clasifica cada keyword por idioma (es / en / ambos)
+lib/sources/            Conectores externos, filtro de moda y descubrimiento
 lib/editorial-image.ts  Imagen del item, og:image y hosts permitidos
 lib/edicion.ts          Edición semanal: selección, razones y archivo
 lib/fashion-week.ts     Carga de colecciones curadas

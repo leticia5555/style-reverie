@@ -4,11 +4,14 @@ import { PGlite } from "@electric-sql/pglite";
 import { setDb, type Db } from "@/lib/db/client";
 import { migrate } from "@/lib/db/migrate";
 import {
+  classifyHeadline,
+  filterBreakdown,
   isFashionHeadline,
   filterFashion,
   type Headline,
 } from "@/lib/sources/fashion-filter";
 import {
+  describeStats,
   discoverCandidates,
   isNew,
   listCandidates,
@@ -215,4 +218,172 @@ test("una candidata promovida desaparece de la lista", async () => {
   );
   const rows = await listCandidates(db);
   assert.ok(!rows.some((row) => row.slug === "gorro-de-pescador"));
+});
+
+/* ── el filtro endurecido: lo que llegó en la primera corrida real ─── */
+
+test("descarta un nombramiento aunque hable de colecciones", () => {
+  // Esto es lo que pasaba antes: "collection" contaba como señal de moda y
+  // una nota de sillas musicales llegaba al modelo.
+  assert.equal(
+    classifyHeadline(
+      titular("Balenciaga appoints a new designer ahead of the spring collection"),
+    ),
+    "bloqueado",
+  );
+  assert.equal(
+    classifyHeadline(titular("Gucci nombra nuevo director para su colección")),
+    "bloqueado",
+  );
+});
+
+test("descarta cadena de suministro aunque nombre prendas", () => {
+  assert.equal(
+    classifyHeadline(titular("Tariffs on denim imports squeeze the supply chain")),
+    "bloqueado",
+  );
+  assert.equal(
+    classifyHeadline(
+      titular("Los aranceles encarecen el abrigo de lana importado"),
+    ),
+    "bloqueado",
+  );
+});
+
+test("descarta exposiciones y efemérides de museo", () => {
+  assert.equal(
+    classifyHeadline(
+      titular("The museum exhibition revisits half a century of tailoring"),
+    ),
+    "bloqueado",
+  );
+  assert.equal(
+    classifyHeadline(titular("Una retrospectiva del vestido de alta costura")),
+    "bloqueado",
+  );
+});
+
+test("el veto busca palabra completa, no subcadena", () => {
+  // "ceo" dentro de "océano" no puede tumbar un titular de moda.
+  assert.equal(
+    classifyHeadline(titular("El vestido color océano que domina la temporada")),
+    "ok",
+  );
+});
+
+test("una crónica de pasarela con prenda concreta sigue pasando", () => {
+  assert.equal(
+    classifyHeadline(
+      titular("On the runway, barrel jeans and shearling coats led the collection"),
+    ),
+    "ok",
+  );
+});
+
+test("el contexto solo no basta, pero dos señales de contexto sí", () => {
+  // "collection" sola describe el marco, no una tendencia.
+  assert.equal(classifyHeadline(titular("Inside the spring collection")), "sin-moda");
+  assert.equal(
+    classifyHeadline(titular("The quiet luxury look is the trend of the season")),
+    "ok",
+  );
+});
+
+test("cada descarte dice por qué, que es lo que se registra", () => {
+  assert.equal(classifyHeadline(titular("A weekend in Capri")), "sin-moda");
+  assert.equal(
+    classifyHeadline(titular("Kering reports quarterly earnings")),
+    "bloqueado",
+  );
+  // Nombra una prenda, pero el titular es de belleza: gana el otro tema.
+  assert.equal(
+    classifyHeadline(
+      titular("Her dress, makeup, hairstyle and manicure at the red carpet arrival"),
+    ),
+    "otro-tema",
+  );
+});
+
+test("el desglose suma exactamente los titulares recibidos", () => {
+  const lote = [
+    titular("The Barrel Jeans Are Not Going Anywhere"),
+    titular("Kering reports quarterly earnings"),
+    titular("A weekend in Capri"),
+    titular("Her dress, makeup, hairstyle and manicure at the red carpet arrival"),
+    titular("Cargo skirts move from niche to volume"),
+  ];
+  const desglose = filterBreakdown(lote);
+  assert.deepEqual(desglose, {
+    ok: 2,
+    bloqueado: 1,
+    "sin-moda": 1,
+    "otro-tema": 1,
+  });
+  const total = Object.values(desglose).reduce((a, b) => a + b, 0);
+  assert.equal(total, lote.length);
+  assert.equal(desglose.ok, filterFashion(lote).length);
+});
+
+/* ── el desglose que se guarda en signal_runs ──────────────────────── */
+
+test("saltarse el paso también deja el desglose, no solo el motivo", async () => {
+  const anterior = process.env.ANTHROPIC_API_KEY;
+  delete process.env.ANTHROPIC_API_KEY;
+  try {
+    const result = await discoverCandidates(
+      [titular("The Barrel Jeans Are Not Going Anywhere")],
+      trends,
+    );
+    assert.equal(result.status, "skipped");
+    assert.equal(result.stats.received, 1);
+  } finally {
+    if (anterior) process.env.ANTHROPIC_API_KEY = anterior;
+  }
+});
+
+test("si el filtro se lo come todo, el desglose dice cuántos y por qué", async () => {
+  const anterior = process.env.ANTHROPIC_API_KEY;
+  process.env.ANTHROPIC_API_KEY = "sk-test-no-se-usa";
+  try {
+    const lote = [
+      titular("Kering reports quarterly earnings"),
+      titular("The house appoints a new designer"),
+      titular("A weekend in Capri"),
+    ];
+    const result = await discoverCandidates(lote, trends);
+
+    assert.equal(result.status, "skipped", "nadie pasó el filtro: no se llama a la API");
+    assert.equal(result.stats.received, 3);
+    assert.equal(result.stats.sent, 0);
+    assert.equal(result.stats.filter.bloqueado, 2);
+    assert.equal(result.stats["filter"]["sin-moda"], 1);
+    assert.equal(result.stats.returned, 0);
+  } finally {
+    if (anterior) process.env.ANTHROPIC_API_KEY = anterior;
+    else delete process.env.ANTHROPIC_API_KEY;
+  }
+});
+
+test("la línea del desglose nombra los tres filtros de después", () => {
+  const linea = describeStats({
+    received: 120,
+    filter: { ok: 14, bloqueado: 40, "sin-moda": 58, "otro-tema": 8 },
+    sent: 14,
+    returned: 6,
+    droppedShortName: 1,
+    droppedKnown: 2,
+    droppedNoEvidence: 0,
+    kept: 3,
+  });
+
+  assert.match(linea, /120 titulares/);
+  assert.match(linea, /14 pasaron el filtro/);
+  assert.match(linea, /40 negocio/);
+  assert.match(linea, /58 sin moda/);
+  assert.match(linea, /8 otro tema/);
+  assert.match(linea, /6 candidatas/);
+  assert.match(linea, /1 por nombre corto/);
+  assert.match(linea, /2 ya en catálogo/);
+  assert.match(linea, /0 sin evidencia/);
+  assert.match(linea, /3 nuevas/);
 });
