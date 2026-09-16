@@ -259,6 +259,24 @@ catálogo, 0 sin evidencia · 3 nuevas
 Sin eso, una corrida que termina "ok" con cero candidatas no se puede explicar
 sin volver a correrla.
 
+## Dos modos visuales
+
+Misma paleta y misma tipografía, dos lenguajes que no se mezclan.
+
+| Modo | Rutas | Qué es |
+| --- | --- | --- |
+| Terminal | `/trending`, `/compare`, `/alerts` | Denso, tabular, numérico. Miniatura cuadrada de 40px junto al nombre |
+| Editorial | `/edicion`, `/fashion-week`, `/ocasiones`, `/paleta` | Portada con imagen dominante, retícula asimétrica, números dichos como texto, mucho aire |
+
+Las fotos se resuelven en `lib/trend-image.ts` con tres fuentes en orden: la
+curada en `content/trends/<slug>.json`, la del artículo más reciente que
+menciona la tendencia, o un pastel con el nombre. **Nunca de Pinterest ni de
+Google Imágenes**, y el crédito con enlace al original va siempre.
+
+Las fotos de producto de la ficha salen solo del feed de afiliados
+(`lib/sources/awin.ts`). Sin credenciales no se pinta la tira; para verla en
+local se levanta un servidor de fixtures y se apunta `SR_AWIN_HOST` a él.
+
 ## Estructura
 
 ```

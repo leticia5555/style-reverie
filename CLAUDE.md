@@ -34,6 +34,60 @@ preguntar, no improvisar.
 - **Nunca dark mode.** `color-scheme: light`, y ninguna media query de
   `prefers-color-scheme`.
 - **Nunca emojis en la UI.** Ni en labels, ni en botones, ni en estados vacíos.
+
+### Dos modos, una paleta y una tipografía
+
+El producto tiene **dos lenguajes visuales**, con los mismos tokens y las
+mismas fuentes. No se mezclan.
+
+**Modo terminal** — `/trending`, `/compare`, `/alerts`. Denso, tabular,
+numérico. Su trabajo es la densidad. Lo único que lleva de imagen es una
+miniatura cuadrada de 40px junto al nombre, para reconocer la fila de un
+vistazo; a ese tamaño la foto no es para mirarla.
+
+**Modo editorial** — `/edicion`, `/fashion-week`, `/ocasiones`, `/paleta`.
+Rediseñado para leerse como revista:
+
+- **La imagen manda**: fotos grandes, a sangre donde se pueda. El sangrado usa
+  `-mx-5 md:-mx-8`, que es **exactamente** el padding del shell; pasarse de ahí
+  saca scroll horizontal.
+- Portada con una imagen dominante y un titular grande en Playfair.
+- **Retícula asimétrica.** La primera de cada grupo ocupa el ancho; el resto
+  alternan lado y proporción. Una cuadrícula pareja hace que todo pese lo mismo
+  y vuelve a ser una tabla con fotos.
+- **Los números se dicen, no se pintan.** `lib/editorial-phrases.ts` los
+  convierte en texto —"subiendo 3.9 puntos esta semana"— en los dos idiomas.
+  Nada de badges sueltos: un +3.9 se lee de un vistazo en una columna con
+  cabecera, no suelto en una página de revista.
+- **Mucho aire**, menos densidad que el terminal, a propósito.
+- En `/edicion` cada una de las cinco prendas es un bloque grande con imagen,
+  nunca una fila.
+
+### Imágenes: de dónde salen y de dónde NO
+
+Prioridad, en este orden (`lib/trend-image.ts`):
+
+1. La curada a mano en `content/trends/<slug>.json` (`imageUrl` + `credit` +
+   `creditUrl`). Manda siempre.
+2. La del artículo más reciente del feed que menciona la tendencia. Ya pasó el
+   filtro de `IMAGE_HOSTS` y ya trae su enlace al original.
+3. Un pastel con el nombre. No es un hueco: es lo honesto cuando no hay foto.
+
+- **Nunca de Pinterest ni de Google Imágenes.** Solo de fuentes que las
+  publican para ser usadas. Hay un test que falla si esos hosts aparecen en el
+  módulo.
+- **El crédito y el enlace al original viajan dentro del tipo**, no al lado:
+  una foto curada sin `credit` o sin `creditUrl` se ignora entera. Así no
+  existe el camino en el que una imagen prestada se pinta sin decir de quién es.
+  La única excepción es la miniatura de 40px del terminal, donde el crédito
+  sería un borrón ilegible: ahí la miniatura es el enlace y el crédito va en su
+  nombre accesible.
+- Las colecciones y las ocasiones **toman prestada** la foto de una de las
+  tendencias que ellas mismas citan, en el orden del archivo curado.
+- **Fotos de producto: solo del feed de afiliados** (`lib/sources/awin.ts`), que
+  es donde el retailer las publica para eso. Sin imagen del retailer no hay
+  tarjeta, y sin ninguna tarjeta la tira no se pinta.
+
 - Sensación de terminal financiera, pero femenina y editorial.
 
 ## Datos derivados
