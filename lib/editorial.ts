@@ -27,8 +27,13 @@ type Feed = {
  * hace que la fuente deje de cruzar.
  *
  * Business of Fashion salió: no publica RSS y cada corrida se comía los 10s
- * de timeout para nada. En su lugar entran cuatro cabeceras mexicanas y
+ * de timeout para nada. En su lugar entraron las cabeceras mexicanas y
  * Fashionista, que sí son el mercado que mira esta app.
+ *
+ * Elle México salió después: la primera corrida real la dio por "sin
+ * respuesta" y no se le encontró un RSS publicado en ninguna ruta conocida.
+ * Una fuente que no responde no es gratis —cuesta su timeout en cada corrida—
+ * así que se quita hasta tener una URL que alguien haya visto funcionar.
  */
 export const FEEDS = [
   {
@@ -36,12 +41,6 @@ export const FEEDS = [
     name: "Vogue México",
     lang: "es",
     url: process.env.SR_FEED_VOGUE_MX ?? "https://www.vogue.mx/feed/rss",
-  },
-  {
-    key: "elle-mx",
-    name: "Elle México",
-    lang: "es",
-    url: process.env.SR_FEED_ELLE_MX ?? "https://elle.mx/feed/",
   },
   {
     key: "glamour-mx",

@@ -85,29 +85,37 @@ bundle del navegador y Turbopack aborta el build.
 
 ## Feed editorial
 
-Ocho fuentes por RSS, cada una marcada con su idioma. Se parsean con
+Siete fuentes por RSS, cada una marcada con su idioma. Se parsean con
 `rss-parser`, se cruzan contra los `keywords` de cada tendencia (nombre en ambos
 idiomas, término de compra y sinónimos escritos a mano) y se guardan en un JSON
 con TTL de una hora.
 
-| Fuente | Idioma | URL | Verificada |
-| --- | --- | --- | --- |
-| Vogue México | es | `https://www.vogue.mx/feed/rss` | pendiente |
-| Elle México | es | `https://elle.mx/feed/` | pendiente |
-| Glamour México | es | `https://www.glamour.mx/feed/rss` | pendiente |
-| Harper's Bazaar | en | `https://www.harpersbazaar.com/rss/all.xml/` | pendiente |
-| Fashionista | en | `https://fashionista.com/.rss/full/` | pendiente |
-| Vogue | en | `https://www.vogue.com/feed/rss` | sí |
-| WWD | en | `https://wwd.com/feed/` | sí |
-| Who What Wear | en | `https://www.whowhatwear.com/rss` | sí |
+Siete fuentes, todas verificadas contra una corrida real:
 
-**Business of Fashion salió de la lista**: no publica RSS público y cada corrida
-gastaba los 10s de timeout para devolver cero titulares.
+| Fuente | Idioma | URL |
+| --- | --- | --- |
+| Vogue México | es | `https://www.vogue.mx/feed/rss` |
+| Glamour México | es | `https://www.glamour.mx/feed/rss` |
+| Harper's Bazaar | en | `https://www.harpersbazaar.com/rss/all.xml/` |
+| Fashionista | en | `https://fashionista.com/.rss/full/` |
+| Vogue | en | `https://www.vogue.com/feed/rss` |
+| WWD | en | `https://wwd.com/feed/` |
+| Who What Wear | en | `https://www.whowhatwear.com/rss` |
 
-Las cinco marcadas *pendiente* se agregaron desde un contenedor sin salida a
-internet, así que su URL no se pudo comprobar en vivo. `npm run editorial`
-imprime el estado de cada fuente: la que responda se queda y la que dé error se
-quita de `FEEDS` en `lib/editorial.ts`, anotándolo aquí.
+### Fuentes descartadas
+
+Una fuente que no responde no es gratis: cuesta su timeout en cada corrida y
+ensucia el contador de fuentes vivas. Estas dos se quitaron:
+
+- **Business of Fashion** — no publica RSS público. Gastaba los 10s de timeout
+  para devolver cero titulares.
+- **Elle México** — la primera corrida real la dio por *sin respuesta*, y no
+  hay un RSS publicado en ninguna ruta conocida (`elle.mx/feed/`, `/rss`). Si
+  aparece una URL que alguien haya visto funcionar, vuelve a `FEEDS` con idioma
+  `es`; el hueco de una tercera cabecera mexicana sigue abierto.
+
+`npm run editorial` imprime el estado de cada fuente: la que dé ERROR se quita
+de `FEEDS` en `lib/editorial.ts` y se anota aquí.
 
 El idioma de la fuente decide contra qué términos cruza el matcher:
 `lib/keyword-lang.ts` clasifica cada keyword como `es`, `en` o `both` (los
@@ -128,9 +136,9 @@ descarga el artículo para leer su `og:image`. La imagen se guarda junto al item
 en el caché, así que ese fetch extra se hace una sola vez por artículo; está
 acotado a 12 por refresco para que un feed sin imágenes no alargue el ciclo.
 
-Los hosts de imagen de las cinco fuentes nuevas se anotaron igual de a ciegas
-que sus URLs. Si alguno está mal la tarjeta pinta el placeholder de la fuente,
-no se rompe nada: la lista es una red de seguridad, no un requisito.
+Los hosts de imagen de las fuentes nuevas se anotaron sin poder comprobarlos.
+Si alguno está mal la tarjeta pinta el placeholder de la fuente, no se rompe
+nada: la lista es una red de seguridad, no un requisito.
 
 Los hosts que puede cargar `next/image` viven en `IMAGE_HOSTS`
 (`lib/editorial-image.ts`) y `next.config.ts` construye desde ahí sus
@@ -139,9 +147,8 @@ servidor anula esa imagen y la tarjeta pinta el placeholder de la fuente en vez
 de dejar que `next/image` lance en runtime.
 
 Para probar sin salir a internet, cada URL se puede apuntar a un servidor local
-con su variable: `SR_FEED_VOGUE_MX`, `SR_FEED_ELLE_MX`, `SR_FEED_GLAMOUR_MX`,
-`SR_FEED_BAZAAR`, `SR_FEED_FASHIONISTA`, `SR_FEED_VOGUE`, `SR_FEED_WWD` y
-`SR_FEED_WWW`. `SR_IMAGE_HOSTS` acepta hosts de imagen extra separados por coma.
+con su variable: `SR_FEED_VOGUE_MX`, `SR_FEED_GLAMOUR_MX`, `SR_FEED_BAZAAR`,
+`SR_FEED_FASHIONISTA`, `SR_FEED_VOGUE`, `SR_FEED_WWD` y `SR_FEED_WWW`. `SR_IMAGE_HOSTS` acepta hosts de imagen extra separados por coma.
 
 ## Rutas de operación
 

@@ -27,9 +27,6 @@ export const IMAGE_HOSTS = [
   "assets.vogue.mx",
   "www.glamour.mx",
   "assets.glamour.mx",
-  // Elle México
-  "elle.mx",
-  "www.elle.mx",
   // Hearst — Harper's Bazaar
   "hips.hearstapps.com",
   "www.harpersbazaar.com",

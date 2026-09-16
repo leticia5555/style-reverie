@@ -15,7 +15,6 @@ type MentionRow = { trendId: string; count: number; name: Localized };
 /** Cada fuente tiene su pastel; el placeholder lo usa cuando no hay foto. */
 const SOURCE_TINT: Record<FeedKey, { bg: string; ink: string }> = {
   "vogue-mx": { bg: "bg-lavender-soft", ink: "text-lavender-ink" },
-  "elle-mx": { bg: "bg-rose-soft", ink: "text-rose-ink" },
   "glamour-mx": { bg: "bg-sage-soft", ink: "text-sage-ink" },
   bazaar: { bg: "bg-cream-soft", ink: "text-cream-ink" },
   fashionista: { bg: "bg-quiet-soft", ink: "text-quiet-ink" },

@@ -12,9 +12,9 @@ test("Business of Fashion ya no está: no publica RSS y costaba el timeout", () 
   assert.ok(!FEEDS.some((feed) => feed.url.includes("businessoffashion")));
 });
 
-test("están las cinco fuentes nuevas, con su idioma", () => {
+test("están las fuentes nuevas, con su idioma", () => {
   const byKey = new Map(FEEDS.map((feed) => [feed.key as string, feed]));
-  for (const key of ["vogue-mx", "elle-mx", "glamour-mx"]) {
+  for (const key of ["vogue-mx", "glamour-mx"]) {
     assert.equal(byKey.get(key)?.lang, "es", `${key} debería ser una fuente en español`);
   }
   for (const key of ["bazaar", "fashionista"]) {
@@ -95,7 +95,6 @@ test("cada fuente tiene al menos un host de imagen anotado", () => {
   const hosts = IMAGE_HOSTS.join(" ");
   const esperados: Record<string, string> = {
     "vogue-mx": "vogue.mx",
-    "elle-mx": "elle.mx",
     "glamour-mx": "glamour.mx",
     bazaar: "hearstapps.com",
     fashionista: "fashionista.com",
@@ -113,4 +112,10 @@ test("cada fuente tiene al menos un host de imagen anotado", () => {
 
 test("los hosts de Business of Fashion salieron con la fuente", () => {
   assert.ok(!IMAGE_HOSTS.some((host) => host.includes("businessoffashion")));
+});
+
+test("Elle México salió: no se le encontró RSS y costaba su timeout", () => {
+  // Si alguna vez aparece una URL que responda, vuelve con su idioma "es".
+  assert.ok(!FEEDS.some((feed) => feed.url.includes("elle.mx")));
+  assert.ok(!IMAGE_HOSTS.some((host) => host.includes("elle.mx")));
 });
