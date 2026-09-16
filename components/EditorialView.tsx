@@ -19,18 +19,24 @@ const SOURCE_TINT: Record<FeedKey, { bg: string; ink: string }> = {
 };
 
 /**
- * Miniatura 4:3. Llega con imageUrl ya filtrada por el servidor: si el feed
- * sirviera desde un CDN que no está en next.config.ts, next/image lanzaría en
- * runtime y tumbaría la página, así que esas vienen en null y caen al
- * placeholder.
+ * Miniatura 3:4. Las fotos de moda son verticales y un cuadro apaisado las
+ * recortaba de más; el retrato respeta la foto y es el formato de la fuente.
+ * El anclaje va arriba porque cuando aun así hay que recortar, lo que sobra
+ * está abajo — nunca la cara.
+ *
+ * Llega con imageUrl ya filtrada por el servidor: si el feed sirviera desde un
+ * CDN que no está en next.config.ts, next/image lanzaría en runtime y tumbaría
+ * la página, así que esas vienen en null y caen al placeholder.
  */
+const THUMB_WIDTH = 140;
 function Thumb({ article }: { article: Article }) {
   const tint = SOURCE_TINT[article.source];
   const usable = Boolean(article.imageUrl);
 
   return (
     <div
-      className={`relative aspect-4/3 w-28 shrink-0 overflow-hidden rounded-xl sm:w-36 ${
+      style={{ width: THUMB_WIDTH }}
+      className={`relative aspect-3/4 shrink-0 overflow-hidden rounded-xl ${
         usable ? "bg-quiet-soft" : tint.bg
       }`}
     >
@@ -39,8 +45,8 @@ function Thumb({ article }: { article: Article }) {
           src={article.imageUrl!}
           alt=""
           fill
-          sizes="(min-width: 640px) 144px, 112px"
-          className="object-cover"
+          sizes={`${THUMB_WIDTH}px`}
+          className="object-cover object-top"
         />
       ) : (
         <span
@@ -108,7 +114,7 @@ function ArticleRow({
 
   return (
     <li className="border-b border-line py-4 last:border-0">
-      <div className="flex gap-4">
+      <div className="flex items-start gap-4">
         <Thumb article={article} />
 
         <div className="min-w-0 flex-1">
