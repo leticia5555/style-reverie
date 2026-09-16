@@ -4,10 +4,10 @@ import { EdicionView } from "@/components/EdicionView";
 import {
   currentEdicionDate,
   edicionDates,
-  getEdicion,
-  listEdiciones,
 } from "@/lib/edicion";
 import { edicionInsight } from "@/lib/insights";
+import { getDb } from "@/lib/db/client";
+import { listArchive, resolveEdicion } from "@/lib/edicion-archive";
 import { getCatalog } from "@/lib/trends";
 
 export function generateStaticParams() {
@@ -26,13 +26,16 @@ export default async function EdicionArchivoPage({
 }: PageProps<"/edicion/[fecha]">) {
   const { fecha } = await params;
   const { trends } = await getCatalog();
-  const edicion = getEdicion(fecha, trends);
-  if (!edicion) notFound();
+  const db = getDb();
+  const resolved = await resolveEdicion(db, fecha, trends);
+  if (!resolved) notFound();
+  const { edicion } = resolved;
+  const archive = await listArchive(db, trends);
 
   return (
     <EdicionView
       edicion={edicion}
-      archive={listEdiciones(trends)}
+      archive={archive}
       isCurrent={fecha === currentEdicionDate(trends)}
       insight={edicionInsight(edicion.picks)}
     />

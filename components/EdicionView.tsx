@@ -7,7 +7,8 @@ import { PageLede } from "@/components/PageLede";
 import { ShoppingTiers } from "@/components/ShoppingTiers";
 import { useI18n } from "@/lib/i18n";
 import type { Insight } from "@/lib/insights";
-import type { Edicion, EdicionPick, EdicionSummary } from "@/lib/edicion";
+import type { ArchiveEntry } from "@/lib/edicion-archive";
+import type { Edicion, EdicionPick } from "@/lib/edicion";
 
 function useDates() {
   const { lang } = useI18n();
@@ -110,7 +111,7 @@ export function EdicionView({
   insight,
 }: {
   edicion: Edicion;
-  archive: EdicionSummary[];
+  archive: ArchiveEntry[];
   isCurrent: boolean;
   insight: Insight;
 }) {
@@ -190,6 +191,13 @@ export function EdicionView({
                   {entry.curated ? (
                     <span className="shrink-0 text-[11px] tracking-[0.08em] text-lavender-ink uppercase">
                       {t("edicion.curated")}
+                    </span>
+                  ) : entry.frozen ? (
+                    <span
+                      className="shrink-0 text-[11px] tracking-[0.08em] text-muted uppercase"
+                      title={t("edicion.frozenLong")}
+                    >
+                      {t("edicion.frozen")}
                     </span>
                   ) : null}
                 </Link>

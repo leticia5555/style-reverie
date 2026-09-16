@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db/client";
 import { finishRun, startRun, writeReadings } from "@/lib/db/runs";
 import { ensureDatabase } from "@/lib/db/setup";
+import { freezeSundayEdicion } from "@/lib/edicion-archive";
 import type { Connector } from "@/lib/sources/types";
 import { getCatalog, getTrends, resetCatalogCache } from "@/lib/trends";
 
@@ -18,6 +19,8 @@ export type CronOutcome = {
   hadErrors: boolean;
   /** Qué hizo la puesta a punto del esquema antes de correr las fuentes. */
   setup?: { schemaApplied: boolean; seeded: boolean; error?: string };
+  /** Qué pasó con la edición semanal al final de la corrida. */
+  edicion?: { published: boolean; date: string | null; reason?: string };
 };
 
 /**
@@ -97,10 +100,26 @@ export async function runDaily(
     }
   }
 
+  /**
+   * La edición se congela DESPUÉS de las fuentes: así el domingo queda
+   * guardado con los datos que acaban de entrar y no con los de ayer.
+   */
+  let edicion: CronOutcome["edicion"];
+  try {
+    edicion = await freezeSundayEdicion(db, trends);
+  } catch (error) {
+    edicion = {
+      published: false,
+      date: null,
+      reason: error instanceof Error ? error.message : String(error),
+    };
+  }
+
   return {
     date,
     ran,
     hadErrors: ran.some((row) => row.status === "error"),
     setup,
+    edicion,
   };
 }

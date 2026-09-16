@@ -202,6 +202,11 @@ const dict = {
   "edicion.auto": { es: "Automática", en: "Automatic" },
   "edicion.current": { es: "Edición actual", en: "Current edition" },
   "edicion.backToCurrent": { es: "Ver la edición actual", en: "Back to current edition" },
+  "edicion.frozen": { es: "Publicada", en: "Published" },
+  "edicion.frozenLong": {
+    es: "Congelada en la base el domingo que se publicó; ya no se recalcula.",
+    en: "Frozen in the database the Sunday it was published; no longer recomputed.",
+  },
   "edicion.pick": { es: "Pieza", en: "Pick" },
   "edicion.risingDays": { es: "días subiendo", en: "days climbing" },
   "fw.title": { es: "Inteligencia Fashion Week", en: "Fashion Week intelligence" },
