@@ -1,3 +1,4 @@
+import { keywordsFor, type KeywordLang } from "@/lib/keyword-lang";
 import type { Trend } from "@/lib/types";
 
 /**
@@ -45,16 +46,22 @@ export type TrendMatch = {
  * Qué tendencias del catálogo menciona un artículo. Se busca sobre el título
  * más el resumen, ya normalizados y con espacios en los extremos para que el
  * match por palabra completa funcione también al principio y al final.
+ *
+ * `lang` es el idioma de la fuente: un titular de Vogue México se cruza contra
+ * los términos en español y uno de Fashionista contra los de inglés. Sin
+ * filtrar, "wine red" podía casar dentro de un texto español por casualidad.
+ * Sin `lang` se usan todos los términos, que es el comportamiento de siempre.
  */
 export function matchTrends(
   text: string,
   trends: Pick<Trend, "id" | "keywords">[],
+  lang?: KeywordLang,
 ): TrendMatch[] {
   const haystack = ` ${normalizeTerm(text)} `;
   const matches: TrendMatch[] = [];
 
   for (const trend of trends) {
-    const hit = trend.keywords
+    const hit = keywordsFor(trend.keywords, lang)
       .filter(isUsableKeyword)
       .find((keyword) => containsTerm(haystack, keyword));
     if (hit) matches.push({ trendId: trend.id, keyword: hit });

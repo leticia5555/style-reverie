@@ -4,9 +4,11 @@
  *   npm run editorial
  *
  * Es el refresco manual; en runtime la página se refresca sola cuando el
- * caché pasa de una hora. Las URLs se pueden apuntar a otro sitio con
- * SR_FEED_VOGUE / SR_FEED_WWD / SR_FEED_BOF / SR_FEED_WWW, que es como se
- * prueba el parser sin salir a internet.
+ * caché pasa de una hora. Cada URL se puede apuntar a otro sitio con su
+ * SR_FEED_* (ver README), que es como se prueba el parser sin salir a internet.
+ *
+ * Su salida es además la forma de verificar una fuente nueva: la que imprima
+ * ERROR se quita de FEEDS y se anota en el README.
  */
 import { refreshEditorial } from "@/lib/editorial";
 
@@ -15,7 +17,7 @@ async function main() {
 
   for (const feed of cache.feeds) {
     const state = feed.ok ? `${feed.count} artículos` : `ERROR ${feed.error}`;
-    console.log(`${feed.name.padEnd(22)} ${state}`);
+    console.log(`${feed.name.padEnd(18)} ${feed.lang.padEnd(5)} ${state}`);
   }
 
   const matched = cache.articles.filter((a) => a.matches.length).length;

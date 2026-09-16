@@ -85,10 +85,36 @@ bundle del navegador y Turbopack aborta el build.
 
 ## Feed editorial
 
-Cuatro fuentes por RSS: Vogue, WWD, Business of Fashion y Who What Wear. Se
-parsean con `rss-parser`, se cruzan contra los `keywords` de cada tendencia
-(nombre en ambos idiomas, término de compra y sinónimos escritos a mano) y se
-guardan en un JSON con TTL de una hora.
+Ocho fuentes por RSS, cada una marcada con su idioma. Se parsean con
+`rss-parser`, se cruzan contra los `keywords` de cada tendencia (nombre en ambos
+idiomas, término de compra y sinónimos escritos a mano) y se guardan en un JSON
+con TTL de una hora.
+
+| Fuente | Idioma | URL | Verificada |
+| --- | --- | --- | --- |
+| Vogue México | es | `https://www.vogue.mx/feed/rss` | pendiente |
+| Elle México | es | `https://elle.mx/feed/` | pendiente |
+| Glamour México | es | `https://www.glamour.mx/feed/rss` | pendiente |
+| Harper's Bazaar | en | `https://www.harpersbazaar.com/rss/all.xml/` | pendiente |
+| Fashionista | en | `https://fashionista.com/.rss/full/` | pendiente |
+| Vogue | en | `https://www.vogue.com/feed/rss` | sí |
+| WWD | en | `https://wwd.com/feed/` | sí |
+| Who What Wear | en | `https://www.whowhatwear.com/rss` | sí |
+
+**Business of Fashion salió de la lista**: no publica RSS público y cada corrida
+gastaba los 10s de timeout para devolver cero titulares.
+
+Las cinco marcadas *pendiente* se agregaron desde un contenedor sin salida a
+internet, así que su URL no se pudo comprobar en vivo. `npm run editorial`
+imprime el estado de cada fuente: la que responda se queda y la que dé error se
+quita de `FEEDS` en `lib/editorial.ts`, anotándolo aquí.
+
+El idioma de la fuente decide contra qué términos cruza el matcher:
+`lib/keyword-lang.ts` clasifica cada keyword como `es`, `en` o `both` (los
+préstamos puros —boho, matcha, crochet, oversize— van a los dos, porque la
+prensa mexicana los usa igual). Así "wine red" deja de casar por casualidad
+dentro de un titular en español. Si el filtro dejara a una tendencia sin ningún
+término, se usan todos: vale más un match en el idioma equivocado que ninguno.
 
 El caché no se versiona: `data/editorial.cache.json` está en `.gitignore` porque
 es un artefacto de runtime. En Vercel el repo es de solo lectura, así que el
@@ -108,9 +134,10 @@ Los hosts que puede cargar `next/image` viven en `IMAGE_HOSTS`
 servidor anula esa imagen y la tarjeta pinta el placeholder de la fuente en vez
 de dejar que `next/image` lance en runtime.
 
-Para probar sin salir a internet, las URLs se pueden apuntar a un servidor local
-con `SR_FEED_VOGUE`, `SR_FEED_WWD`, `SR_FEED_BOF` y `SR_FEED_WWW`, y
-`SR_IMAGE_HOSTS` acepta hosts de imagen extra separados por coma.
+Para probar sin salir a internet, cada URL se puede apuntar a un servidor local
+con su variable: `SR_FEED_VOGUE_MX`, `SR_FEED_ELLE_MX`, `SR_FEED_GLAMOUR_MX`,
+`SR_FEED_BAZAAR`, `SR_FEED_FASHIONISTA`, `SR_FEED_VOGUE`, `SR_FEED_WWD` y
+`SR_FEED_WWW`. `SR_IMAGE_HOSTS` acepta hosts de imagen extra separados por coma.
 
 ## Estructura
 
@@ -128,6 +155,7 @@ lib/scoring.ts          Score compuesto ponderado por fuente
 lib/lifecycle.ts        Ciclo de vida derivado de score + momentum
 lib/editorial.ts        Fetch de los RSS, caché de 1 hora y estado por fuente
 lib/editorial-match.ts  Normalización y match de tendencias en un titular
+lib/keyword-lang.ts     Clasifica cada keyword por idioma (es / en / ambos)
 lib/editorial-image.ts  Imagen del item, og:image y hosts permitidos
 lib/edicion.ts          Edición semanal: selección, razones y archivo
 lib/fashion-week.ts     Carga de colecciones curadas

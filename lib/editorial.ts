@@ -10,24 +10,78 @@ import {
   ogImageFrom,
   type RssItemImageFields,
 } from "@/lib/editorial-image";
+import type { KeywordLang } from "@/lib/keyword-lang";
 import { getTrends } from "@/lib/trends";
 
+type Feed = {
+  key: string;
+  name: string;
+  /** Idioma de la fuente, no del catálogo: decide contra qué términos cruza. */
+  lang: KeywordLang;
+  url: string;
+};
+
+/**
+ * Las fuentes del feed, con su idioma. El idioma no es decorativo: el matcher
+ * cruza cada titular contra los términos de ESE idioma, así que marcarlo mal
+ * hace que la fuente deje de cruzar.
+ *
+ * Business of Fashion salió: no publica RSS y cada corrida se comía los 10s
+ * de timeout para nada. En su lugar entran cuatro cabeceras mexicanas y
+ * Fashionista, que sí son el mercado que mira esta app.
+ */
 export const FEEDS = [
-  { key: "vogue", name: "Vogue", url: process.env.SR_FEED_VOGUE ?? "https://www.vogue.com/feed/rss" },
-  { key: "wwd", name: "WWD", url: process.env.SR_FEED_WWD ?? "https://wwd.com/feed/" },
   {
-    key: "bof",
-    name: "Business of Fashion",
+    key: "vogue-mx",
+    name: "Vogue México",
+    lang: "es",
+    url: process.env.SR_FEED_VOGUE_MX ?? "https://www.vogue.mx/feed/rss",
+  },
+  {
+    key: "elle-mx",
+    name: "Elle México",
+    lang: "es",
+    url: process.env.SR_FEED_ELLE_MX ?? "https://elle.mx/feed/",
+  },
+  {
+    key: "glamour-mx",
+    name: "Glamour México",
+    lang: "es",
+    url: process.env.SR_FEED_GLAMOUR_MX ?? "https://www.glamour.mx/feed/rss",
+  },
+  {
+    key: "bazaar",
+    name: "Harper's Bazaar",
+    lang: "en",
     url:
-      process.env.SR_FEED_BOF ??
-      "https://www.businessoffashion.com/feeds/rss/",
+      process.env.SR_FEED_BAZAAR ??
+      "https://www.harpersbazaar.com/rss/all.xml/",
+  },
+  {
+    key: "fashionista",
+    name: "Fashionista",
+    lang: "en",
+    url: process.env.SR_FEED_FASHIONISTA ?? "https://fashionista.com/.rss/full/",
+  },
+  {
+    key: "vogue",
+    name: "Vogue",
+    lang: "en",
+    url: process.env.SR_FEED_VOGUE ?? "https://www.vogue.com/feed/rss",
+  },
+  {
+    key: "wwd",
+    name: "WWD",
+    lang: "en",
+    url: process.env.SR_FEED_WWD ?? "https://wwd.com/feed/",
   },
   {
     key: "whowhatwear",
     name: "Who What Wear",
+    lang: "en",
     url: process.env.SR_FEED_WWW ?? "https://www.whowhatwear.com/rss",
   },
-] as const;
+] as const satisfies readonly Feed[];
 
 export type FeedKey = (typeof FEEDS)[number]["key"];
 
@@ -37,6 +91,8 @@ export type Article = {
   link: string;
   source: FeedKey;
   sourceName: string;
+  /** Idioma de la fuente que lo publicó. */
+  lang: KeywordLang;
   publishedAt: string | null;
   snippet: string;
   matches: TrendMatch[];
@@ -49,6 +105,7 @@ export type Article = {
 export type FeedStatus = {
   key: FeedKey;
   name: string;
+  lang: KeywordLang;
   url: string;
   ok: boolean;
   count: number;
@@ -87,10 +144,32 @@ const RUNTIME_CACHE = join(tmpdir(), "style-reverie-editorial.json");
 
 const EMPTY: EditorialCache = { fetchedAt: null, articles: [], feeds: [] };
 
+const FEED_BY_KEY = new Map<string, Feed>(FEEDS.map((feed) => [feed.key, feed]));
+
+/**
+ * El caché en disco sobrevive a los cambios de la lista de fuentes, así que
+ * al leerlo se descartan los artículos de una fuente ya retirada y se rellena
+ * el idioma de los que se guardaron antes de que existiera el campo.
+ */
+function adoptArticles(articles: Article[]): Article[] {
+  const adopted: Article[] = [];
+  for (const article of articles) {
+    const feed = FEED_BY_KEY.get(article.source);
+    if (!feed) continue;
+    adopted.push(article.lang ? article : { ...article, lang: feed.lang });
+  }
+  return adopted;
+}
+
 function readFrom(path: string): EditorialCache | null {
   try {
     const parsed = JSON.parse(readFileSync(path, "utf8")) as EditorialCache;
-    return Array.isArray(parsed.articles) ? parsed : null;
+    if (!Array.isArray(parsed.articles)) return null;
+    return {
+      ...parsed,
+      articles: adoptArticles(parsed.articles),
+      feeds: (parsed.feeds ?? []).filter((feed) => FEED_BY_KEY.has(feed.key)),
+    };
   } catch {
     return null;
   }
@@ -234,9 +313,10 @@ async function fetchFeed(
           link,
           source: feed.key,
           sourceName: feed.name,
+          lang: feed.lang,
           publishedAt: published ? new Date(published).toISOString() : null,
           snippet,
-          matches: matchTrends(`${title} ${snippet}`, trends),
+          matches: matchTrends(`${title} ${snippet}`, trends, feed.lang),
           imageUrl: fromFeed,
           imageFrom: fromFeed ? ("feed" as const) : null,
         };
@@ -247,6 +327,7 @@ async function fetchFeed(
       status: {
         key: feed.key,
         name: feed.name,
+        lang: feed.lang,
         url: feed.url,
         ok: true,
         count: articles.length,
@@ -258,6 +339,7 @@ async function fetchFeed(
       status: {
         key: feed.key,
         name: feed.name,
+        lang: feed.lang,
         url: feed.url,
         ok: false,
         count: 0,
@@ -269,7 +351,7 @@ async function fetchFeed(
 }
 
 /**
- * Trae las cuatro fuentes en paralelo. Una fuente caída no tumba al resto: su
+ * Trae todas las fuentes en paralelo. Una fuente caída no tumba al resto: su
  * error se guarda en el estado y la página lo muestra.
  */
 export async function refreshEditorial({
