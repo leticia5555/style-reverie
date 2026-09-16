@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Delta } from "@/components/Delta";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MomentumChart } from "@/components/MomentumChart";
+import { PinterestSignal } from "@/components/PinterestSignal";
 import { ShoppingTiers } from "@/components/ShoppingTiers";
 import { SourceBreakdown } from "@/components/SourceBreakdown";
 import { StatTile } from "@/components/StatTile";
@@ -82,6 +83,8 @@ export function TrendDetailView({ detail }: { detail: TrendDetail }) {
           />
         </div>
       </section>
+
+      <PinterestSignal trendId={summary.id} />
 
       <section className="mt-12">
         <div className="flex items-baseline justify-between gap-4">

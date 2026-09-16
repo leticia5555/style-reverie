@@ -258,6 +258,18 @@ const dict = {
     en: "No curated pairings yet.",
   },
   "paleta.strip": { es: "La temporada de un vistazo", en: "The season at a glance" },
+  "pinterest.title": { es: "Señal Pinterest hoy", en: "Pinterest signal today" },
+  "pinterest.note": {
+    es: "Lectura en vivo, región México. No se guarda: no hay histórico de Pinterest.",
+    en: "Live read, Mexico region. Not stored: there is no Pinterest history.",
+  },
+  "pinterest.strength": { es: "Fuerza", en: "Strength" },
+  "pinterest.rank": { es: "Puesto en México", en: "Rank in Mexico" },
+  "pinterest.keyword": { es: "Término", en: "Keyword" },
+  "pinterest.noMatch": {
+    es: "Hoy esta tendencia no aparece en el ranking de Pinterest México.",
+    en: "This trend is not in today's Pinterest Mexico ranking.",
+  },
   "lifecycle.EMERGIENDO": { es: "Emergiendo", en: "Emerging" },
   "lifecycle.SUBIENDO": { es: "Subiendo", en: "Rising" },
   "lifecycle.PICO": { es: "Pico", en: "Peak" },
