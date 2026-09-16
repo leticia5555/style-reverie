@@ -5,6 +5,13 @@ import { listArchive } from "@/lib/edicion-archive";
 import { getCatalog } from "@/lib/trends";
 import { edicionInsight } from "@/lib/insights";
 
+/**
+ * Lee el catálogo de Postgres, que el cron reescribe cada día. Sin esto la
+ * página se congelaba en el build y no volvía a cambiar nunca: el deploy
+ * pasaba a ser la única forma de ver dato nuevo.
+ */
+export const revalidate = 300;
+
 export const metadata = { title: "Edición semanal — Style Reverie" };
 
 export default async function EdicionPage() {

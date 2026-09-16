@@ -14,6 +14,18 @@ export const metadata = {
   title: "Alertas de emergentes — Style Reverie",
 };
 
+/**
+ * Esta página se servía prerenderizada desde el build, y las candidatas salen
+ * de la base: una corrida de descubrimiento escribía 25 filas y la página
+ * seguía enseñando las de la última vez que se compiló, sin forma de notarlo.
+ *
+ * Va dinámica y no con revalidate porque es la superficie de diagnóstico: uno
+ * corre /api/admin/discover y entra aquí a ver qué salió. Con ISR habría que
+ * cargar dos veces y esperar la ventana, que es justo la confusión que
+ * provocó esto.
+ */
+export const dynamic = "force-dynamic";
+
 export default async function AlertsPage() {
   const { trends } = await getCatalog();
   const alerts = getAlerts(trends);

@@ -187,6 +187,22 @@ que hizo el cron.
   UI lo muestra ("sin respuesta"). Si ninguna responde, se conserva lo último
   bueno en vez de vaciar el feed.
 
+### Caché de las páginas
+
+**Una página que lee la base no puede servirse congelada desde el build.** Next
+prerenderiza por defecto: `/alerts` se quedó enseñando las candidatas de la
+última compilación mientras el descubrimiento escribía 25 filas nuevas. No
+falla nada y no se registra nada — la página simplemente miente hasta el
+siguiente deploy.
+
+- `/alerts` va `force-dynamic`: es la superficie de diagnóstico, se mira justo
+  después de correr `/api/admin/discover` y con ISR habría que cargar dos veces.
+- `/trending`, `/paleta` y `/edicion` van con `revalidate` de 5 minutos: el
+  cron las cambia una vez al día.
+- `/compare` ya es dinámica por leer `searchParams`; no necesita nada.
+- Lo que sale de `content/` sí se prerenderiza a propósito (ver abajo), y una
+  edición archivada es un documento congelado por diseño.
+
 ## Contenido curado
 
 Lo que se edita a mano vive en `content/` y se lee con `fs` **durante el build**.
