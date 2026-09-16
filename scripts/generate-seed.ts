@@ -13,6 +13,7 @@ import { deriveLifecycle } from "@/lib/lifecycle";
 import { computeScore, momentum, SOURCE_WEIGHTS } from "@/lib/scoring";
 import {
   SOURCES,
+  type Currency,
   type Lifecycle,
   type ShopLink,
   type ShopTier,
@@ -204,38 +205,103 @@ const VARIANTS: Record<string, { es: string; en: string }[]> = {
   ],
 };
 
-const RETAILERS: Record<ShopTier, { name: string; url: (q: string) => string }[]> = {
+/**
+ * Mercado objetivo: LATAM con foco en México.
+ * Los retailers locales cotizan en MXN y los de importación en USD; la moneda
+ * va pegada al retailer, no al nivel de precio. Los locales buscan con el
+ * término en español y los de importación con el término en inglés.
+ */
+type Retailer = {
+  name: string;
+  currency: Currency;
+  /** true = busca con el término en español. */
+  local: boolean;
+  url: (q: string) => string;
+};
+
+const RETAILERS: Record<ShopTier, Retailer[]> = {
   budget: [
-    { name: "Zara", url: (q) => `https://www.zara.com/es/es/search?searchTerm=${q}` },
-    { name: "Mango", url: (q) => `https://shop.mango.com/es/es/search?q=${q}` },
-    { name: "H&M", url: (q) => `https://www2.hm.com/es_es/search-results.html?q=${q}` },
-    { name: "Uniqlo", url: (q) => `https://www.uniqlo.com/es/es/search?q=${q}` },
-    { name: "ASOS", url: (q) => `https://www.asos.com/es/search/?q=${q}` },
+    {
+      name: "Shein",
+      currency: "MXN",
+      local: true,
+      url: (q) => `https://mx.shein.com/pdsearch/${q}/`,
+    },
+    {
+      name: "Zara México",
+      currency: "MXN",
+      local: true,
+      url: (q) => `https://www.zara.com/mx/es/search?searchTerm=${q}`,
+    },
+    {
+      name: "Amazon México",
+      currency: "MXN",
+      local: true,
+      url: (q) => `https://www.amazon.com.mx/s?k=${q}`,
+    },
   ],
   mid: [
-    { name: "COS", url: (q) => `https://www.cos.com/es-es/search?q=${q}` },
-    { name: "Massimo Dutti", url: (q) => `https://www.massimodutti.com/es/search?searchTerm=${q}` },
-    { name: "Arket", url: (q) => `https://www.arket.com/es/search.html?q=${q}` },
-    { name: "& Other Stories", url: (q) => `https://www.stories.com/es_eur/search.html?q=${q}` },
-    { name: "Sandro", url: (q) => `https://es.sandro-paris.com/search?q=${q}` },
+    {
+      name: "Liverpool",
+      currency: "MXN",
+      local: true,
+      url: (q) => `https://www.liverpool.com.mx/tienda/?s=${q}`,
+    },
+    {
+      name: "ASOS",
+      currency: "USD",
+      local: false,
+      url: (q) => `https://www.asos.com/us/search/?q=${q}`,
+    },
+    {
+      name: "Revolve",
+      currency: "USD",
+      local: false,
+      url: (q) => `https://www.revolve.com/r/Search.jsp?search=${q}`,
+    },
   ],
   invest: [
-    { name: "Totême", url: (q) => `https://toteme-studio.com/search?q=${q}` },
-    { name: "Khaite", url: (q) => `https://khaite.com/search?q=${q}` },
-    { name: "Max Mara", url: (q) => `https://es.maxmara.com/search?q=${q}` },
-    { name: "Loewe", url: (q) => `https://www.loewe.com/es/es/search?q=${q}` },
-    { name: "Jil Sander", url: (q) => `https://www.jilsander.com/es/search?q=${q}` },
+    {
+      name: "Nordstrom",
+      currency: "USD",
+      local: false,
+      url: (q) => `https://www.nordstrom.com/sr?keyword=${q}`,
+    },
+    {
+      name: "Revolve",
+      currency: "USD",
+      local: false,
+      url: (q) => `https://www.revolve.com/r/Search.jsp?search=${q}`,
+    },
   ],
 };
 
-const PRICE_RANGE: Record<ShopTier, [number, number]> = {
-  budget: [19, 79],
-  mid: [89, 295],
-  invest: [420, 1890],
+/**
+ * Tipo de cambio de referencia, estático y aproximado. Solo sirve para que los
+ * tres niveles queden ordenados entre monedas; no es una cotización real.
+ */
+const MXN_PER_USD = 18;
+
+/** Rangos por nivel, en USD. El precio en MXN se deriva de aquí. */
+const PRICE_RANGE_USD: Record<ShopTier, [number, number]> = {
+  budget: [12, 55],
+  mid: [75, 260],
+  invest: [320, 1600],
 };
 
+/** Los precios mexicanos terminan en 9; los de importación, en .95 o redondos. */
+function priceIn(currency: Currency, usd: number, tier: ShopTier): number {
+  if (currency === "MXN") {
+    const pesos = usd * MXN_PER_USD;
+    const step = pesos >= 2000 ? 100 : 10;
+    return Math.max(step, Math.round(pesos / step) * step) - 1;
+  }
+  return tier === "invest" ? Math.round(usd / 10) * 10 : Math.round(usd) - 0.05;
+}
+
 function buildShopping(spec: TrendSpec, rng: Rng): Record<ShopTier, ShopLink[]> {
-  const query = encodeURIComponent(spec.term.es);
+  const queryEs = encodeURIComponent(spec.term.es);
+  const queryEn = encodeURIComponent(spec.term.en);
   const variants = VARIANTS[spec.category];
   const shopping = {} as Record<ShopTier, ShopLink[]>;
 
@@ -244,16 +310,17 @@ function buildShopping(spec: TrendSpec, rng: Rng): Record<ShopTier, ShopLink[]> 
     const first = Math.floor(rng() * pool.length);
     const second = (first + 1 + Math.floor(rng() * (pool.length - 1))) % pool.length;
     const variant = variants[Math.floor(rng() * variants.length)];
-    const [min, max] = PRICE_RANGE[tier];
+    const [min, max] = PRICE_RANGE_USD[tier];
+
+    // El segundo link se deriva del primero para que nunca caigan al mismo
+    // precio tras redondear: mismo producto, retailer más caro.
+    const anchor = between(rng, min, max * 0.78);
+    const step = between(rng, 1.2, 1.6);
+    const usdBySlot = [anchor, clamp(anchor * step, min, max * 1.2)];
 
     shopping[tier] = [first, second].map((index, slot) => {
       const retailer = pool[index];
-      const raw = between(rng, min, max) * (slot === 0 ? 1 : 1.25);
-      const capped = clamp(raw, min, max * 1.2);
-      const price =
-        tier === "invest"
-          ? Math.round(capped / 10) * 10
-          : Math.round(capped) - 0.05;
+      const usd = usdBySlot[slot];
       return {
         retailer: retailer.name,
         label:
@@ -263,9 +330,10 @@ function buildShopping(spec: TrendSpec, rng: Rng): Record<ShopTier, ShopLink[]> 
                 es: `${spec.name.es} ${variant.es}`,
                 en: `${spec.name.en}, ${variant.en}`,
               },
-        price: Math.round(price * 100) / 100,
-        currency: "EUR" as const,
-        url: retailer.url(query),
+        price: priceIn(retailer.currency, usd, tier),
+        currency: retailer.currency,
+        priceUsd: Math.round(usd * 100) / 100,
+        url: retailer.url(retailer.local ? queryEs : queryEn),
       };
     });
   }

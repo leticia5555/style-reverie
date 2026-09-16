@@ -21,11 +21,20 @@ export function ShoppingTiers({
   shopping: Record<ShopTier, ShopLink[]>;
 }) {
   const { t, pick, lang } = useI18n();
-  const money = new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-GB", {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 2,
-  });
+
+  /**
+   * MXN y USD comparten el símbolo $, así que el código de moneda siempre va
+   * visible: en México la diferencia entre $899 MXN y $899 USD no es sutil.
+   */
+  const money = (link: ShopLink) => {
+    const amount = new Intl.NumberFormat(lang === "es" ? "es-MX" : "en-US", {
+      style: "currency",
+      currency: link.currency,
+      currencyDisplay: "narrowSymbol",
+      maximumFractionDigits: link.currency === "MXN" ? 0 : 2,
+    }).format(link.price);
+    return `${amount} ${link.currency}`;
+  };
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -52,8 +61,8 @@ export function ShoppingTiers({
                     <span className="text-sm text-ink group-hover:text-lavender-ink">
                       {link.retailer}
                     </span>
-                    <span className="tabular text-sm text-ink-soft">
-                      {money.format(link.price)}
+                    <span className="tabular text-sm whitespace-nowrap text-ink-soft">
+                      {money(link)}
                     </span>
                   </span>
                   <span className="mt-0.5 block text-xs text-muted">
