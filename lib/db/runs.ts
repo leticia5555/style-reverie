@@ -61,9 +61,14 @@ export type RunRow = {
   detail: string | null;
 };
 
+/**
+ * Las últimas corridas, la más reciente primero. El id desempata: una corrida
+ * escribe varias filas seguidas y dos pueden caer en el mismo instante, así
+ * que ordenar solo por started_at dejaría el orden al azar.
+ */
 export async function recentRuns(db: Db, limit = 20): Promise<RunRow[]> {
   return db.query<RunRow>(
-    "select * from signal_runs order by started_at desc limit $1",
+    "select * from signal_runs order by started_at desc, id desc limit $1",
     [limit],
   );
 }

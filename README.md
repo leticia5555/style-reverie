@@ -139,6 +139,25 @@ con su variable: `SR_FEED_VOGUE_MX`, `SR_FEED_ELLE_MX`, `SR_FEED_GLAMOUR_MX`,
 `SR_FEED_BAZAAR`, `SR_FEED_FASHIONISTA`, `SR_FEED_VOGUE`, `SR_FEED_WWD` y
 `SR_FEED_WWW`. `SR_IMAGE_HOSTS` acepta hosts de imagen extra separados por coma.
 
+## Rutas de operación
+
+Tres rutas para operar sin terminal. Se autorizan con `CRON_SECRET`, por
+cabecera `Authorization: Bearer <secreto>` —que es como lo manda Vercel— o por
+`?secret=` en la URL, para poder abrirlas desde el celular. El parámetro queda
+en el historial del navegador y en los logs de acceso: conviene rotar el
+secreto después de usarlo así.
+
+| Ruta | Qué hace |
+| --- | --- |
+| `GET /api/cron/daily` | Corrida diaria: migra, corre las fuentes, descubre candidatas y congela la edición del domingo |
+| `GET /api/admin/setup` | Aplica el esquema y siembra solo si `trends` está vacía. Idempotente |
+| `GET /api/admin/runs` | Las últimas 20 filas de `signal_runs` con su `detail`. Solo lectura; `?limit=` sube hasta 100 |
+
+`runs` es la que se abre cuando algo salió raro: cada conector deja ahí su
+motivo de fallo o de salto, y el paso de descubrimiento su desglose completo.
+Una corrida sin `finishedAt` se quedó a medias —se cayó la función o se agotó
+el tiempo—, que es distinto de una que terminó en error.
+
 ## Descubrimiento de candidatas
 
 El cron manda los titulares del día a Claude (`lib/sources/discovery.ts`) y

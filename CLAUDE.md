@@ -123,11 +123,17 @@ Tres reglas, y la primera no es negociable.
 
 ### Rutas de operación
 
-`/api/cron/daily` y `/api/admin/setup` se autorizan con `CRON_SECRET` vía
-`lib/auth.ts`, por cabecera `Bearer` o por `?secret=` en la URL. El parámetro
-en la URL existe para poder operar desde un navegador sin herramientas, pero
-queda en el historial y en los logs: conviene rotar el secreto después de
-usarlo así. Ambas rutas son idempotentes y no destruyen nada.
+`/api/cron/daily`, `/api/admin/setup` y `/api/admin/runs` se autorizan con
+`CRON_SECRET` vía `lib/auth.ts`, por cabecera `Bearer` o por `?secret=` en la
+URL. El parámetro en la URL existe para poder operar desde un navegador sin
+herramientas, pero queda en el historial y en los logs: conviene rotar el
+secreto después de usarlo así. Ninguna de las tres destruye nada: las dos
+primeras son idempotentes y `runs` es solo lectura.
+
+`GET /api/admin/runs` devuelve las últimas 20 filas de `signal_runs` con su
+`detail` —`?limit=` sube hasta 100— y es la forma de diagnosticar una corrida
+desde el celular. Por eso el `detail` de cada paso tiene que ser legible por
+sí solo: ahí es donde se lee.
 
 ### API de Anthropic: descubrimiento de candidatas
 
