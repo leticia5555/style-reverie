@@ -1,3 +1,4 @@
+import { trendImages } from "@/lib/trend-image";
 import { CompareView } from "@/components/CompareView";
 import { compareInsight } from "@/lib/insights";
 import {
@@ -39,8 +40,13 @@ export default async function ComparePage({
     score,
   }));
 
+  const images = Object.fromEntries(
+    trendImages([comparison.a.summary.id, comparison.b.summary.id]),
+  );
+
   return (
     <CompareView
+      images={images}
       comparison={comparison}
       options={options}
       insight={compareInsight(

@@ -6,14 +6,22 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { CandidatesSection } from "@/components/CandidatesSection";
 import { PageLede } from "@/components/PageLede";
 import { Sparkline } from "@/components/Sparkline";
+import { TrendPhoto } from "@/components/TrendPhoto";
 import { useI18n } from "@/lib/i18n";
+import type { TrendImage } from "@/lib/trend-image";
 import { LIFECYCLE_STYLES } from "@/lib/lifecycle";
 import type { Insight } from "@/lib/insights";
 import type { CandidateRow } from "@/lib/sources/discovery";
 import type { Alert } from "@/lib/trends";
 import type { TrendSummary } from "@/lib/types";
 
-function AlertCard({ alert }: { alert: Alert }) {
+function AlertCard({
+  alert,
+  image,
+}: {
+  alert: Alert;
+  image: TrendImage | null;
+}) {
   const { t, pick } = useI18n();
   const gained = alert.score - alert.scoreAtStart;
 
@@ -21,13 +29,24 @@ function AlertCard({ alert }: { alert: Alert }) {
     <li className="rounded-xl border border-line bg-surface p-5 transition-colors hover:border-sage">
       <Link href={`/trends/${alert.id}`} className="block">
         <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0">
+          <div className="flex min-w-0 items-start gap-3">
+            <div className="mt-0.5 h-10 w-10 shrink-0 overflow-hidden rounded-md">
+              <TrendPhoto
+                image={image}
+                name={alert.name}
+                trendId={alert.id}
+                sizes="40px"
+                compact
+              />
+            </div>
+            <div className="min-w-0">
             <h3 className="font-serif text-2xl leading-tight tracking-tight text-ink">
               {pick(alert.name)}
             </h3>
             <p className="eyebrow mt-1">
               {t(`category.${alert.category}`)} · {alert.season}
             </p>
+            </div>
           </div>
           <div className="text-right">
             <span className="tabular block font-serif text-3xl text-ink">
@@ -90,12 +109,14 @@ export function AlertsView({
   insight,
   candidates = [],
   isAdmin = false,
+  images = {},
 }: {
   alerts: Alert[];
   watchlist: TrendSummary[];
   insight: Insight;
   candidates?: CandidateRow[];
   isAdmin?: boolean;
+  images?: Record<string, TrendImage>;
 }) {
   const { t, pick } = useI18n();
 
@@ -117,7 +138,7 @@ export function AlertsView({
       {alerts.length ? (
         <ul className="mt-5 grid gap-4 md:grid-cols-2">
           {alerts.map((alert) => (
-            <AlertCard key={alert.id} alert={alert} />
+            <AlertCard key={alert.id} alert={alert} image={images[alert.id] ?? null} />
           ))}
         </ul>
       ) : (

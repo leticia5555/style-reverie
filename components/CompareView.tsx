@@ -7,12 +7,22 @@ import { Delta } from "@/components/Delta";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { PageLede } from "@/components/PageLede";
 import { TrendPicker, type PickerOption } from "@/components/TrendPicker";
+import { TrendPhoto } from "@/components/TrendPhoto";
 import { useI18n } from "@/lib/i18n";
+import type { TrendImage } from "@/lib/trend-image";
 import type { Insight } from "@/lib/insights";
 import type { CompareSide, Comparison } from "@/lib/trends";
 import { SOURCES } from "@/lib/types";
 
-function SideCard({ side, accent }: { side: CompareSide; accent: string }) {
+function SideCard({
+  side,
+  accent,
+  image,
+}: {
+  side: CompareSide;
+  accent: string;
+  image: TrendImage | null;
+}) {
   const { t, pick } = useI18n();
   const { summary } = side;
 
@@ -23,12 +33,25 @@ function SideCard({ side, accent }: { side: CompareSide; accent: string }) {
         style={{ backgroundColor: accent }}
         aria-hidden
       />
-      <h2 className="mt-3 font-serif text-2xl leading-tight tracking-tight text-ink">
-        {pick(summary.name)}
-      </h2>
-      <p className="eyebrow mt-1">
-        {t(`category.${summary.category}`)} · {summary.season}
-      </p>
+      <div className="mt-3 flex items-start gap-3">
+        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md">
+          <TrendPhoto
+            image={image}
+            name={summary.name}
+            trendId={summary.id}
+            sizes="40px"
+            compact
+          />
+        </div>
+        <div className="min-w-0">
+          <h2 className="font-serif text-2xl leading-tight tracking-tight text-ink">
+            {pick(summary.name)}
+          </h2>
+          <p className="eyebrow mt-1">
+            {t(`category.${summary.category}`)} · {summary.season}
+          </p>
+        </div>
+      </div>
       <p className="mt-3 text-sm leading-relaxed text-ink-soft">
         {pick(side.description)}
       </p>
@@ -132,10 +155,12 @@ export function CompareView({
   comparison,
   options,
   insight,
+  images = {},
 }: {
   comparison: Comparison;
   options: PickerOption[];
   insight: Insight;
+  images?: Record<string, TrendImage>;
 }) {
   const { t, pick } = useI18n();
   const router = useRouter();
@@ -184,8 +209,8 @@ export function CompareView({
       </div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <SideCard side={a} accent={COMPARE_COLORS.a} />
-        <SideCard side={b} accent={COMPARE_COLORS.b} />
+        <SideCard side={a} accent={COMPARE_COLORS.a} image={images[a.summary.id] ?? null} />
+        <SideCard side={b} accent={COMPARE_COLORS.b} image={images[b.summary.id] ?? null} />
       </div>
 
       <section className="mt-8">

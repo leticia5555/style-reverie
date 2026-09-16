@@ -1,5 +1,6 @@
 import { AlertsView } from "@/components/AlertsView";
 import { isAdminSession } from "@/lib/admin-session";
+import { trendImages } from "@/lib/trend-image";
 import { getDb } from "@/lib/db/client";
 import { alertsInsight } from "@/lib/insights";
 import { listCandidates } from "@/lib/sources/discovery";
@@ -50,6 +51,10 @@ export default async function AlertsPage() {
     )
     .sort((a, b) => b.momentum7d - a.momentum7d);
 
+  const images = Object.fromEntries(
+    trendImages([...alerts.map((a) => a.id), ...watchlist.map((w) => w.id)]),
+  );
+
   return (
     <AlertsView
       alerts={alerts}
@@ -57,6 +62,7 @@ export default async function AlertsPage() {
       insight={alertsInsight(trends)}
       candidates={candidates}
       isAdmin={admin}
+      images={images}
     />
   );
 }

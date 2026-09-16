@@ -2,6 +2,7 @@ import { AccumulatingSection } from "@/components/AccumulatingSection";
 import { PageLede } from "@/components/PageLede";
 import { TrendTable } from "@/components/TrendTable";
 import { trendingInsight } from "@/lib/insights";
+import { trendImages } from "@/lib/trend-image";
 import { getCatalog, getTrendSummaries } from "@/lib/trends";
 
 /**
@@ -18,6 +19,9 @@ export const metadata = {
 export default async function TrendingPage() {
   const { trends, accumulating } = await getCatalog();
   const rows = getTrendSummaries(trends);
+  // Se resuelven en el servidor: lib/trend-image lee del disco y arrastrarlo
+  // a un componente cliente metería node:fs en el bundle del navegador.
+  const images = Object.fromEntries(trendImages(rows.map((row) => row.id)));
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -26,7 +30,7 @@ export default async function TrendingPage() {
         subtitleKey="trending.subtitle"
         insight={trendingInsight(trends)}
       />
-      <TrendTable rows={rows} />
+      <TrendTable rows={rows} images={images} />
       <AccumulatingSection trends={accumulating} />
     </div>
   );

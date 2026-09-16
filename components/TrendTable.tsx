@@ -7,14 +7,23 @@ import { EmptyState } from "@/components/EmptyState";
 import { FilterChips } from "@/components/FilterChips";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Sparkline } from "@/components/Sparkline";
+import { TrendPhoto } from "@/components/TrendPhoto";
 import { useI18n } from "@/lib/i18n";
+import type { TrendImage } from "@/lib/trend-image";
 import { LIFECYCLE_STYLES } from "@/lib/lifecycle";
 import { CATEGORIES, LIFECYCLES } from "@/lib/types";
 import type { Category, Lifecycle, TrendSummary } from "@/lib/types";
 
 type SortKey = "score" | "momentum7d" | "yoyPct" | "name";
 
-export function TrendTable({ rows }: { rows: TrendSummary[] }) {
+export function TrendTable({
+  rows,
+  images = {},
+}: {
+  rows: TrendSummary[];
+  /** trendId → foto. Se resuelve en el servidor; ver lib/trend-image.ts. */
+  images?: Record<string, TrendImage>;
+}) {
   const { t, pick, lang } = useI18n();
   const [category, setCategory] = useState<Category | "all">("all");
   const [lifecycle, setLifecycle] = useState<Lifecycle | "all">("all");
@@ -116,7 +125,7 @@ export function TrendTable({ rows }: { rows: TrendSummary[] }) {
       {visible.length ? (
         <ul className="mt-6 space-y-3 lg:hidden">
           {visible.map((row) => (
-            <TrendCard key={row.id} row={row} />
+            <TrendCard key={row.id} row={row} image={images[row.id] ?? null} />
           ))}
         </ul>
       ) : null}
@@ -149,15 +158,33 @@ export function TrendTable({ rows }: { rows: TrendSummary[] }) {
                 className="group border-b border-line transition-colors last:border-0 hover:bg-lavender-soft/40"
               >
                 <td className="py-3 pr-4">
-                  <Link
-                    href={`/trends/${row.id}`}
-                    className="block font-medium text-ink group-hover:text-lavender-ink"
-                  >
-                    {pick(row.name)}
-                  </Link>
-                  <span className="mt-0.5 block text-xs text-muted">
-                    {t(`category.${row.category}`)} · {row.season}
-                  </span>
+                  {/*
+                    La miniatura es cuadrada y pequeña a propósito: el terminal
+                    es una tabla y la foto aquí sirve para reconocer la fila de
+                    un vistazo, no para mirarla. Mirarla es el modo editorial.
+                  */}
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md">
+                      <TrendPhoto
+                        image={images[row.id] ?? null}
+                        name={row.name}
+                        trendId={row.id}
+                        sizes="40px"
+                        compact
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <Link
+                        href={`/trends/${row.id}`}
+                        className="block font-medium text-ink group-hover:text-lavender-ink"
+                      >
+                        {pick(row.name)}
+                      </Link>
+                      <span className="mt-0.5 block text-xs text-muted">
+                        {t(`category.${row.category}`)} · {row.season}
+                      </span>
+                    </div>
+                  </div>
                 </td>
                 <td className="py-3 pr-4 text-right">
                   <span className="tabular text-base font-medium text-ink">
@@ -240,18 +267,35 @@ function SourceDots({ count, total }: { count: number; total: number }) {
  * columnas obliga a scroll horizontal, que es la peor manera de leer un
  * ranking: se pierde la referencia de qué fila se está mirando.
  */
-function TrendCard({ row }: { row: TrendSummary }) {
+function TrendCard({
+  row,
+  image,
+}: {
+  row: TrendSummary;
+  image: TrendImage | null;
+}) {
   const { t, pick } = useI18n();
 
   return (
     <li className="rounded-xl border border-line bg-surface p-4">
       <Link href={`/trends/${row.id}`} className="block">
         <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="font-medium text-ink">{pick(row.name)}</p>
-            <p className="mt-0.5 text-xs text-muted">
-              {t(`category.${row.category}`)} · {row.season}
-            </p>
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md">
+              <TrendPhoto
+                image={image}
+                name={row.name}
+                trendId={row.id}
+                sizes="40px"
+                compact
+              />
+            </div>
+            <div className="min-w-0">
+              <p className="font-medium text-ink">{pick(row.name)}</p>
+              <p className="mt-0.5 text-xs text-muted">
+                {t(`category.${row.category}`)} · {row.season}
+              </p>
+            </div>
           </div>
           <span className="tabular shrink-0 font-serif text-2xl leading-none text-ink">
             {row.score.toFixed(1)}

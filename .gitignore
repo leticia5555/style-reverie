@@ -42,3 +42,8 @@ next-env.d.ts
 
 # caché del feed editorial (se regenera con npm run editorial)
 /data/editorial.cache.json
+
+# Artefactos temporales de las capturas de pantalla (sesión de diseño)
+shot-*.png
+*.tmp.mjs
+*.tmp.ts
