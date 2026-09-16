@@ -7,12 +7,13 @@ const OPTIONS: { value: Lang; label: string }[] = [
   { value: "en", label: "EN" },
 ];
 
-export function LanguageToggle() {
+/** `compact` esconde el label: en la barra móvil no cabe y se entiende igual. */
+export function LanguageToggle({ compact = false }: { compact?: boolean }) {
   const { lang, setLang, t } = useI18n();
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="eyebrow">{t("lang.toggle")}</span>
+    <div className="flex shrink-0 items-center gap-2">
+      {compact ? null : <span className="eyebrow">{t("lang.toggle")}</span>}
       <div className="flex rounded-full border border-line-strong bg-canvas p-0.5">
         {OPTIONS.map((option) => {
           const active = option.value === lang;

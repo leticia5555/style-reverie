@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { Delta } from "@/components/Delta";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
-import { PageHeading } from "@/components/PageHeading";
+import { PageLede } from "@/components/PageLede";
 import { Sparkline } from "@/components/Sparkline";
 import { useI18n } from "@/lib/i18n";
 import { LIFECYCLE_STYLES } from "@/lib/lifecycle";
+import type { Insight } from "@/lib/insights";
 import type { Alert } from "@/lib/trends";
 import type { TrendSummary } from "@/lib/types";
 
@@ -84,15 +85,21 @@ function AlertCard({ alert }: { alert: Alert }) {
 export function AlertsView({
   alerts,
   watchlist,
+  insight,
 }: {
   alerts: Alert[];
   watchlist: TrendSummary[];
+  insight: Insight;
 }) {
   const { t, pick } = useI18n();
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeading titleKey="alerts.title" subtitleKey="alerts.subtitle" />
+      <PageLede
+        titleKey="alerts.title"
+        subtitleKey="alerts.subtitle"
+        insight={insight}
+      />
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-sage bg-sage-soft px-4 py-3">
         <p className="text-xs text-sage-ink">{t("alerts.rule")}</p>

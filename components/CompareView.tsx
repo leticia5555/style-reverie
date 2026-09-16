@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { CompareChart, COMPARE_COLORS } from "@/components/CompareChart";
 import { Delta } from "@/components/Delta";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
-import { PageHeading } from "@/components/PageHeading";
+import { PageLede } from "@/components/PageLede";
 import { TrendPicker, type PickerOption } from "@/components/TrendPicker";
 import { useI18n } from "@/lib/i18n";
+import type { Insight } from "@/lib/insights";
 import type { CompareSide, Comparison } from "@/lib/trends";
 import { SOURCES } from "@/lib/types";
 
@@ -130,9 +131,11 @@ function SignalRows({ a, b }: { a: CompareSide; b: CompareSide }) {
 export function CompareView({
   comparison,
   options,
+  insight,
 }: {
   comparison: Comparison;
   options: PickerOption[];
+  insight: Insight;
 }) {
   const { t, pick } = useI18n();
   const router = useRouter();
@@ -143,7 +146,11 @@ export function CompareView({
 
   return (
     <div className="mx-auto max-w-6xl">
-      <PageHeading titleKey="compare.title" subtitleKey="compare.subtitle" />
+      <PageLede
+        titleKey="compare.title"
+        subtitleKey="compare.subtitle"
+        insight={insight}
+      />
 
       <div className="rounded-xl border border-line bg-surface p-4">
         <div className="grid items-end gap-4 md:grid-cols-[1fr_auto_1fr]">

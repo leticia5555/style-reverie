@@ -1,4 +1,5 @@
 import { CompareView } from "@/components/CompareView";
+import { compareInsight } from "@/lib/insights";
 import {
   defaultComparePair,
   getComparison,
@@ -33,5 +34,15 @@ export default async function ComparePage({
     score,
   }));
 
-  return <CompareView comparison={comparison} options={options} />;
+  return (
+    <CompareView
+      comparison={comparison}
+      options={options}
+      insight={compareInsight(
+        comparison.a.summary,
+        comparison.b.summary,
+        comparison.series,
+      )}
+    />
+  );
 }

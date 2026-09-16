@@ -1,4 +1,5 @@
 import { AlertsView } from "@/components/AlertsView";
+import { alertsInsight } from "@/lib/insights";
 import {
   ALERT_MAX_SCORE,
   ALERT_MIN_MOMENTUM,
@@ -27,5 +28,11 @@ export default function AlertsPage() {
     )
     .sort((a, b) => b.momentum7d - a.momentum7d);
 
-  return <AlertsView alerts={alerts} watchlist={watchlist} />;
+  return (
+    <AlertsView
+      alerts={alerts}
+      watchlist={watchlist}
+      insight={alertsInsight()}
+    />
+  );
 }

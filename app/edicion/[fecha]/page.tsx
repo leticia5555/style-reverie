@@ -7,6 +7,7 @@ import {
   getEdicion,
   listEdiciones,
 } from "@/lib/edicion";
+import { edicionInsight } from "@/lib/insights";
 
 export function generateStaticParams() {
   return edicionDates().map((fecha) => ({ fecha }));
@@ -31,6 +32,7 @@ export default async function EdicionArchivoPage({
       edicion={edicion}
       archive={listEdiciones()}
       isCurrent={fecha === currentEdicionDate()}
+      insight={edicionInsight(edicion.picks)}
     />
   );
 }

@@ -4,6 +4,7 @@ import {
   trendMentions,
   withRenderableImages,
 } from "@/lib/editorial";
+import { editorialInsight } from "@/lib/insights";
 import { getTrends } from "@/lib/trends";
 
 export const metadata = {
@@ -31,6 +32,13 @@ export default async function EditorialPage() {
       cache={cache}
       mentions={mentions}
       names={[...names.entries()]}
+      insight={editorialInsight(
+        cache.articles.length,
+        cache.articles.filter((article) => article.matches.length).length,
+        mentions,
+        cache.feeds.filter((feed) => feed.ok).length,
+        cache.feeds.length,
+      )}
     />
   );
 }

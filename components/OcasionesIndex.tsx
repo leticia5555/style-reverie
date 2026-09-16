@@ -1,17 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { PageHeading } from "@/components/PageHeading";
+import { PageLede } from "@/components/PageLede";
 import { useI18n } from "@/lib/i18n";
 import { ACCENT_STYLE } from "@/lib/ocasiones-accent";
+import type { Insight } from "@/lib/insights";
 import type { Ocasion } from "@/lib/ocasiones";
 
-export function OcasionesIndex({ ocasiones }: { ocasiones: Ocasion[] }) {
+export function OcasionesIndex({
+  ocasiones,
+  insight,
+}: {
+  ocasiones: Ocasion[];
+  insight: Insight;
+}) {
   const { t, pick } = useI18n();
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeading titleKey="oc.title" subtitleKey="oc.subtitle" />
+      <PageLede
+        titleKey="oc.title"
+        subtitleKey="oc.subtitle"
+        insight={insight}
+      />
       <p className="text-[11px] leading-relaxed text-faint">{t("oc.curated")}</p>
 
       <ul className="mt-8 grid gap-4 md:grid-cols-2">

@@ -8,12 +8,14 @@ import { ShoppingTiers } from "@/components/ShoppingTiers";
 import { SourceBreakdown } from "@/components/SourceBreakdown";
 import { StatTile } from "@/components/StatTile";
 import { useI18n } from "@/lib/i18n";
+import { trendInsight } from "@/lib/insights";
 import type { TrendDetail } from "@/lib/trends";
 import { SOURCES } from "@/lib/types";
 
 export function TrendDetailView({ detail }: { detail: TrendDetail }) {
   const { t, pick } = useI18n();
   const { summary } = detail;
+  const line = trendInsight(summary, detail.forecast);
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -35,6 +37,11 @@ export function TrendDetailView({ detail }: { detail: TrendDetail }) {
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
             {pick(detail.description)}
           </p>
+          {line ? (
+            <p className="mt-4 font-serif text-lg leading-snug text-ink italic">
+              {pick(line)}
+            </p>
+          ) : null}
         </div>
         <div className="text-right">
           <p className="eyebrow">{t("common.score")}</p>

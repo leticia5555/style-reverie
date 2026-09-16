@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Delta } from "@/components/Delta";
+import { EmptyState } from "@/components/EmptyState";
 import { FilterChips } from "@/components/FilterChips";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Sparkline } from "@/components/Sparkline";
@@ -111,7 +112,16 @@ export function TrendTable({ rows }: { rows: TrendSummary[] }) {
         </div>
       </div>
 
-      <div className="mt-6 overflow-x-auto">
+      {/* Tarjetas hasta lg, tabla a partir de ahí. */}
+      {visible.length ? (
+        <ul className="mt-6 space-y-3 lg:hidden">
+          {visible.map((row) => (
+            <TrendCard key={row.id} row={row} />
+          ))}
+        </ul>
+      ) : null}
+
+      <div className="mt-6 hidden overflow-x-auto lg:block">
         <table className="w-full min-w-[840px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-line-strong text-left">
@@ -170,36 +180,113 @@ export function TrendTable({ rows }: { rows: TrendSummary[] }) {
                   <Delta value={row.yoyPct} suffix="%" decimals={0} />
                 </td>
                 <td className="py-3 text-right">
-                  <span className="inline-flex items-center gap-2">
-                    <span className="flex gap-0.5" aria-hidden>
-                      {SOURCES.map((source, index) => (
-                        <span
-                          key={source}
-                          className={`h-1.5 w-1.5 rounded-full ${
-                            index < row.sourceCount
-                              ? "bg-lavender"
-                              : "bg-line-strong"
-                          }`}
-                        />
-                      ))}
-                    </span>
-                    <span className="tabular text-xs text-muted">
-                      {row.sourceCount}/{SOURCES.length}
-                    </span>
-                  </span>
+                  <SourceDots count={row.sourceCount} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {visible.length === 0 ? (
-          <p className="py-10 text-center text-sm text-muted">
-            {t("trending.empty")}
-          </p>
-        ) : null}
       </div>
+
+      {visible.length === 0 ? (
+        <div className="mt-6">
+          <EmptyState
+            title={t("trending.empty")}
+            hint={t("trending.emptyHint")}
+            action={
+              <button
+                type="button"
+                onClick={() => {
+                  setCategory("all");
+                  setLifecycle("all");
+                  setQuery("");
+                }}
+                className="rounded-full border border-line-strong px-4 py-1.5 text-xs text-ink-soft transition-colors hover:bg-quiet-soft"
+              >
+                {t("common.reset")}
+              </button>
+            }
+          />
+        </div>
+      ) : null}
     </div>
+  );
+}
+
+/** Los seis puntos de fuentes. Mismo componente en tabla y en tarjeta. */
+function SourceDots({ count }: { count: number }) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span className="flex gap-0.5" aria-hidden>
+        {SOURCES.map((source, index) => (
+          <span
+            key={source}
+            className={`h-1.5 w-1.5 rounded-full ${
+              index < count ? "bg-lavender" : "bg-line-strong"
+            }`}
+          />
+        ))}
+      </span>
+      <span className="tabular text-xs text-muted">
+        {count}/{SOURCES.length}
+      </span>
+    </span>
+  );
+}
+
+/**
+ * Fila en formato tarjeta para pantallas estrechas. A 390px una tabla de siete
+ * columnas obliga a scroll horizontal, que es la peor manera de leer un
+ * ranking: se pierde la referencia de qué fila se está mirando.
+ */
+function TrendCard({ row }: { row: TrendSummary }) {
+  const { t, pick } = useI18n();
+
+  return (
+    <li className="rounded-xl border border-line bg-surface p-4">
+      <Link href={`/trends/${row.id}`} className="block">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="font-medium text-ink">{pick(row.name)}</p>
+            <p className="mt-0.5 text-xs text-muted">
+              {t(`category.${row.category}`)} · {row.season}
+            </p>
+          </div>
+          <span className="tabular shrink-0 font-serif text-2xl leading-none text-ink">
+            {row.score.toFixed(1)}
+          </span>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <LifecycleBadge lifecycle={row.lifecycle} />
+          <Sparkline
+            values={row.spark}
+            color={LIFECYCLE_STYLES[row.lifecycle].hex}
+            width={88}
+            height={24}
+          />
+        </div>
+
+        <dl className="mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1 border-t border-line pt-3">
+          <div className="flex items-baseline gap-1.5">
+            <dt className="eyebrow">{t("common.momentum7d")}</dt>
+            <dd className="text-sm">
+              <Delta value={row.momentum7d} />
+            </dd>
+          </div>
+          <div className="flex items-baseline gap-1.5">
+            <dt className="eyebrow">{t("common.yoy")}</dt>
+            <dd className="text-sm">
+              <Delta value={row.yoyPct} suffix="%" decimals={0} />
+            </dd>
+          </div>
+          <div className="ml-auto">
+            <SourceDots count={row.sourceCount} />
+          </div>
+        </dl>
+      </Link>
+    </li>
   );
 }
 

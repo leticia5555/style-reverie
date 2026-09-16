@@ -1,5 +1,6 @@
-import { PageHeading } from "@/components/PageHeading";
+import { PageLede } from "@/components/PageLede";
 import { TrendTable } from "@/components/TrendTable";
+import { trendingInsight } from "@/lib/insights";
 import { getTrendSummaries } from "@/lib/trends";
 
 export const metadata = {
@@ -11,7 +12,11 @@ export default function TrendingPage() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <PageHeading titleKey="trending.title" subtitleKey="trending.subtitle" />
+      <PageLede
+        titleKey="trending.title"
+        subtitleKey="trending.subtitle"
+        insight={trendingInsight()}
+      />
       <TrendTable rows={rows} />
     </div>
   );

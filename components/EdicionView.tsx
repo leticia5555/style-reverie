@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { Delta } from "@/components/Delta";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
-import { PageHeading } from "@/components/PageHeading";
+import { PageLede } from "@/components/PageLede";
 import { ShoppingTiers } from "@/components/ShoppingTiers";
 import { useI18n } from "@/lib/i18n";
+import type { Insight } from "@/lib/insights";
 import type { Edicion, EdicionPick, EdicionSummary } from "@/lib/edicion";
 
 function useDates() {
@@ -106,17 +107,23 @@ export function EdicionView({
   edicion,
   archive,
   isCurrent,
+  insight,
 }: {
   edicion: Edicion;
   archive: EdicionSummary[];
   isCurrent: boolean;
+  insight: Insight;
 }) {
   const { t, pick: tr } = useI18n();
   const dates = useDates();
 
   return (
     <div className="mx-auto max-w-4xl">
-      <PageHeading titleKey="edicion.title" subtitleKey="edicion.subtitle" />
+      <PageLede
+        titleKey="edicion.title"
+        subtitleKey="edicion.subtitle"
+        insight={insight}
+      />
 
       <header className="flex flex-wrap items-center justify-between gap-3 border-y border-line-strong py-4">
         <div>

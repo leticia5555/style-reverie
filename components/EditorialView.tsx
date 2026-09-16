@@ -3,8 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore } from "react";
-import { PageHeading } from "@/components/PageHeading";
+import { EmptyState } from "@/components/EmptyState";
+import { PageLede } from "@/components/PageLede";
 import { useI18n } from "@/lib/i18n";
+import type { Insight } from "@/lib/insights";
 import type { Article, EditorialCache, FeedKey } from "@/lib/editorial";
 import type { Localized } from "@/lib/types";
 
@@ -167,10 +169,12 @@ export function EditorialView({
   cache,
   mentions,
   names,
+  insight,
 }: {
   cache: EditorialCache;
   mentions: MentionRow[];
   names: [string, Localized][];
+  insight: Insight;
 }) {
   const { t, pick } = useI18n();
   const [source, setSource] = useState<string>("all");
@@ -186,9 +190,10 @@ export function EditorialView({
 
   return (
     <div className="mx-auto max-w-6xl">
-      <PageHeading
+      <PageLede
         titleKey="editorial.title"
         subtitleKey="editorial.subtitle"
+        insight={insight}
       />
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3">
@@ -268,12 +273,10 @@ export function EditorialView({
               ))}
             </ul>
           ) : (
-            <div className="rounded-xl border border-line bg-surface px-4 py-10 text-center">
-              <p className="text-sm text-ink-soft">{t("editorial.empty")}</p>
-              <p className="mt-1.5 text-xs text-muted">
-                {t("editorial.emptyHow")}
-              </p>
-            </div>
+            <EmptyState
+              title={t("editorial.empty")}
+              hint={t("editorial.emptyHow")}
+            />
           )}
         </div>
 

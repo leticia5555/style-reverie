@@ -59,6 +59,10 @@ const dict = {
     es: "Ninguna tendencia coincide con estos filtros.",
     en: "No trend matches these filters.",
   },
+  "trending.emptyHint": {
+    es: "Prueba con otra categoría o limpia la búsqueda.",
+    en: "Try another category or clear the search.",
+  },
   "trending.trend": { es: "Tendencia", en: "Trend" },
   "detail.back": { es: "Volver a tendencias", en: "Back to trending" },
   "detail.momentum": { es: "Momentum 90 días", en: "90-day momentum" },

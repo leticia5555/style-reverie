@@ -1,14 +1,17 @@
 "use client";
 
 import { CollectionCard } from "@/components/CollectionCard";
-import { PageHeading } from "@/components/PageHeading";
+import { PageLede } from "@/components/PageLede";
 import { useI18n } from "@/lib/i18n";
+import type { Insight } from "@/lib/insights";
 import type { Collection } from "@/lib/fashion-week";
 
 export function FashionWeekIndex({
   collections,
+  insight,
 }: {
   collections: Collection[];
+  insight: Insight;
 }) {
   const { t } = useI18n();
 
@@ -19,7 +22,11 @@ export function FashionWeekIndex({
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeading titleKey="fw.title" subtitleKey="fw.subtitle" />
+      <PageLede
+        titleKey="fw.title"
+        subtitleKey="fw.subtitle"
+        insight={insight}
+      />
       <p className="text-[11px] leading-relaxed text-faint">
         {t("fw.curated")}
       </p>

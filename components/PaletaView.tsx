@@ -3,18 +3,29 @@
 import Link from "next/link";
 import { Delta } from "@/components/Delta";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
-import { PageHeading } from "@/components/PageHeading";
+import { PageLede } from "@/components/PageLede";
 import { Sparkline } from "@/components/Sparkline";
 import { useI18n } from "@/lib/i18n";
 import { LIFECYCLE_STYLES } from "@/lib/lifecycle";
+import type { Insight } from "@/lib/insights";
 import type { PaletteEntry } from "@/lib/paleta";
 
-export function PaletaView({ entries }: { entries: PaletteEntry[] }) {
+export function PaletaView({
+  entries,
+  insight,
+}: {
+  entries: PaletteEntry[];
+  insight: Insight;
+}) {
   const { t, pick } = useI18n();
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeading titleKey="paleta.title" subtitleKey="paleta.subtitle" />
+      <PageLede
+        titleKey="paleta.title"
+        subtitleKey="paleta.subtitle"
+        insight={insight}
+      />
 
       {/* Tira continua: la temporada entera en una línea, ordenada por score. */}
       <section>
