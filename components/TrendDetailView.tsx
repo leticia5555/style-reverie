@@ -5,10 +5,13 @@ import { Delta } from "@/components/Delta";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { MomentumChart } from "@/components/MomentumChart";
 import { PinterestSignal } from "@/components/PinterestSignal";
+import { ProductStrip } from "@/components/ProductStrip";
 import { ShoppingTiers } from "@/components/ShoppingTiers";
 import { SourceBreakdown } from "@/components/SourceBreakdown";
 import { StatTile } from "@/components/StatTile";
+import type { AwinProduct } from "@/lib/sources/awin";
 import { useI18n } from "@/lib/i18n";
+import type { ShopTier } from "@/lib/types";
 import { trendInsight } from "@/lib/insights-trend";
 import type { ChartRow } from "@/lib/origin";
 import type { TrendDetail } from "@/lib/trends";
@@ -16,9 +19,12 @@ import type { TrendDetail } from "@/lib/trends";
 export function TrendDetailView({
   detail,
   split,
+  products,
 }: {
   detail: TrendDetail;
   split?: { rows: ChartRow[]; firstRealDate: string } | null;
+  /** Productos con foto del retailer; ausentes si su feed no la trae. */
+  products?: Record<ShopTier, AwinProduct[]>;
 }) {
   const { t, pick } = useI18n();
   const { summary } = detail;
@@ -116,6 +122,8 @@ export function TrendDetailView({
         <div className="mt-4">
           <ShoppingTiers shopping={detail.shopping} />
         </div>
+
+        {products ? <ProductStrip products={products} /> : null}
       </section>
     </div>
   );

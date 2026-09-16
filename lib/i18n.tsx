@@ -85,6 +85,11 @@ const dict = {
     es: "Tres niveles de precio por tendencia.",
     en: "Three price tiers per trend.",
   },
+  "product.title": { es: "Cómo se ve", en: "What it looks like" },
+  "product.note": {
+    es: "Fotos que publica cada tienda en su feed de afiliados. Los enlaces son de afiliado.",
+    en: "Photos each retailer publishes in its affiliate feed. The links are affiliate links.",
+  },
   "detail.budget": { es: "Budget", en: "Budget" },
   "detail.mid": { es: "Mid", en: "Mid" },
   "detail.invest": { es: "Invest", en: "Invest" },

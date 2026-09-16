@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { IMAGE_HOSTS } from "./lib/editorial-image";
+import { AWIN_IMAGE_HOSTS } from "./lib/sources/awin";
 
 const devImageHosts = (process.env.SR_IMAGE_HOSTS ?? "")
   .split(",")
@@ -22,6 +23,11 @@ const nextConfig: NextConfig = {
      */
     remotePatterns: [
       ...IMAGE_HOSTS.map((hostname) => ({
+        protocol: "https" as const,
+        hostname,
+      })),
+      // Fotos de producto de los anunciantes aprobados en Awin.
+      ...AWIN_IMAGE_HOSTS.map((hostname) => ({
         protocol: "https" as const,
         hostname,
       })),
