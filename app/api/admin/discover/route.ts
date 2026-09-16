@@ -49,7 +49,7 @@ export async function GET(request: Request) {
 
   try {
     const cache = await getEditorial();
-    const { trends } = await getCatalog();
+    const { trends, accumulating } = await getCatalog();
     const headlines = cache.articles.map((article) => ({
       id: article.id,
       title: article.title,
@@ -59,7 +59,7 @@ export async function GET(request: Request) {
       publishedAt: article.publishedAt,
     }));
 
-    const result = await discoverCandidates(headlines, trends);
+    const result = await discoverCandidates(headlines, [...trends, ...accumulating]);
     const breakdown = describeStats(result.stats);
 
     if (result.status !== "ok") {

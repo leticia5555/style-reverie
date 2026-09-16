@@ -3,9 +3,10 @@ import {
   normalizeToScale,
   type CollectResult,
   type Connector,
+  type ConnectorTrend,
   type Reading,
 } from "@/lib/sources/types";
-import type { Trend } from "@/lib/types";
+
 
 /**
  * Google Trends, región México.
@@ -91,10 +92,10 @@ export async function withTimeout<T>(
  */
 export async function staleTrends(
   db: Db,
-  trends: Trend[],
+  trends: ConnectorTrend[],
   date: string,
   limit = MAX_PER_RUN,
-): Promise<Trend[]> {
+): Promise<ConnectorTrend[]> {
   const rows = await db.query<{ trend_id: string; last: string | Date | null }>(
     `select trend_id, max(date) as last
        from signals

@@ -1,6 +1,12 @@
 import { normalizeTerm } from "@/lib/editorial-match";
-import { normalizeToScale, type CollectResult, type Connector, type Reading } from "@/lib/sources/types";
-import type { Trend } from "@/lib/types";
+import {
+  normalizeToScale,
+  type CollectResult,
+  type Connector,
+  type ConnectorTrend,
+  type Reading,
+} from "@/lib/sources/types";
+
 
 /**
  * Mercado Libre Trends para México (site MLM).
@@ -78,7 +84,7 @@ export async function getAccessToken(
  */
 export function mapTrendsToCatalog(
   entries: TrendEntry[],
-  trends: Trend[],
+  trends: ConnectorTrend[],
   date: string,
 ): Reading[] {
   const total = entries.length;

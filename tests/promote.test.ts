@@ -10,7 +10,10 @@ import {
   promoteCandidate,
   seasonFor,
 } from "@/lib/promote";
-import { listCandidates, saveCandidates } from "@/lib/sources/discovery";
+import { isNew, listCandidates, saveCandidates } from "@/lib/sources/discovery";
+import { runDaily } from "@/lib/cron";
+import { resetCatalogCache } from "@/lib/trends";
+import type { Connector } from "@/lib/sources/types";
 import { MIN_REAL_DAYS } from "@/lib/types";
 
 let pg: PGlite;
@@ -206,4 +209,90 @@ test("una tendencia del seed nunca cuenta como acumulando", async () => {
   const catalog = await loadCatalogFromDb(db);
   assert.equal(catalog!.accumulating.length, 0);
   assert.equal(catalog!.trends.length, 1, "sin promoted_at se deriva como siempre");
+});
+
+/* ── el cron las consulta desde el primer día ──────────────────────── */
+
+test("una promovida entra en las tendencias que consultan las fuentes", async () => {
+  await saveCandidates(db, [candidata("zueco", "zueco de madera")], "2026-09-16");
+  await promoteCandidate(db, "zueco", "2026-09-16");
+
+  const vistas: string[] = [];
+  const espia: Connector = {
+    key: "espia",
+    async collect({ trends }) {
+      vistas.push(...trends.map((trend) => trend.id));
+      return { status: "ok", readings: [] };
+    },
+  };
+
+  resetCatalogCache();
+  await runDaily([espia], "2026-09-17");
+
+  assert.ok(
+    vistas.includes("zueco"),
+    "sin esto nunca juntaría los 14 días y se quedaría acumulando para siempre",
+  );
+});
+
+test("la promovida llega a las fuentes con keywords utilizables", async () => {
+  await saveCandidates(db, [candidata("satinado", "pantalón satinado")], "2026-09-16");
+  await promoteCandidate(db, "satinado", "2026-09-16");
+
+  let keywords: string[] = [];
+  const espia: Connector = {
+    key: "espia",
+    async collect({ trends }) {
+      keywords = trends.find((trend) => trend.id === "satinado")?.keywords ?? [];
+      return { status: "ok", readings: [] };
+    },
+  };
+
+  resetCatalogCache();
+  await runDaily([espia], "2026-09-17");
+
+  // El conector de Google consulta keywords[0]; sin uno, no habría qué pedir.
+  assert.deepEqual(keywords, ["pantalon satinado"]);
+});
+
+test("lo que escribe el cron sobre una promovida la va graduando", async () => {
+  await saveCandidates(db, [candidata("zueco", "zueco de madera")], "2026-09-16");
+  await promoteCandidate(db, "zueco", "2026-09-16");
+
+  const fuente: Connector = {
+    key: "google_trends",
+    async collect({ trends, date }) {
+      return {
+        status: "ok",
+        readings: trends
+          .filter((trend) => trend.id === "zueco")
+          .map((trend) => ({ trendId: trend.id, source: "google_trends", date, value: 42 })),
+      };
+    },
+  };
+
+  for (let i = 0; i < MIN_REAL_DAYS; i += 1) {
+    resetCatalogCache();
+    await runDaily([fuente], new Date(Date.UTC(2026, 8, 17 + i)).toISOString().slice(0, 10));
+  }
+
+  resetCatalogCache();
+  const catalog = await loadCatalogFromDb(db);
+  assert.equal(catalog!.accumulating.length, 0, "se graduó sola");
+  assert.equal(catalog!.trends[0].id, "zueco");
+});
+
+test("el descubrimiento no vuelve a proponer lo que ya se promovió", async () => {
+  await saveCandidates(db, [candidata("zueco", "zueco de madera")], "2026-09-16");
+  await promoteCandidate(db, "zueco", "2026-09-16");
+
+  resetCatalogCache();
+  const catalog = await loadCatalogFromDb(db);
+  const conocidas = [...catalog!.trends, ...catalog!.accumulating];
+
+  assert.equal(
+    isNew("zueco de madera", conocidas),
+    false,
+    "está acumulando, fuera de trends, pero el catálogo ya la tiene",
+  );
 });

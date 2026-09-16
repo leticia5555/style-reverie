@@ -165,6 +165,28 @@ secreto después de usarlo así.
 | `GET /api/admin/runs` | Las últimas 20 filas de `signal_runs` con su `detail`. Solo lectura; `?limit=` sube hasta 100 |
 | `GET /api/admin/discover` | Corre solo el descubrimiento y devuelve su desglose y las candidatas. `?date=` repite un día concreto |
 
+Y dos que van con **sesión de admin** (`ADMIN_PASSWORD`), no con `CRON_SECRET`,
+porque escriben en el catálogo y ese secreto viaja en URLs:
+
+| Ruta | Qué hace |
+| --- | --- |
+| `POST /api/admin/login` | Cambia la contraseña por una cookie de sesión; `DELETE` la cierra |
+| `POST /api/admin/candidates` | `{slug, action}` con `promote` o `discard` |
+
+Se entra por `/admin`, que no está en la navegación: es operación, no producto.
+
+## Promover una candidata
+
+Promover crea la tendencia en `trends` con su categoría y sus keywords, **sin
+histórico**. Desde ese día el cron la consulta en Google Trends y Mercado Libre
+como a cualquier otra, y hasta juntar 14 días de señal real no tiene score,
+ciclo de vida, momentum ni predicción: sale en `/trending` en su propia sección
+*Nuevas, acumulando datos*, marcada "nueva · sin histórico". Al completar los
+días entra sola en la tabla.
+
+Descartar la marca y no vuelve a aparecer. La fila no se borra: si
+desapareciera, el descubrimiento la propondría otra vez a la semana siguiente.
+
 `discover` hace exactamente lo mismo que el paso del cron —mismo filtro, mismas
 tandas, misma escritura— así que lo que se ve ahí es lo que va a pasar mañana,
 no una simulación. Queda en la bitácora como `discover-manual` para no

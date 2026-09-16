@@ -260,8 +260,13 @@ function buildInput(headlines: Headline[]): string {
 /**
  * Descarta lo que el catálogo ya tiene: una candidata que casa con los
  * keywords de una tendencia existente no es un descubrimiento.
+ *
+ * Recibe `keywords` y no `Trend` porque hay que pasarle también las promovidas
+ * que siguen acumulando: están fuera de `trends`, y si no se miraran, el
+ * descubrimiento volvería a proponer la semana que viene lo que se promovió
+ * ayer.
  */
-export function isNew(name: string, trends: Trend[]): boolean {
+export function isNew(name: string, trends: Pick<Trend, "keywords">[]): boolean {
   const normalized = normalizeTerm(name);
   return !trends.some((trend) =>
     trend.keywords.some(
@@ -330,7 +335,7 @@ function describeError(error: unknown): string {
 async function extractBatch(
   client: Anthropic,
   batch: Headline[],
-  trends: Trend[],
+  trends: Pick<Trend, "keywords">[],
   stats: DiscoveryStats,
 ): Promise<Candidate[]> {
   const response = await client.messages.parse({
@@ -393,7 +398,7 @@ async function extractBatch(
 
 export async function discoverCandidates(
   headlines: Headline[],
-  trends: Trend[],
+  trends: Pick<Trend, "keywords">[],
 ): Promise<DiscoveryResult> {
   const stats = emptyStats(headlines.length);
 

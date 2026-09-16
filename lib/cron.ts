@@ -10,6 +10,7 @@ import {
 } from "@/lib/sources/discovery";
 import { getEditorial } from "@/lib/editorial";
 import type { Connector } from "@/lib/sources/types";
+import type { ConnectorTrend } from "@/lib/sources/types";
 import { getCatalog, getTrends, resetCatalogCache } from "@/lib/trends";
 
 export type SourceOutcome = {
@@ -82,13 +83,22 @@ export async function runDaily(
     };
   }
 
-  const { trends } = await getCatalog();
+  const { trends, accumulating } = await getCatalog();
+
+  /**
+   * Las fuentes consultan también las promovidas, desde el día en que se
+   * promueven. Están fuera de `trends` porque todavía no se les puede derivar
+   * nada, pero preguntar por ellas es justo lo que las saca de ahí: sin esto
+   * nunca juntarían los catorce días que necesitan y se quedarían acumulando
+   * para siempre.
+   */
+  const queryable: ConnectorTrend[] = [...trends, ...accumulating];
   const ran: SourceOutcome[] = [];
 
   for (const connector of connectors) {
     const runId = await startRun(db, connector.key);
     try {
-      const result = await connector.collect({ db, trends, date });
+      const result = await connector.collect({ db, trends: queryable, date });
 
       if (result.status !== "ok") {
         await finishRun(db, runId, result.status, 0, result.reason);
@@ -134,7 +144,9 @@ export async function runDaily(
       publishedAt: article.publishedAt,
     }));
 
-    const result = await discoverCandidates(headlines, trends);
+    // También contra las promovidas: lo que se promovió ayer no puede volver
+    // a salir como descubrimiento mañana.
+    const result = await discoverCandidates(headlines, queryable);
     // El desglose va al detalle de la corrida pase lo que pase: una corrida
     // "ok" con cero candidatas es justo la que hay que poder explicar.
     const breakdown = describeStats(result.stats);

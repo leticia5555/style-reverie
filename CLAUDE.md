@@ -190,7 +190,11 @@ que hizo el cron.
   de época, ciudades, casas y temporadas no son tendencias.
 - **Las candidatas NO entran al catálogo solas.** Se acumulan en
   `trend_candidates` con su conteo de menciones y su evidencia; promoverlas es
-  una decisión humana.
+  una decisión humana, desde `/alerts` y con sesión de admin.
+- **`isNew()` se consulta contra el catálogo COMPLETO**, las promovidas que
+  siguen acumulando incluidas. Están fuera de `trends`, y mirarlas solo ahí
+  haría que el descubrimiento volviera a proponer la semana que viene lo que
+  se promovió ayer.
 - Una candidata que ya casa con los keywords de una tendencia existente se
   descarta: no es un descubrimiento.
 - Una candidata sin evidencia se descarta: el modelo puede alucinar un índice.
@@ -205,6 +209,42 @@ que hizo el cron.
 - Una fuente caída nunca tumba la página: su error se guarda en el estado y la
   UI lo muestra ("sin respuesta"). Si ninguna responde, se conserva lo último
   bueno en vez de vaciar el feed.
+
+## Promover candidatas al catálogo
+
+- **Promover NO inventa histórico.** La tendencia entra con su categoría y sus
+  keywords y cero señales, y desde ese día el cron la consulta como a cualquier
+  otra. Los conectores reciben `ConnectorTrend` (id, nombre, keywords) y no
+  `Trend` justamente para que una tendencia sin histórico se pueda consultar.
+- **`MIN_REAL_DAYS` = 14.** Hasta juntar catorce días de señal **real** no tiene
+  score, ni ciclo de vida, ni momentum, ni predicción. Un score sacado de tres
+  días tiene la misma pinta que uno sacado de noventa y esa confusión no puede
+  existir en una terminal de datos.
+- Por eso las promovidas jóvenes viajan en `Catalog.accumulating` y **no**
+  dentro de `trends`: no es un filtro de presentación, es que todavía no hay
+  nada que derivar. Todo lo que consume `trends` deriva sin preguntar. Al
+  llegar a los catorce días entran solas en `trends` y reciben todo, sin
+  migración.
+- Los días **mock no cuentan** para graduarse: si contaran, sembrar el catálogo
+  graduaría una tendencia recién promovida el mismo día.
+- En `/trending` salen en su propia sección, *Nuevas, acumulando datos*, con la
+  marca "nueva · sin histórico" y cuántos días llevan.
+- **Descartar marca, no borra.** Si la fila desapareciera, el descubrimiento la
+  volvería a proponer como novedad a la semana siguiente.
+
+### Sesión de admin
+
+- Promover y descartar van detrás de `ADMIN_PASSWORD`, no de `CRON_SECRET`:
+  ese secreto viaja en URLs para poder operar desde el celular y queda en el
+  historial y en los logs. Una acción que escribe en el catálogo no puede
+  depender de algo que se comparte al copiar un enlace.
+- La cookie lleva un HMAC derivado de la contraseña, nunca la contraseña.
+  `httpOnly`, `sameSite=strict`. Cambiar `ADMIN_PASSWORD` cierra las sesiones
+  abiertas.
+- `lib/admin.ts` no importa `next/headers` para poder probarse; la variante
+  para componentes de servidor vive en `lib/admin-session.ts`.
+- `/admin` no entra en la navegación: es una página de operación, no de
+  producto. Se llega desde `/alerts`.
 
 ### Caché de las páginas
 
