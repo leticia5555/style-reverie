@@ -174,6 +174,8 @@ porque escriben en el catálogo y ese secreto viaja en URLs:
 | `POST /api/admin/candidates` | `{slug, action}` con `promote` o `discard` |
 
 Se entra por `/admin`, que no está en la navegación: es operación, no producto.
+**`ADMIN_PASSWORD` es obligatoria para `/admin`**: sin ella no hay sesión posible
+y promover y descartar quedan desactivados.
 
 ## Promover una candidata
 
