@@ -125,7 +125,13 @@ const dict = {
     en: "Extracted from the editorial feed's headlines. They do not enter the catalog on their own: promoting them is your call.",
   },
   "candidates.mentions": { es: "menciones", en: "mentions" },
+  "candidates.mention": { es: "mención", en: "mention" },
   "candidates.since": { es: "desde", en: "since" },
+  "candidates.lastSeen": { es: "última", en: "latest" },
+  "candidates.headlines": { es: "Titulares que la mencionan", en: "Headlines mentioning it" },
+  "candidates.showAll": { es: "Ver todos", en: "Show all" },
+  "candidates.showLess": { es: "Ver menos", en: "Show less" },
+  "candidates.rank": { es: "Por menciones acumuladas", en: "By accumulated mentions" },
   "candidates.uncategorized": { es: "Sin categoría", en: "Uncategorized" },
   "candidates.promote": { es: "Promover al catálogo", en: "Promote to catalog" },
   "candidates.promoteSoon": {
