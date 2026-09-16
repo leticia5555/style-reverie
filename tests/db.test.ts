@@ -42,7 +42,7 @@ test("el esquema se aplica y es idempotente", async () => {
   );
   assert.deepEqual(
     tables.map((row) => row.table_name),
-    ["ediciones", "signal_runs", "signals", "trends"],
+    ["ediciones", "signal_runs", "signals", "trend_candidates", "trends"],
   );
 });
 

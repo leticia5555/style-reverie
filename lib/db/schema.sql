@@ -61,3 +61,22 @@ create table if not exists ediciones (
   published_at timestamptz not null default now(),
   payload      jsonb not null
 );
+
+-- Candidatas a tendencia detectadas en prensa y todavía sin catalogar.
+-- El conteo de menciones se acumula: una candidata que aparece tres semanas
+-- seguidas pesa más que una que salió un día.
+create table if not exists trend_candidates (
+  slug          text primary key,
+  name_es       text not null,
+  category      text,
+  mentions      integer not null default 0,
+  first_seen    date not null,
+  last_seen     date not null,
+  -- Titulares que la respaldan, los más recientes primero.
+  evidence      jsonb not null default '[]'::jsonb,
+  -- Se marca al promover al catálogo; por ahora nunca se pone.
+  promoted_at   timestamptz
+);
+
+create index if not exists trend_candidates_mentions_idx
+  on trend_candidates (mentions desc, last_seen desc);

@@ -2,6 +2,8 @@ import { getDb } from "@/lib/db/client";
 import { finishRun, startRun, writeReadings } from "@/lib/db/runs";
 import { ensureDatabase } from "@/lib/db/setup";
 import { freezeSundayEdicion } from "@/lib/edicion-archive";
+import { discoverCandidates, saveCandidates } from "@/lib/sources/discovery";
+import { getEditorial } from "@/lib/editorial";
 import type { Connector } from "@/lib/sources/types";
 import { getCatalog, getTrends, resetCatalogCache } from "@/lib/trends";
 
@@ -21,6 +23,13 @@ export type CronOutcome = {
   setup?: { schemaApplied: boolean; seeded: boolean; error?: string };
   /** Qué pasó con la edición semanal al final de la corrida. */
   edicion?: { published: boolean; date: string | null; reason?: string };
+  /** Descubrimiento de candidatas desde el feed editorial. */
+  discovery?: {
+    status: "ok" | "skipped" | "error";
+    found: number;
+    sent?: number;
+    reason?: string;
+  };
 };
 
 /**
@@ -101,6 +110,39 @@ export async function runDaily(
   }
 
   /**
+   * Descubrimiento: el feed editorial ya está en caché, así que esto no sale
+   * a buscar titulares — solo lee lo que hay y manda a la API lo que pasa el
+   * filtro de moda.
+   */
+  let discovery: CronOutcome["discovery"];
+  const runId = await startRun(db, "discovery");
+  try {
+    const cache = await getEditorial();
+    const headlines = cache.articles.map((article) => ({
+      id: article.id,
+      title: article.title,
+      snippet: article.snippet,
+      sourceName: article.sourceName,
+      link: article.link,
+      publishedAt: article.publishedAt,
+    }));
+
+    const result = await discoverCandidates(headlines, trends);
+    if (result.status === "ok") {
+      const saved = await saveCandidates(db, result.candidates, date);
+      discovery = { status: "ok", found: saved, sent: result.sent };
+      await finishRun(db, runId, "ok", saved);
+    } else {
+      discovery = { status: result.status, found: 0, reason: result.reason };
+      await finishRun(db, runId, result.status, 0, result.reason);
+    }
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    discovery = { status: "error", found: 0, reason: detail };
+    await finishRun(db, runId, "error", 0, detail);
+  }
+
+  /**
    * La edición se congela DESPUÉS de las fuentes: así el domingo queda
    * guardado con los datos que acaban de entrar y no con los de ayer.
    */
@@ -121,5 +163,6 @@ export async function runDaily(
     hadErrors: ran.some((row) => row.status === "error"),
     setup,
     edicion,
+    discovery,
   };
 }

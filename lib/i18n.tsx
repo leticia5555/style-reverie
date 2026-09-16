@@ -116,6 +116,22 @@ const dict = {
     en: "Pick two different trends to compare.",
   },
   "compare.openDetail": { es: "Ver ficha", en: "View detail" },
+  "candidates.title": {
+    es: "Detectadas en prensa, sin catalogar",
+    en: "Spotted in the press, not catalogued",
+  },
+  "candidates.note": {
+    es: "Extraídas de los titulares del feed editorial. No entran al catálogo solas: promoverlas es una decisión tuya.",
+    en: "Extracted from the editorial feed's headlines. They do not enter the catalog on their own: promoting them is your call.",
+  },
+  "candidates.mentions": { es: "menciones", en: "mentions" },
+  "candidates.since": { es: "desde", en: "since" },
+  "candidates.uncategorized": { es: "Sin categoría", en: "Uncategorized" },
+  "candidates.promote": { es: "Promover al catálogo", en: "Promote to catalog" },
+  "candidates.promoteSoon": {
+    es: "Todavía no hace nada: promover se implementa en la siguiente sesión.",
+    en: "Does nothing yet: promoting ships in the next session.",
+  },
   "alerts.title": { es: "Alertas de emergentes", en: "Emerging alerts" },
   "alerts.subtitle": {
     es: "Tendencias que suben fuerte y todavía no son masivas.",

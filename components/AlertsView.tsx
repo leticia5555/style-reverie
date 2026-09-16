@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { Delta } from "@/components/Delta";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
+import { CandidatesSection } from "@/components/CandidatesSection";
 import { PageLede } from "@/components/PageLede";
 import { Sparkline } from "@/components/Sparkline";
 import { useI18n } from "@/lib/i18n";
 import { LIFECYCLE_STYLES } from "@/lib/lifecycle";
 import type { Insight } from "@/lib/insights";
+import type { CandidateRow } from "@/lib/sources/discovery";
 import type { Alert } from "@/lib/trends";
 import type { TrendSummary } from "@/lib/types";
 
@@ -86,10 +88,12 @@ export function AlertsView({
   alerts,
   watchlist,
   insight,
+  candidates = [],
 }: {
   alerts: Alert[];
   watchlist: TrendSummary[];
   insight: Insight;
+  candidates?: CandidateRow[];
 }) {
   const { t, pick } = useI18n();
 
@@ -151,6 +155,7 @@ export function AlertsView({
           </ul>
         </section>
       ) : null}
+      <CandidatesSection candidates={candidates} />
     </div>
   );
 }

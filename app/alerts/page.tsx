@@ -1,5 +1,7 @@
 import { AlertsView } from "@/components/AlertsView";
+import { getDb } from "@/lib/db/client";
 import { alertsInsight } from "@/lib/insights";
+import { listCandidates } from "@/lib/sources/discovery";
 import {
   ALERT_MAX_SCORE,
   ALERT_MIN_MOMENTUM,
@@ -15,6 +17,10 @@ export const metadata = {
 export default async function AlertsPage() {
   const { trends } = await getCatalog();
   const alerts = getAlerts(trends);
+
+  // Sin base o con la tabla recién creada, la sección simplemente no aparece.
+  const db = getDb();
+  const candidates = db ? await listCandidates(db).catch(() => []) : [];
 
   /**
    * Las que suben y siguen por debajo de 60 pero aún no llegan al umbral de
@@ -35,6 +41,7 @@ export default async function AlertsPage() {
       alerts={alerts}
       watchlist={watchlist}
       insight={alertsInsight(trends)}
+      candidates={candidates}
     />
   );
 }

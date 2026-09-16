@@ -129,6 +129,22 @@ en la URL existe para poder operar desde un navegador sin herramientas, pero
 queda en el historial y en los logs: conviene rotar el secreto después de
 usarlo así. Ambas rutas son idempotentes y no destruyen nada.
 
+### API de Anthropic: descubrimiento de candidatas
+
+`lib/sources/discovery.ts` manda los titulares del feed a Claude
+(`claude-sonnet-4-6`) y extrae candidatas a tendencia. Reglas:
+
+- **Se filtra ANTES de mandar.** `lib/sources/fashion-filter.ts` descarta
+  belleza, celebridades y negocio con reglas baratas. Mandar el lote entero
+  cuesta tokens y ensucia la extracción.
+- **Las candidatas NO entran al catálogo solas.** Se acumulan en
+  `trend_candidates` con su conteo de menciones y su evidencia; promoverlas es
+  una decisión humana.
+- Una candidata que ya casa con los keywords de una tendencia existente se
+  descarta: no es un descubrimiento.
+- Una candidata sin evidencia se descarta: el modelo puede alucinar un índice.
+- Sin `ANTHROPIC_API_KEY` el paso se salta y queda registrado en `signal_runs`.
+
 ### Nunca en el request del usuario
 
 - **Ninguna fuente externa se llama durante un request.** Siempre se sirve
