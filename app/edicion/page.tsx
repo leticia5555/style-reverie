@@ -1,3 +1,4 @@
+import { trendImages } from "@/lib/trend-image";
 import { EdicionView } from "@/components/EdicionView";
 import { currentEdicionDate, getEdicion } from "@/lib/edicion";
 import { getDb } from "@/lib/db/client";
@@ -22,8 +23,13 @@ export default async function EdicionPage() {
   const edicion = getEdicion(date, trends)!;
   const archive = await listArchive(getDb(), trends);
 
+  const images = Object.fromEntries(
+    trendImages(edicion.picks.map((pick) => pick.summary.id)),
+  );
+
   return (
     <EdicionView
+      images={images}
       edicion={edicion}
       archive={archive}
       isCurrent

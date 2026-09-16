@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { trendImages } from "@/lib/trend-image";
 import { EdicionView } from "@/components/EdicionView";
 import {
   currentEdicionDate,
@@ -32,8 +33,13 @@ export default async function EdicionArchivoPage({
   const { edicion } = resolved;
   const archive = await listArchive(db, trends);
 
+  const images = Object.fromEntries(
+    trendImages(edicion.picks.map((pick) => pick.summary.id)),
+  );
+
   return (
     <EdicionView
+      images={images}
       edicion={edicion}
       archive={archive}
       isCurrent={fecha === currentEdicionDate(trends)}

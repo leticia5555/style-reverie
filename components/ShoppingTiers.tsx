@@ -17,8 +17,17 @@ const TIER_LABEL: Record<ShopTier, "detail.budget" | "detail.mid" | "detail.inve
 
 export function ShoppingTiers({
   shopping,
+  /**
+   * `editorial` apila los tres niveles en vez de ponerlos en columnas.
+   *
+   * En la columna estrecha del modo editorial tres columnas dejaban 130px por
+   * nivel y "$1,000.00 USD" no cabe: el precio se salía de la página. Apilado
+   * cabe a cualquier ancho y además respira, que es lo que pide ese modo.
+   */
+  layout = "grid",
 }: {
   shopping: Record<ShopTier, ShopLink[]>;
+  layout?: "grid" | "editorial";
 }) {
   const { t, pick, lang } = useI18n();
 
@@ -36,19 +45,25 @@ export function ShoppingTiers({
     return `${amount} ${link.currency}`;
   };
 
+  const editorial = layout === "editorial";
+
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className={editorial ? "space-y-3" : "grid gap-4 md:grid-cols-3"}>
       {SHOP_TIERS.map((tier) => (
         <section
           key={tier}
-          className="rounded-xl border border-line bg-surface p-4"
+          className={
+            editorial
+              ? "border-t border-line pt-3"
+              : "rounded-xl border border-line bg-surface p-4"
+          }
         >
           <span
             className={`inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-medium tracking-[0.08em] uppercase ${TIER_STYLE[tier]}`}
           >
             {t(TIER_LABEL[tier])}
           </span>
-          <ul className="mt-3 space-y-3">
+          <ul className={editorial ? "mt-2 space-y-2" : "mt-3 space-y-3"}>
             {shopping[tier].map((link) => (
               <li key={`${link.retailer}-${link.label.es}`}>
                 <a
