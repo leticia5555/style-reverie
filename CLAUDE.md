@@ -67,11 +67,41 @@ Rediseñado para leerse como revista:
 
 Prioridad, en este orden (`lib/trend-image.ts`):
 
-1. La curada a mano en `content/trends/<slug>.json` (`imageUrl` + `credit` +
-   `creditUrl`). Manda siempre.
-2. La del artículo más reciente del feed que menciona la tendencia. Ya pasó el
+1. La curada desde **`/admin/imagenes`**, que vive en la tabla `trend_images`.
+   Va primero porque es la acción humana más reciente y porque ese panel existe
+   para curar sin esperar un deploy.
+2. La curada a mano en `content/trends/<slug>.json` (`imageUrl` + `credit` +
+   `creditUrl`), que pasa por git.
+3. La del artículo más reciente del feed que menciona la tendencia. Ya pasó el
    filtro de `IMAGE_HOSTS` y ya trae su enlace al original.
-3. Un pastel con el nombre. No es un hueco: es lo honesto cuando no hay foto.
+4. Un campo de color con el nombre. No es un hueco: es lo honesto cuando no hay
+   foto.
+
+**El panel guarda en Postgres y no en `content/`** porque `content/` se lee con
+`fs` durante el build y en Vercel el disco es de solo lectura. `content/trends/`
+sigue existiendo como fallback versionado; no se ha quitado nada.
+
+**El placeholder nunca es un rectángulo plano.** A tamaño grande eso se lee
+como una página rota, no como una foto que falta. Una tendencia de categoría
+color se pinta de su propio hex —con la tinta elegida por luminancia, no a
+ojo— y el resto con un degradado derivado de su categoría. El nombre se
+dimensiona con container queries contra el ancho de su caja, porque el mismo
+componente pinta una miniatura de 160px y una portada a sangre.
+
+**Las curadas se sirven por `/api/image`, nunca directas.** `IMAGE_HOSTS`
+alimenta `remotePatterns` de `next.config`, que es de tiempo de compilación: un
+host aprobado desde el panel no funcionaría hasta el siguiente deploy. Por el
+proxy, `next/image` solo ve una ruta de este origen. El proxy **solo** sirve
+hosts de `IMAGE_HOSTS` o aprobados en `image_hosts`, y descarta direcciones
+internas antes de pedir nada: sin esa lista sería un proxy abierto, y una URL a
+`169.254.169.254` sería una forma de mirar dentro de la red del proveedor.
+
+**Comprobar una URL sí sale a la red durante un request**, y es la única
+excepción a la regla de que ninguna fuente externa se llama en el camino del
+usuario: no está en el camino del usuario. Es una acción de operación, detrás
+de la sesión de admin, en la que la persona acaba de pegar una URL y espera
+saber si sirve. Un 404 o una página HTML con extensión `.jpg` solo se ven
+pidiéndola.
 
 - **Nunca de Pinterest ni de Google Imágenes.** Solo de fuentes que las
   publican para ser usadas. Hay un test que falla si esos hosts aparecen en el
@@ -298,7 +328,7 @@ que hizo el cron.
 - `lib/admin.ts` no importa `next/headers` para poder probarse; la variante
   para componentes de servidor vive en `lib/admin-session.ts`.
 - `/admin` no entra en la navegación: es una página de operación, no de
-  producto. Se llega desde `/alerts`.
+  producto. Se llega desde `/alerts`, y desde ahí a `/admin/imagenes`.
 
 ### Caché de las páginas
 

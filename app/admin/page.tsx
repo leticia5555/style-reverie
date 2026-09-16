@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AdminLogin } from "@/components/AdminLogin";
 import { PageLede } from "@/components/PageLede";
 import { isAdminSession } from "@/lib/admin-session";
@@ -20,6 +21,17 @@ export default async function AdminPage() {
           configured={Boolean(process.env.ADMIN_PASSWORD)}
         />
       </div>
+
+      {signedIn ? (
+        <nav className="mt-6 border-t border-line pt-4">
+          <Link
+            href="/admin/imagenes"
+            className="text-sm text-lavender-ink hover:underline"
+          >
+            Fotos de tendencias →
+          </Link>
+        </nav>
+      ) : null}
     </div>
   );
 }

@@ -172,6 +172,15 @@ porque escriben en el catálogo y ese secreto viaja en URLs:
 | --- | --- |
 | `POST /api/admin/login` | Cambia la contraseña por una cookie de sesión; `DELETE` la cierra |
 | `POST /api/admin/candidates` | `{slug, action}` con `promote` o `discard` |
+| `POST /api/admin/images` | `{trendId, imageUrl, credit, creditUrl}`, o `{trendId, action:"remove"}` |
+
+`/admin/imagenes` es el panel para curar fotos sin editar JSON: se pega la URL,
+el crédito y el enlace al original, el servidor comprueba que la imagen cargue
+de verdad y, si el host es nuevo, lo aprueba. Guarda en Postgres —`content/` se
+lee durante el build y en Vercel el disco es de solo lectura— y las curadas se
+sirven por `GET /api/image`, un proxy de este mismo origen que solo pasa hosts
+aprobados. Eso es lo que hace que un host aprobado hoy funcione hoy, sin
+redeploy.
 
 Se entra por `/admin`, que no está en la navegación: es operación, no producto.
 **`ADMIN_PASSWORD` es obligatoria para `/admin`**: sin ella no hay sesión posible
