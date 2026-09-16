@@ -163,6 +163,12 @@ secreto después de usarlo así.
 | `GET /api/cron/daily` | Corrida diaria: migra, corre las fuentes, descubre candidatas y congela la edición del domingo |
 | `GET /api/admin/setup` | Aplica el esquema y siembra solo si `trends` está vacía. Idempotente |
 | `GET /api/admin/runs` | Las últimas 20 filas de `signal_runs` con su `detail`. Solo lectura; `?limit=` sube hasta 100 |
+| `GET /api/admin/discover` | Corre solo el descubrimiento y devuelve su desglose y las candidatas. `?date=` repite un día concreto |
+
+`discover` hace exactamente lo mismo que el paso del cron —mismo filtro, mismas
+tandas, misma escritura— así que lo que se ve ahí es lo que va a pasar mañana,
+no una simulación. Queda en la bitácora como `discover-manual` para no
+confundir una prueba a mano con lo que hizo el cron por su cuenta.
 
 `runs` es la que se abre cuando algo salió raro: cada conector deja ahí su
 motivo de fallo o de salto, y el paso de descubrimiento su desglose completo.
@@ -192,6 +198,17 @@ exposiciones— porque una nota sobre el nuevo director creativo de una casa dic
   dos para seguir sin ninguna prenda.
 - **Pesa el otro tema**: un titular de belleza que además nombra un vestido
   cae por belleza.
+
+El feed entero pasa por el modelo, en tandas de 40 con seis de tope. De 130
+titulares cruzaban dos con el catálogo, así que quedarse con los primeros 40
+tiraba el 70% de la materia prima. Una tanda que revienta para las siguientes
+pero no tira las que ya salieron bien.
+
+Las menciones cuentan **titulares distintos**, no apariciones: un artículo se
+queda en el feed varios días, y si cada corrida volviera a sumarlo la lista
+quedaría ordenada por antigüedad del feed en vez de por cuánto se habla de la
+tendencia. La evidencia se une deduplicada por enlace, con lo nuevo delante y
+un tope de 20 titulares por candidata.
 
 Cada corrida deja su desglose en `signal_runs.detail`, en una línea:
 

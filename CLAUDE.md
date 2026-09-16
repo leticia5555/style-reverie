@@ -135,6 +135,11 @@ primeras son idempotentes y `runs` es solo lectura.
 desde el celular. Por eso el `detail` de cada paso tiene que ser legible por
 sí solo: ahí es donde se lee.
 
+`GET /api/admin/discover` corre solo el descubrimiento, para probarlo sin
+esperar al cron. Hace lo mismo que el paso del cron, con la misma escritura, y
+se registra como `discover-manual` para no confundir una prueba a mano con lo
+que hizo el cron.
+
 ### API de Anthropic: descubrimiento de candidatas
 
 `lib/sources/discovery.ts` manda los titulares del feed a Claude
@@ -153,6 +158,17 @@ sí solo: ahí es donde se lee.
   mandaron, cuántas candidatas devolvió el modelo y cuántas tumbó cada uno de
   los tres filtros de después. Una corrida "ok" con cero candidatas tiene que
   poder explicarse sin volver a correrla.
+- **El feed entero pasa por el modelo**, en tandas. El catálogo de muestra está
+  desconectado de lo que la prensa escribe —de 130 titulares cruzan dos—, así
+  que mientras eso siga así el descubrimiento es la forma de poblar el
+  catálogo, no un extra, y recortar el feed tira materia prima.
+- **Las menciones cuentan titulares distintos, no apariciones.** Un artículo se
+  queda en el feed varios días; sumarlo cada corrida ordenaría la lista por
+  antigüedad del feed. La evidencia se une deduplicada por enlace.
+- **El nombre que extrae el modelo es la prenda, no el tema**: de "los
+  pantalones satinados de los 90 vuelven" sale "pantalón satinado", no "años
+  90". En español, singular, como se pediría en una tienda. Décadas, estéticas
+  de época, ciudades, casas y temporadas no son tendencias.
 - **Las candidatas NO entran al catálogo solas.** Se acumulan en
   `trend_candidates` con su conteo de menciones y su evidencia; promoverlas es
   una decisión humana.
