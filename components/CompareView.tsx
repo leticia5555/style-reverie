@@ -56,7 +56,7 @@ function SideCard({ side, accent }: { side: CompareSide; accent: string }) {
         <div>
           <dt className="eyebrow">{t("common.sources")}</dt>
           <dd className="tabular mt-0.5 text-sm text-ink">
-            {summary.sourceCount}/6
+            {summary.sourceCount}/{summary.sourceTotal}
           </dd>
         </div>
       </dl>

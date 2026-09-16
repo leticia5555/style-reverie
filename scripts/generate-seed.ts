@@ -14,6 +14,7 @@ import { computeScore, momentum, SOURCE_WEIGHTS } from "@/lib/scoring";
 import {
   SOURCES,
   type Currency,
+  type Signals,
   type Lifecycle,
   type ShopLink,
   type ShopTier,
@@ -27,8 +28,16 @@ import { TREND_SPECS, type TrendSpec } from "./trend-specs";
 
 const DAYS = 90;
 const AS_OF = "2026-09-14";
-/** Editorial se adelanta a la calle; Amazon va por detrás. */
-const SOURCE_LAG: Record<SourceKey, number> = {
+/**
+ * Editorial se adelanta a la calle; Amazon va por detrás.
+ *
+ * Mercado Libre no aparece: el seed es histórico de muestra y esa fuente solo
+ * existe desde que el cron la trae de verdad. Un día sin una fuente no es un
+ * día con esa fuente en cero — el score se renormaliza sobre lo que hay.
+ */
+const SEEDED_SOURCES = SOURCES.filter((source) => source !== "mercadolibre");
+
+const SOURCE_LAG: Partial<Record<SourceKey, number>> = {
   google_trends: 0,
   pinterest: -3,
   tiktok: -5,
@@ -124,16 +133,23 @@ function baseCurve(target: Lifecycle, rng: Rng): (index: number) => number {
 function sourceProfile(rng: Rng) {
   const biasRaw = {} as Record<SourceKey, number>;
   const offsetRaw = {} as Record<SourceKey, number>;
-  for (const source of SOURCES) {
+  for (const source of SEEDED_SOURCES) {
     biasRaw[source] = 1 + between(rng, -0.12, 0.12);
     offsetRaw[source] = between(rng, -5, 5);
   }
-  const biasMean = SOURCES.reduce((a, s) => a + biasRaw[s] * SOURCE_WEIGHTS[s], 0);
-  const offsetMean = SOURCES.reduce((a, s) => a + offsetRaw[s] * SOURCE_WEIGHTS[s], 0);
+  // Se normaliza contra el peso renormalizado de las fuentes sembradas, para
+  // que el promedio ponderado del día siga siendo la curva base.
+  const weightSum = SEEDED_SOURCES.reduce((a, s) => a + SOURCE_WEIGHTS[s], 0);
+  const biasMean =
+    SEEDED_SOURCES.reduce((a, s) => a + biasRaw[s] * SOURCE_WEIGHTS[s], 0) /
+    weightSum;
+  const offsetMean =
+    SEEDED_SOURCES.reduce((a, s) => a + offsetRaw[s] * SOURCE_WEIGHTS[s], 0) /
+    weightSum;
 
   const bias = {} as Record<SourceKey, number>;
   const offset = {} as Record<SourceKey, number>;
-  for (const source of SOURCES) {
+  for (const source of SEEDED_SOURCES) {
     bias[source] = biasRaw[source] / biasMean;
     offset[source] = offsetRaw[source] - offsetMean;
   }
@@ -148,10 +164,10 @@ function buildHistory(spec: TrendSpec, attempt: number): SignalPoint[] {
 
   const history: SignalPoint[] = [];
   for (let i = 0; i < DAYS; i += 1) {
-    const signals = {} as Record<SourceKey, number>;
-    for (const source of SOURCES) {
+    const signals: Signals = {};
+    for (const source of SEEDED_SOURCES) {
       const value =
-        curve(i - SOURCE_LAG[source]) * bias[source] +
+        curve(i - (SOURCE_LAG[source] ?? 0)) * bias[source] +
         offset[source] +
         between(noiseRng, -1.6, 1.6);
       signals[source] = round1(clamp(value, 2, 98));
@@ -360,7 +376,7 @@ function buildKeywords(spec: TrendSpec): string[] {
 function buildTrend(spec: TrendSpec): Trend {
   for (let attempt = 0; attempt < 600; attempt += 1) {
     const history = buildHistory(spec, attempt);
-    const score = computeScore(history[history.length - 1].signals);
+    const score = computeScore(history[history.length - 1].signals) ?? 0;
     const momentum7d = momentum(history);
     if (deriveLifecycle(score, momentum7d) !== spec.target) continue;
 
@@ -405,7 +421,7 @@ function main() {
 
   const counts = new Map<Lifecycle, number>();
   for (const trend of trends) {
-    const score = computeScore(trend.history[trend.history.length - 1].signals);
+    const score = computeScore(trend.history[trend.history.length - 1].signals) ?? 0;
     const momentum7d = momentum(trend.history);
     const lifecycle = deriveLifecycle(score, momentum7d);
     counts.set(lifecycle, (counts.get(lifecycle) ?? 0) + 1);

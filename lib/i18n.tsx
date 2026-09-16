@@ -289,6 +289,7 @@ const dict = {
   "category.accesorio": { es: "Accesorio", en: "Accessory" },
   "category.estilo": { es: "Estilo", en: "Style" },
   "source.google_trends": { es: "Google Trends", en: "Google Trends" },
+  "source.mercadolibre": { es: "Mercado Libre", en: "Mercado Libre" },
   "source.pinterest": { es: "Pinterest", en: "Pinterest" },
   "source.tiktok": { es: "TikTok", en: "TikTok" },
   "source.instagram": { es: "Instagram", en: "Instagram" },

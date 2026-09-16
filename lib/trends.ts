@@ -3,6 +3,7 @@ import { forecast, type Forecast } from "@/lib/forecast";
 import { deriveLifecycle } from "@/lib/lifecycle";
 import {
   activeSourceCount,
+  availableSourceCount,
   computeScore,
   momentum,
   scoreSeries,
@@ -43,7 +44,9 @@ function sparkline(series: number[], points = 30): number[] {
 
 export function toSummary(trend: Trend): TrendSummary {
   const today = trend.history[trend.history.length - 1];
-  const score = computeScore(today.signals);
+  // El último día siempre trae alguna fuente: un día sin ninguna se descarta
+  // al construir el catálogo, tanto desde el seed como desde la base.
+  const score = computeScore(today.signals) ?? 0;
   const momentum7d = momentum(trend.history);
 
   return {
@@ -56,6 +59,7 @@ export function toSummary(trend: Trend): TrendSummary {
     momentum7d,
     yoyPct: yoyChange(score, trend.scoreYearAgo),
     sourceCount: activeSourceCount(today.signals),
+    sourceTotal: availableSourceCount(today.signals),
     spark: sparkline(scoreSeries(trend.history)),
   };
 }

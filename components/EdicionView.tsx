@@ -92,7 +92,7 @@ function Pick({ pick, index }: { pick: EdicionPick; index: number }) {
         </div>
         <div className="flex items-baseline gap-2">
           <dt className="eyebrow">{t("common.sources")}</dt>
-          <dd className="tabular text-sm text-ink">{summary.sourceCount}/6</dd>
+          <dd className="tabular text-sm text-ink">{summary.sourceCount}/{summary.sourceTotal}</dd>
         </div>
       </dl>
 

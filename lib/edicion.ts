@@ -73,10 +73,10 @@ const REASONS: Record<"EMERGIENDO" | "SUBIENDO", ((v: Vars) => Localized)[]> = {
       es: `Lleva ${v.risingDays} días subiendo y todavía ${
         v.sources === 1
           ? "la confirma una sola fuente"
-          : `la confirman ${v.sources} de seis fuentes`
+          : `la confirman ${v.sources} de ${v.sourceTotal} fuentes`
       }. Entrar aquí es entrar temprano.`,
       en: `Climbing for ${v.risingDays} days and still confirmed by ${
-        v.sources === 1 ? "a single source" : `${v.sources} of six sources`
+        v.sources === 1 ? "a single source" : `${v.sources} of ${v.sourceTotal} sources`
       }. Getting in here is getting in early.`,
     }),
     (v) => ({
@@ -87,10 +87,10 @@ const REASONS: Record<"EMERGIENDO" | "SUBIENDO", ((v: Vars) => Localized)[]> = {
   SUBIENDO: [
     (v) => ({
       es: `Ya ${
-        v.sources === 1 ? "la lleva una fuente" : `la llevan ${v.sources} de seis fuentes`
+        v.sources === 1 ? "la lleva una fuente" : `la llevan ${v.sources} de ${v.sourceTotal} fuentes`
       } y sigue ganando ${v.momentum} puntos por semana. Queda margen, pero se acorta.`,
       en: `Already carried by ${
-        v.sources === 1 ? "a single source" : `${v.sources} of six sources`
+        v.sources === 1 ? "a single source" : `${v.sources} of ${v.sourceTotal} sources`
       } and still gaining ${v.momentum} points a week. There is room left, but it is closing.`,
     }),
     (v) => ({
@@ -109,6 +109,7 @@ type Vars = {
   momentum: string;
   risingDays: number;
   sources: number;
+  sourceTotal: number;
   yoy: string;
   startScore: string;
 };
@@ -134,6 +135,7 @@ function buildReason(
     momentum: summary.momentum7d.toFixed(1),
     risingDays,
     sources: summary.sourceCount,
+    sourceTotal: summary.sourceTotal,
     yoy: Math.round(summary.yoyPct).toString(),
     startScore: startScore.toFixed(1),
   };

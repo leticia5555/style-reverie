@@ -12,7 +12,6 @@ import { useI18n } from "@/lib/i18n";
 import { trendInsight } from "@/lib/insights-trend";
 import type { ChartRow } from "@/lib/origin";
 import type { TrendDetail } from "@/lib/trends";
-import { SOURCES } from "@/lib/types";
 
 export function TrendDetailView({
   detail,
@@ -100,7 +99,7 @@ export function TrendDetailView({
             {t("detail.breakdown")}
           </h2>
           <p className="text-xs text-muted">
-            {summary.sourceCount}/{SOURCES.length} {t("common.sources")}
+            {summary.sourceCount}/{summary.sourceTotal} {t("common.sources")}
           </p>
         </div>
         <p className="mt-1 text-xs text-muted">{t("detail.breakdownNote")}</p>

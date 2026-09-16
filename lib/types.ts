@@ -2,6 +2,7 @@
 
 export const SOURCES = [
   "google_trends",
+  "mercadolibre",
   "pinterest",
   "tiktok",
   "instagram",
@@ -52,10 +53,19 @@ export type ShopLink = {
   url: string;
 };
 
-/** Señales crudas de un día, 0–100 por fuente. */
+/**
+ * Señales crudas de un día, 0–100 por fuente.
+ *
+ * Parcial a propósito: un día no tiene por qué traer todas las fuentes. Las
+ * reales llegan cuando llegan, Pinterest nunca se persiste, y el score se
+ * renormaliza sobre lo que hay. Un día sin una fuente no es un día con esa
+ * fuente en cero.
+ */
+export type Signals = Partial<Record<SourceKey, number>>;
+
 export type SignalPoint = {
   date: string;
-  signals: Record<SourceKey, number>;
+  signals: Signals;
 };
 
 export type Trend = {
@@ -100,5 +110,7 @@ export type TrendSummary = {
   momentum7d: number;
   yoyPct: number;
   sourceCount: number;
+  /** Fuentes que participan y tienen valor hoy; el denominador de sourceCount. */
+  sourceTotal: number;
   spark: number[];
 };

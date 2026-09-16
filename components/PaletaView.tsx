@@ -114,7 +114,7 @@ export function PaletaView({
                   <div className="flex items-baseline gap-2">
                     <dt className="eyebrow">{t("common.sources")}</dt>
                     <dd className="tabular text-sm text-ink">
-                      {entry.summary.sourceCount}/6
+                      {entry.summary.sourceCount}/{entry.summary.sourceTotal}
                     </dd>
                   </div>
                 </dl>

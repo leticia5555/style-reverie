@@ -21,8 +21,8 @@ export function trendInsight(
 
   if (summary.lifecycle === "PICO") {
     return {
-      es: `Saturada: la llevan ${summary.sourceCount} de seis fuentes y el momentum ya se aplanó en ${summary.momentum7d.toFixed(1)}.`,
-      en: `Saturated: carried by ${summary.sourceCount} of six sources, with momentum flattened at ${summary.momentum7d.toFixed(1)}.`,
+      es: `Saturada: la llevan ${summary.sourceCount} de ${summary.sourceTotal} fuentes y el momentum ya se aplanó en ${summary.momentum7d.toFixed(1)}.`,
+      en: `Saturated: carried by ${summary.sourceCount} of ${summary.sourceTotal} sources, with momentum flattened at ${summary.momentum7d.toFixed(1)}.`,
     };
   }
 
@@ -45,11 +45,11 @@ export function trendInsight(
 
   return trustworthy
     ? {
-        es: `${phase.es}: ${summary.sourceCount} de seis fuentes la confirman y la recta suma ${move} puntos en siete días.`,
-        en: `${phase.en}: ${summary.sourceCount} of six sources confirm it, and the line adds ${move} points over seven days.`,
+        es: `${phase.es}: ${summary.sourceCount} de ${summary.sourceTotal} fuentes la confirman y la recta suma ${move} puntos en siete días.`,
+        en: `${phase.en}: ${summary.sourceCount} of ${summary.sourceTotal} sources confirm it, and the line adds ${move} points over seven days.`,
       }
     : {
-        es: `${phase.es}: ${summary.sourceCount} de seis fuentes la confirman, pero la curva viene demasiado irregular para proyectarla.`,
-        en: `${phase.en}: ${summary.sourceCount} of six sources confirm it, but the curve is too irregular to project.`,
+        es: `${phase.es}: ${summary.sourceCount} de ${summary.sourceTotal} fuentes la confirman, pero la curva viene demasiado irregular para proyectarla.`,
+        en: `${phase.en}: ${summary.sourceCount} of ${summary.sourceTotal} sources confirm it, but the curve is too irregular to project.`,
       };
 }

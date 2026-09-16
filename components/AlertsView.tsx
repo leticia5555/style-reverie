@@ -73,7 +73,7 @@ function AlertCard({ alert }: { alert: Alert }) {
           <div>
             <dt className="eyebrow">{t("common.sources")}</dt>
             <dd className="tabular mt-0.5 text-sm text-ink">
-              {alert.sourceCount}/6
+              {alert.sourceCount}/{alert.sourceTotal}
             </dd>
           </div>
         </dl>

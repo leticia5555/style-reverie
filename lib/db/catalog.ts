@@ -100,8 +100,14 @@ export async function loadCatalogFromDb(db: Db): Promise<DbCatalog | null> {
 
     const history = [...days.values()]
       .sort((a, b) => a.date.localeCompare(b.date))
-      // Un día incompleto rompería el promedio ponderado: se descarta.
-      .filter((point) => SOURCES.every((source) => source in point.signals));
+      /**
+       * El día se arma con las fuentes que haya. Antes se exigían las seis y
+       * eso dejaba fuera cualquier día al que le faltara una — justo lo que
+       * pasa mientras las fuentes reales van entrando una por una. El score
+       * se renormaliza sobre lo presente, así que un día con tres fuentes es
+       * un día válido, no un hueco.
+       */
+      .filter((point) => Object.keys(point.signals).length > 0);
     if (!history.length) continue;
 
     trends.push({
@@ -162,7 +168,10 @@ export async function saveCatalogToDb(
   let written = 0;
   for (const trend of trends) {
     for (const point of trend.history) {
-      for (const source of SOURCES) {
+      // Solo las fuentes que ese día tienen valor: una ausente no es un cero.
+      for (const source of SOURCES.filter(
+        (key) => typeof point.signals[key] === "number",
+      )) {
         await db.query(
           `insert into signals (trend_id, source, date, value, origin)
            values ($1,$2,$3,$4,$5)

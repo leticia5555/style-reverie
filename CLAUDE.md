@@ -40,8 +40,43 @@ preguntar, no improvisar.
 
 - **El score y el ciclo de vida se DERIVAN en `lib/`. Nunca se guardan ni se
   asignan a mano.**
-  - `lib/scoring.ts` — el score es el promedio ponderado de las seis señales.
+  - `lib/scoring.ts` — el score es el promedio ponderado **renormalizado**.
   - `lib/lifecycle.ts` — el ciclo de vida sale de score + momentum 7d.
+
+### Pesos y renormalización
+
+Pesos conceptuales, suman 1 entre las siete fuentes:
+
+| Fuente | Peso | Participa |
+| --- | --- | --- |
+| Google Trends | .20 | sí |
+| Mercado Libre | .20 | sí |
+| Pinterest | .18 | **NO** |
+| TikTok | .15 | sí |
+| Instagram | .10 | sí |
+| Editorial | .10 | sí |
+| Amazon | .07 | sí |
+
+**El score de cada día se calcula solo con las fuentes que tienen valor ese
+día, reescalando sus pesos para que sumen 1 entre ellas.**
+
+Esto no es un detalle de implementación, es lo que permite que el score
+sobreviva a la realidad: una fuente que todavía no existe, otra que se cae tres
+días, Pinterest que nunca participa. Sin renormalizar, cada hueco hundiría el
+score como si el mercado se hubiera enfriado, cuando lo único que pasó es que
+faltó un dato.
+
+- **Una fuente ausente no es una fuente en cero.** `SignalPoint.signals` es
+  parcial a propósito. Escribir ceros para rellenar es la forma más fácil de
+  romper esto.
+- **Pinterest tiene peso pero nunca participa**, porque no se persiste. Su .18
+  existe para dejar dicho cuánto valdría el día que se decida; hasta entonces
+  se reparte entre las demás al renormalizar.
+- Un día sin ninguna fuente utilizable da `null`, no cero.
+- El desglose por fuente muestra el peso **ya renormalizado**: la columna suma
+  100% y los aportes suman el score, o la tabla no explica el número de al lado.
+- `sourceCount` va siempre con `sourceTotal`. Nada de "de seis fuentes"
+  escrito a mano: el denominador es cuántas hubo ese día.
 - El seed trae un `target` de ciclo de vida por tendencia, pero es solo la forma
   de curva que el generador debe producir: la app **siempre** re-deriva.
 - Cambiar los pesos o los umbrales debe recalcular el histórico completo sin
@@ -83,11 +118,8 @@ Tres reglas, y la primera no es negociable.
 
 - Son la base del histórico. Se guardan con snapshot diario y origen `real`.
 - Mercado Libre Trends es la fuente primaria para México.
-- **Pendiente de decisión:** las lecturas de Mercado Libre se guardan bajo la
-  clave `mercadolibre` y **no entran al score compuesto**. Meterlas como
-  séptima señal cambiaría los 25 scores del catálogo y contradiría la regla de
-  las seis señales de arriba; es una decisión de producto que hay que tomar
-  explícitamente, decidiendo los pesos nuevos y regenerando el test de oro.
+- Mercado Libre **sí entra al score**, con peso .20 igual que Google. Decidido
+  en la sesión 5; ver la tabla de pesos arriba.
 
 ### Rutas de operación
 

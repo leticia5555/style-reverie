@@ -9,7 +9,7 @@ import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { Sparkline } from "@/components/Sparkline";
 import { useI18n } from "@/lib/i18n";
 import { LIFECYCLE_STYLES } from "@/lib/lifecycle";
-import { SOURCES, CATEGORIES, LIFECYCLES } from "@/lib/types";
+import { CATEGORIES, LIFECYCLES } from "@/lib/types";
 import type { Category, Lifecycle, TrendSummary } from "@/lib/types";
 
 type SortKey = "score" | "momentum7d" | "yoyPct" | "name";
@@ -180,7 +180,7 @@ export function TrendTable({ rows }: { rows: TrendSummary[] }) {
                   <Delta value={row.yoyPct} suffix="%" decimals={0} />
                 </td>
                 <td className="py-3 text-right">
-                  <SourceDots count={row.sourceCount} />
+                  <SourceDots count={row.sourceCount} total={row.sourceTotal} />
                 </td>
               </tr>
             ))}
@@ -215,13 +215,13 @@ export function TrendTable({ rows }: { rows: TrendSummary[] }) {
 }
 
 /** Los seis puntos de fuentes. Mismo componente en tabla y en tarjeta. */
-function SourceDots({ count }: { count: number }) {
+function SourceDots({ count, total }: { count: number; total: number }) {
   return (
     <span className="inline-flex items-center gap-2">
       <span className="flex gap-0.5" aria-hidden>
-        {SOURCES.map((source, index) => (
+        {Array.from({ length: total }).map((_, index) => (
           <span
-            key={source}
+            key={index}
             className={`h-1.5 w-1.5 rounded-full ${
               index < count ? "bg-lavender" : "bg-line-strong"
             }`}
@@ -229,7 +229,7 @@ function SourceDots({ count }: { count: number }) {
         ))}
       </span>
       <span className="tabular text-xs text-muted">
-        {count}/{SOURCES.length}
+        {count}/{total}
       </span>
     </span>
   );
@@ -282,7 +282,7 @@ function TrendCard({ row }: { row: TrendSummary }) {
             </dd>
           </div>
           <div className="ml-auto">
-            <SourceDots count={row.sourceCount} />
+            <SourceDots count={row.sourceCount} total={row.sourceTotal} />
           </div>
         </dl>
       </Link>
