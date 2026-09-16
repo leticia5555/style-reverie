@@ -8,7 +8,7 @@ import { ShoppingTiers } from "@/components/ShoppingTiers";
 import { SourceBreakdown } from "@/components/SourceBreakdown";
 import { StatTile } from "@/components/StatTile";
 import { useI18n } from "@/lib/i18n";
-import { trendInsight } from "@/lib/insights";
+import { trendInsight } from "@/lib/insights-trend";
 import type { TrendDetail } from "@/lib/trends";
 import { SOURCES } from "@/lib/types";
 

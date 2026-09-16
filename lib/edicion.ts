@@ -6,6 +6,7 @@ import {
   historyDates,
   summaryAsOf,
 } from "@/lib/trends";
+import type { Trend } from "@/lib/types";
 import { scoreSeries } from "@/lib/scoring";
 import type { Localized, ShopLink, ShopTier, TrendSummary } from "@/lib/types";
 
@@ -45,8 +46,8 @@ export type Edicion = {
 };
 
 /** Domingos del histórico con suficiente recorrido detrás, del más nuevo al más viejo. */
-export function edicionDates(): string[] {
-  return historyDates()
+export function edicionDates(trends: Trend[] = getTrends()): string[] {
+  return historyDates(trends)
     .filter((date, index) => {
       if (index + 1 < MIN_HISTORY_DAYS) return false;
       return new Date(`${date}T12:00:00Z`).getUTCDay() === 0;
@@ -54,8 +55,8 @@ export function edicionDates(): string[] {
     .reverse();
 }
 
-export function currentEdicionDate(): string {
-  return edicionDates()[0];
+export function currentEdicionDate(trends: Trend[] = getTrends()): string {
+  return edicionDates(trends)[0];
 }
 
 /**
@@ -144,8 +145,12 @@ const DEFAULT_INTRO: Localized = {
   en: "Five pieces to buy this week, picked by momentum among trends that have not peaked yet.",
 };
 
-function buildPick(trendId: string, date: string): EdicionPick | null {
-  const trend = getTrendById(trendId);
+function buildPick(
+  trendId: string,
+  date: string,
+  trends: Trend[],
+): EdicionPick | null {
+  const trend = getTrendById(trendId, trends);
   if (!trend) return null;
   const summary = summaryAsOf(trend, date);
   if (!summary) return null;
@@ -166,8 +171,8 @@ function buildPick(trendId: string, date: string): EdicionPick | null {
 }
 
 /** Selección automática: mayor momentum entre SUBIENDO y EMERGIENDO esa semana. */
-function autoSelection(date: string): string[] {
-  return getTrends()
+function autoSelection(date: string, trends: Trend[]): string[] {
+  return trends
     .map((trend) => summaryAsOf(trend, date))
     .filter((summary): summary is TrendSummary => Boolean(summary))
     .filter(
@@ -179,17 +184,20 @@ function autoSelection(date: string): string[] {
     .map((summary) => summary.id);
 }
 
-export function getEdicion(date: string): Edicion | undefined {
-  if (!edicionDates().includes(date)) return undefined;
+export function getEdicion(
+  date: string,
+  trends: Trend[] = getTrends(),
+): Edicion | undefined {
+  if (!edicionDates(trends).includes(date)) return undefined;
 
   const override = readContent<EdicionOverride>(CONTENT_FOLDER, date);
   const ids = override?.picks?.length
     ? override.picks.map((pick) => pick.trendId)
-    : autoSelection(date);
+    : autoSelection(date, trends);
 
   const picks = ids
     .map((id) => {
-      const pick = buildPick(id, date);
+      const pick = buildPick(id, date, trends);
       if (!pick) return null;
       const manual = override?.picks?.find((entry) => entry.trendId === id);
       return {
@@ -216,10 +224,12 @@ export type EdicionSummary = {
   names: Localized[];
 };
 
-export function listEdiciones(): EdicionSummary[] {
+export function listEdiciones(
+  trends: Trend[] = getTrends(),
+): EdicionSummary[] {
   const curatedDates = new Set(listContent(CONTENT_FOLDER));
-  return edicionDates().map((date) => {
-    const edicion = getEdicion(date);
+  return edicionDates(trends).map((date) => {
+    const edicion = getEdicion(date, trends);
     return {
       date,
       curated: curatedDates.has(date),

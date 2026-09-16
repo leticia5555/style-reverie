@@ -1,21 +1,22 @@
 import { PageLede } from "@/components/PageLede";
 import { TrendTable } from "@/components/TrendTable";
 import { trendingInsight } from "@/lib/insights";
-import { getTrendSummaries } from "@/lib/trends";
+import { getCatalog, getTrendSummaries } from "@/lib/trends";
 
 export const metadata = {
   title: "Tendencias — Style Reverie",
 };
 
-export default function TrendingPage() {
-  const rows = getTrendSummaries();
+export default async function TrendingPage() {
+  const { trends } = await getCatalog();
+  const rows = getTrendSummaries(trends);
 
   return (
     <div className="mx-auto max-w-6xl">
       <PageLede
         titleKey="trending.title"
         subtitleKey="trending.subtitle"
-        insight={trendingInsight()}
+        insight={trendingInsight(trends)}
       />
       <TrendTable rows={rows} />
     </div>

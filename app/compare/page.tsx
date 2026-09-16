@@ -2,6 +2,7 @@ import { CompareView } from "@/components/CompareView";
 import { compareInsight } from "@/lib/insights";
 import {
   defaultComparePair,
+  getCatalog,
   getComparison,
   getTrendSummaries,
 } from "@/lib/trends";
@@ -19,15 +20,19 @@ export default async function ComparePage({
   searchParams,
 }: PageProps<"/compare">) {
   const params = await searchParams;
-  const fallback = defaultComparePair();
+  const { trends } = await getCatalog();
+  const fallback = defaultComparePair(trends);
   const read = (value: string | string[] | undefined) =>
     Array.isArray(value) ? value[0] : value;
 
   const comparison =
-    getComparison(read(params.a) ?? fallback.a, read(params.b) ?? fallback.b) ??
-    getComparison(fallback.a, fallback.b)!;
+    getComparison(
+      read(params.a) ?? fallback.a,
+      read(params.b) ?? fallback.b,
+      trends,
+    ) ?? getComparison(fallback.a, fallback.b, trends)!;
 
-  const options = getTrendSummaries().map(({ id, name, category, score }) => ({
+  const options = getTrendSummaries(trends).map(({ id, name, category, score }) => ({
     id,
     name,
     category,

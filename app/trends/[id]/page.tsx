@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { TrendDetailView } from "@/components/TrendDetailView";
-import { getTrendById, getTrendDetail, getTrends } from "@/lib/trends";
+import {
+  getCatalog,
+  getTrendById,
+  getTrendDetail,
+  getTrends,
+} from "@/lib/trends";
 
 export function generateStaticParams() {
   return getTrends().map((trend) => ({ id: trend.id }));
@@ -22,7 +27,8 @@ export default async function TrendDetailPage({
   params,
 }: PageProps<"/trends/[id]">) {
   const { id } = await params;
-  const detail = getTrendDetail(id);
+  const { trends } = await getCatalog();
+  const detail = getTrendDetail(id, trends);
   if (!detail) notFound();
 
   return <TrendDetailView detail={detail} />;

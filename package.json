@@ -10,7 +10,9 @@
     "seed": "tsx scripts/generate-seed.ts",
     "editorial": "tsx scripts/fetch-editorial.ts",
     "test": "tsx --test tests/**/*.test.ts",
-    "golden": "tsx scripts/write-golden.ts"
+    "golden": "tsx scripts/write-golden.ts",
+    "db:migrate": "tsx scripts/db-migrate.ts",
+    "db:seed": "tsx scripts/db-seed.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

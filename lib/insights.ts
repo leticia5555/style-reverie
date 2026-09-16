@@ -1,4 +1,5 @@
 import { getAlerts, getTrends, historyDates, summaryAsOf, toSummary } from "@/lib/trends";
+import type { Trend } from "@/lib/types";
 import type { Lifecycle, Localized, TrendSummary } from "@/lib/types";
 import { LIFECYCLES } from "@/lib/types";
 
@@ -22,8 +23,8 @@ export type Insight = {
 const WEEK = 7;
 
 /** Fecha de hace una semana dentro del histórico. */
-function weekAgoDate(): string {
-  const dates = historyDates();
+function weekAgoDate(trends: Trend[]): string {
+  const dates = historyDates(trends);
   return dates[Math.max(0, dates.length - 1 - WEEK)];
 }
 
@@ -34,9 +35,9 @@ type Movement = {
 };
 
 /** Tendencias que cambiaron de fase en los últimos siete días. */
-export function weeklyMovements(): Movement[] {
-  const past = weekAgoDate();
-  return getTrends()
+export function weeklyMovements(trends: Trend[] = getTrends()): Movement[] {
+  const past = weekAgoDate(trends);
+  return trends
     .map((trend) => {
       const after = toSummary(trend);
       const before = summaryAsOf(trend, past);
@@ -46,11 +47,13 @@ export function weeklyMovements(): Movement[] {
     .filter((move): move is Movement => Boolean(move));
 }
 
-export function lifecycleCounts(): Record<Lifecycle, number> {
+export function lifecycleCounts(
+  trends: Trend[] = getTrends(),
+): Record<Lifecycle, number> {
   const counts = Object.fromEntries(
     LIFECYCLES.map((key) => [key, 0]),
   ) as Record<Lifecycle, number>;
-  for (const trend of getTrends()) counts[toSummary(trend).lifecycle] += 1;
+  for (const trend of trends) counts[toSummary(trend).lifecycle] += 1;
   return counts;
 }
 
@@ -59,9 +62,9 @@ const plural = (n: number, one: string, many: string) =>
 
 /* ── /trending ─────────────────────────────────────────────────────── */
 
-export function trendingInsight(): Insight {
-  const counts = lifecycleCounts();
-  const moves = weeklyMovements();
+export function trendingInsight(trends: Trend[] = getTrends()): Insight {
+  const counts = lifecycleCounts(trends);
+  const moves = weeklyMovements(trends);
   const toPeak = moves.filter((move) => move.after === "PICO");
   const toFalling = moves.filter((move) => move.after === "CAYENDO");
 
@@ -104,8 +107,8 @@ export function trendingInsight(): Insight {
 
 /* ── /alerts ───────────────────────────────────────────────────────── */
 
-export function alertsInsight(): Insight {
-  const alerts = getAlerts();
+export function alertsInsight(trends: Trend[] = getTrends()): Insight {
+  const alerts = getAlerts(trends);
   const top = alerts[0];
 
   const figures: Figure[] = [
@@ -141,13 +144,13 @@ export function alertsInsight(): Insight {
  * Compara el ranking de colores de hoy con el de hace una semana. Si alguno
  * adelantó a otro, esa es la frase; es literalmente "el sage le ganó al matcha".
  */
-export function paletaInsight(): Insight {
-  const colors = getTrends().filter((trend) => trend.category === "color");
+export function paletaInsight(trends: Trend[] = getTrends()): Insight {
+  const colors = trends.filter((trend) => trend.category === "color");
   const now = colors
     .map((trend) => toSummary(trend))
     .sort((a, b) => b.score - a.score);
 
-  const past = weekAgoDate();
+  const past = weekAgoDate(trends);
   const before = colors
     .map((trend) => summaryAsOf(trend, past))
     .filter((summary): summary is TrendSummary => Boolean(summary))
@@ -383,54 +386,4 @@ export function compareInsight(
             en: `No crossing in 90 days: ${ahead.name.en.toLowerCase()} has led the whole quarter.`,
           },
   };
-}
-
-/* ── /trends/[id] ──────────────────────────────────────────────────── */
-
-/**
- * La línea de la ficha: qué está haciendo esta tendencia ahora mismo. Combina
- * la fase, el momentum y hacia dónde apunta la recta de los últimos 30 días.
- */
-export function trendInsight(
-  summary: TrendSummary,
-  forecast: { target: number; fit: number } | null,
-): Localized | null {
-  const delta = forecast ? forecast.target - summary.score : 0;
-  const move = Math.abs(delta).toFixed(1);
-  // Con R² bajo la recta no describe nada y mejor no prometer un número.
-  const trustworthy = forecast !== null && forecast.fit >= 0.7;
-
-  if (summary.lifecycle === "PICO") {
-    return {
-      es: `Saturada: la llevan ${summary.sourceCount} de seis fuentes y el momentum ya se aplanó en ${summary.momentum7d.toFixed(1)}.`,
-      en: `Saturated: carried by ${summary.sourceCount} of six sources, with momentum flattened at ${summary.momentum7d.toFixed(1)}.`,
-    };
-  }
-
-  if (summary.lifecycle === "CAYENDO") {
-    return trustworthy && delta < 0
-      ? {
-          es: `En descenso: pierde ${Math.abs(summary.momentum7d).toFixed(1)} puntos por semana y la recta la deja en ${forecast!.target.toFixed(1)} el domingo que viene.`,
-          en: `On the way down: losing ${Math.abs(summary.momentum7d).toFixed(1)} points a week, and the line puts it at ${forecast!.target.toFixed(1)} by next Sunday.`,
-        }
-      : {
-          es: `En descenso: pierde ${Math.abs(summary.momentum7d).toFixed(1)} puntos por semana.`,
-          en: `On the way down: losing ${Math.abs(summary.momentum7d).toFixed(1)} points a week.`,
-        };
-  }
-
-  const phase =
-    summary.lifecycle === "EMERGIENDO"
-      ? { es: "Todavía nicho", en: "Still niche" }
-      : { es: "En ascenso", en: "Climbing" };
-
-  return trustworthy
-    ? {
-        es: `${phase.es}: ${summary.sourceCount} de seis fuentes la confirman y la recta suma ${move} puntos en siete días.`,
-        en: `${phase.en}: ${summary.sourceCount} of six sources confirm it, and the line adds ${move} points over seven days.`,
-      }
-    : {
-        es: `${phase.es}: ${summary.sourceCount} de seis fuentes la confirman, pero la curva viene demasiado irregular para proyectarla.`,
-        en: `${phase.en}: ${summary.sourceCount} of six sources confirm it, but the curve is too irregular to project.`,
-      };
 }

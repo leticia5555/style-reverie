@@ -1,5 +1,6 @@
 import { readContent } from "@/lib/content";
 import { getTrendById, getTrends, toSummary } from "@/lib/trends";
+import type { Trend } from "@/lib/types";
 import type { Category, Localized, TrendSummary } from "@/lib/types";
 
 const CONTENT_FOLDER = "paleta";
@@ -45,7 +46,10 @@ export function isDarkSwatch(hex: string): boolean {
   return luminance < 0.25;
 }
 
-function resolvePairs(colorId: string): {
+function resolvePairs(
+  colorId: string,
+  trends: Trend[],
+): {
   pairs: PairedTrend[];
   uncurated: boolean;
 } {
@@ -56,7 +60,7 @@ function resolvePairs(colorId: string): {
     // Un color no combina consigo mismo; si se cuela en el archivo, se ignora.
     .filter((pair) => pair.trendId !== colorId)
     .map((pair) => {
-      const trend = getTrendById(pair.trendId);
+      const trend = getTrendById(pair.trendId, trends);
       return trend
         ? { summary: toSummary(trend), note: pair.note ?? null }
         : null;
@@ -66,8 +70,8 @@ function resolvePairs(colorId: string): {
   return { pairs, uncurated: false };
 }
 
-export function getPaleta(): PaletteEntry[] {
-  return getTrends()
+export function getPaleta(trends: Trend[] = getTrends()): PaletteEntry[] {
+  return trends
     .filter(
       (trend): trend is typeof trend & { swatch: string } =>
         trend.category === ("color" satisfies Category) && Boolean(trend.swatch),
@@ -76,7 +80,7 @@ export function getPaleta(): PaletteEntry[] {
       summary: toSummary(color),
       swatch: color.swatch,
       dark: isDarkSwatch(color.swatch),
-      ...resolvePairs(color.id),
+      ...resolvePairs(color.id, trends),
     }))
     .sort((a, b) => b.summary.score - a.summary.score);
 }

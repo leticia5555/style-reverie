@@ -16,12 +16,20 @@ const data = seed as unknown as TrendSeed;
 
 export const SEED_META = data.meta;
 
+/**
+ * El catálogo del seed. Es el fallback cuando la base no responde y el que
+ * usan los tests: las funciones puras de este módulo lo toman por defecto, de
+ * modo que se pueden llamar con el catálogo de Postgres sin cambiar nada más.
+ */
 export function getTrends(): Trend[] {
   return data.trends;
 }
 
-export function getTrendById(id: string): Trend | undefined {
-  return data.trends.find((trend) => trend.id === id);
+export function getTrendById(
+  id: string,
+  trends: Trend[] = data.trends,
+): Trend | undefined {
+  return trends.find((trend) => trend.id === id);
 }
 
 /** Muestra la serie de 90 días en 30 puntos para el sparkline de la tabla. */
@@ -53,10 +61,10 @@ export function toSummary(trend: Trend): TrendSummary {
 }
 
 /** Filas de /trending, ordenadas por score descendente. */
-export function getTrendSummaries(): TrendSummary[] {
-  return getTrends()
-    .map(toSummary)
-    .sort((a, b) => b.score - a.score);
+export function getTrendSummaries(
+  trends: Trend[] = data.trends,
+): TrendSummary[] {
+  return trends.map(toSummary).sort((a, b) => b.score - a.score);
 }
 
 export type TrendDetail = {
@@ -71,8 +79,11 @@ export type TrendDetail = {
   forecast: Forecast | null;
 };
 
-export function getTrendDetail(id: string): TrendDetail | undefined {
-  const trend = getTrendById(id);
+export function getTrendDetail(
+  id: string,
+  trends: Trend[] = data.trends,
+): TrendDetail | undefined {
+  const trend = getTrendById(id, trends);
   if (!trend) return undefined;
 
   const series = scoreSeries(trend.history);
@@ -108,8 +119,8 @@ export function summaryAsOf(trend: Trend, date: string): TrendSummary | undefine
 }
 
 /** Todas las fechas del histórico, de la más antigua a la más reciente. */
-export function historyDates(): string[] {
-  return getTrends()[0].history.map((point) => point.date);
+export function historyDates(trends: Trend[] = data.trends): string[] {
+  return trends[0].history.map((point) => point.date);
 }
 
 /* ── Comparador A vs B ─────────────────────────────────────────────── */
@@ -140,9 +151,13 @@ function toSide(trend: Trend): CompareSide {
  * las series se alinean por índice. Si algún día dejan de compartir calendario,
  * esto hay que cambiarlo por un join por fecha.
  */
-export function getComparison(aId: string, bId: string): Comparison | undefined {
-  const a = getTrendById(aId);
-  const b = getTrendById(bId);
+export function getComparison(
+  aId: string,
+  bId: string,
+  trends: Trend[] = data.trends,
+): Comparison | undefined {
+  const a = getTrendById(aId, trends);
+  const b = getTrendById(bId, trends);
   if (!a || !b) return undefined;
 
   const seriesA = scoreSeries(a.history);
@@ -164,8 +179,11 @@ export function getComparison(aId: string, bId: string): Comparison | undefined 
  * más saturada. Es la comparación que mejor explica el producto — lo que viene
  * contra lo que ya se agotó.
  */
-export function defaultComparePair(): { a: string; b: string } {
-  const rows = getTrendSummaries();
+export function defaultComparePair(trends: Trend[] = data.trends): {
+  a: string;
+  b: string;
+} {
+  const rows = getTrendSummaries(trends);
   const emerging = rows
     .filter((row) => row.lifecycle === "EMERGIENDO")
     .sort((x, y) => y.momentum7d - x.momentum7d)[0];
@@ -216,8 +234,8 @@ export function countRisingDays(series: number[]): number {
   return days;
 }
 
-export function getAlerts(): Alert[] {
-  return getTrends()
+export function getAlerts(trends: Trend[] = data.trends): Alert[] {
+  return trends
     .map((trend) => {
       const summary = toSummary(trend);
       const series = scoreSeries(trend.history);
@@ -233,4 +251,59 @@ export function getAlerts(): Alert[] {
         row.momentum7d >= ALERT_MIN_MOMENTUM && row.score < ALERT_MAX_SCORE,
     )
     .sort((x, y) => y.momentum7d - x.momentum7d);
+}
+
+/* ── Catálogo desde Postgres, con fallback al seed ─────────────────── */
+
+import { getDb } from "@/lib/db/client";
+import { loadCatalogFromDb, type OriginByDate } from "@/lib/db/catalog";
+
+export type Catalog = {
+  trends: Trend[];
+  /** trendId → (fecha → origen). Vacío cuando se sirve el seed. */
+  origins: Map<string, OriginByDate>;
+  source: "db" | "seed";
+};
+
+let cachedCatalog: Catalog | null = null;
+
+/**
+ * El catálogo que consumen las páginas: Postgres si responde, seed si no.
+ *
+ * El fallback es silencioso a propósito —una base caída no puede tumbar la
+ * app— pero no es invisible: `source` viaja en el resultado y la UI marca de
+ * dónde salió el dato. Se cachea por proceso; en el build eso significa una
+ * sola consulta para todas las páginas.
+ */
+export async function getCatalog(): Promise<Catalog> {
+  if (cachedCatalog) return cachedCatalog;
+
+  const db = getDb();
+  if (db) {
+    try {
+      const loaded = await loadCatalogFromDb(db);
+      if (loaded) {
+        cachedCatalog = { ...loaded, source: "db" };
+        return cachedCatalog;
+      }
+    } catch (error) {
+      // Base caída o esquema sin migrar: se sirve el seed y se deja constancia.
+      console.warn(
+        "[catalog] Postgres no respondió, se usa el seed:",
+        error instanceof Error ? error.message : error,
+      );
+    }
+  }
+
+  cachedCatalog = {
+    trends: data.trends,
+    origins: new Map(),
+    source: "seed",
+  };
+  return cachedCatalog;
+}
+
+/** Para los tests: olvida el catálogo cacheado. */
+export function resetCatalogCache(): void {
+  cachedCatalog = null;
 }
