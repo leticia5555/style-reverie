@@ -41,12 +41,26 @@ const BATCH_SIZE = 40;
 /** Tope de gasto: 7 fuentes × 20 titulares no llega ni a cinco tandas. */
 const MAX_BATCHES = 6;
 
+const EvidenceSchema = z.object({
+  /** Índice del titular que la respalda. */
+  titular: z.number(),
+  /**
+   * El fragmento LITERAL de ese titular donde aparece, en su idioma.
+   *
+   * Es lo que hace verificable la extracción: se comprueba que la cita esté
+   * de verdad en el texto. Un titular sobre "wearable exoskeletons" producía
+   * "vestido slip" y "pantalón plisado", que no salen por ninguna parte; con
+   * una cita obligatoria, inventarla es lo único que queda y eso sí se puede
+   * comprobar.
+   */
+  cita: z.string(),
+});
+
 const CandidateSchema = z.object({
   /** Nombre en español, como lo nombraría una editora de moda. */
   nombre: z.string(),
   categoria: z.enum(CATEGORIES),
-  /** Índices de los titulares que la respaldan. */
-  evidencia: z.array(z.number()),
+  evidencia: z.array(EvidenceSchema),
 });
 
 const ExtractionSchema = z.object({
@@ -79,7 +93,11 @@ export type DiscoveryStats = {
   /** Candidatas que devolvió el modelo, antes de los filtros de después. */
   returned: number;
   droppedShortName: number;
+  /** Nombre que era una categoría de producto, sin calificativo. */
+  droppedGeneric: number;
   droppedKnown: number;
+  /** Citas que no aparecían en su titular: el modelo se las inventó. */
+  droppedUngrounded: number;
   droppedNoEvidence: number;
   /** Las que sobrevivieron a los tres. */
   kept: number;
@@ -105,7 +123,9 @@ const emptyStats = (received = 0): DiscoveryStats => ({
   failedBatches: 0,
   returned: 0,
   droppedShortName: 0,
+  droppedGeneric: 0,
   droppedKnown: 0,
+  droppedUngrounded: 0,
   droppedNoEvidence: 0,
   kept: 0,
 });
@@ -121,8 +141,10 @@ export function describeStats(stats: DiscoveryStats): string {
       (stats.failedBatches ? ` (${stats.failedBatches} reventaron)` : ""),
     `${stats.returned} candidatas`,
     `descartadas ${stats.droppedShortName} por nombre corto, ` +
+      `${stats.droppedGeneric} genéricas, ` +
       `${stats.droppedKnown} ya en catálogo, ` +
-      `${stats.droppedNoEvidence} sin evidencia`,
+      `${stats.droppedNoEvidence} sin evidencia ` +
+      `(${stats.droppedUngrounded} citas inventadas)`,
     `${stats.kept} nuevas`,
   ].join(" · ");
 }
@@ -162,7 +184,7 @@ Te doy titulares de prensa de moda del día. Extrae las tendencias de MODA
 concretas de las que hablan: prendas, colores, texturas, siluetas, accesorios
 o estilos.
 
-LO MÁS IMPORTANTE: saca la PRENDA, no el tema del artículo.
+REGLA 1: saca la PRENDA, no el tema del artículo.
 
   "Los pantalones satinados de los 90 vuelven"  -> "pantalón satinado"
   "El regreso del zueco que arrasó en los 70"   -> "zueco"
@@ -171,28 +193,58 @@ LO MÁS IMPORTANTE: saca la PRENDA, no el tema del artículo.
 
 Una década, una estética de época, una ciudad, una casa de moda, una
 temporada o un evento NO son tendencias: "años 90", "look retro",
-"primavera 2027", "moda de París" se descartan. Si el titular solo habla de
-eso y no nombra una prenda, un color, una textura o una silueta concretos,
-no saques nada de él.
+"primavera 2027", "moda de París" se descartan.
+
+REGLA 2: una tendencia lleva un CALIFICATIVO que la distingue. Sin él es una
+categoría de producto, y una categoría de producto no es una tendencia: la
+gente lleva leggings y collares desde hace décadas.
+
+  "legging"            -> NO, categoría de producto
+  "legging de cuero"   -> sí
+  "collar"             -> NO
+  "collar de eslabones"-> sí
+  "zapato de tacón"    -> NO, es media tienda
+  "tacón sensato"      -> sí
+  "vestido"            -> NO
+  "vestido de lentejuelas" -> sí
+
+El calificativo puede ser material (satinado, de cuero, de encaje), color
+(café, burdeos), forma (acampanado, de tiro alto, de cuña, oversize) o época
+si va pegada a la prenda (pantalón de los 70 NO; pantalón de campana sí).
+
+**Si el titular no da un calificativo, no hay candidata.** No lo inventes ni
+lo deduzcas: si el titular dice solo "leggings are back", no saques nada.
+
+REGLA 3: cada candidata va con una CITA LITERAL del titular que la respalda.
+Copia el fragmento exacto, tal cual, en el idioma en que está escrito — no lo
+traduzcas ni lo reformules. La cita se comprueba contra el texto: si no
+aparece igual, la candidata se descarta.
+
+  Titular: "Satin trousers are the sleeper hit of the season"
+  Candidata: "pantalón satinado", cita: "Satin trousers"
+
+  Titular: "Why wearable exoskeletons are coming for fashion"
+  Candidatas: ninguna. No nombra ninguna prenda de vestir.
+
+Si no puedes copiar una cita que contenga la tendencia, es que no está en el
+titular: no la saques.
 
 Cómo se escribe el nombre:
-- En español, SIEMPRE EN SINGULAR: "bailarina café", no "bailarinas cafés";
-  "jean recto", no "jeans rectos".
-- Como se pediría en una tienda: "sandalia de cuña", "pantalón satinado",
-  "zueco", "bolso de hombro". Corto, sin adjetivos de crónica.
+- En español, SIEMPRE EN SINGULAR: "bailarina café", no "bailarinas cafés".
+- Como se pediría en una tienda: "sandalia de cuña", "pantalón satinado".
+  Corto, sin adjetivos de crónica.
 - Sin el nombre de la marca ni de la casa: "chaqueta de cuero", no
   "la chaqueta de cuero de Prada".
-- Nada de copiar el titular ni de frases ("lo que se lleva esta temporada").
+- Nada de copiar el titular entero ni frases ("lo que se lleva esta temporada").
 
 Más reglas:
 - Solo ropa y accesorios. Nada de belleza, maquillaje, pelo, celebridades,
   resultados de negocio ni nombramientos.
-- Solo si al menos un titular la respalda de verdad. No inventes ni infieras.
 - Si ningún titular contiene una tendencia concreta, devuelve lista vacía.
-  Una lista vacía es una respuesta correcta.
+  Una lista vacía es una respuesta correcta y es lo que se espera a menudo.
 
-Devuelve para cada candidata su nombre, su categoría y los índices de los
-titulares que la respaldan.`;
+Devuelve para cada candidata su nombre, su categoría y, por cada titular que
+la respalde, su índice y la cita literal.`;
 
 function buildInput(headlines: Headline[]): string {
   return headlines
@@ -306,15 +358,26 @@ async function extractBatch(
       if (!fresh) stats.droppedKnown += 1;
       return fresh;
     })
+    .filter((candidate) => {
+      const generic = isGeneric(candidate.nombre);
+      if (generic) stats.droppedGeneric += 1;
+      return !generic;
+    })
     .map((candidate) => ({
       slug: toSlug(candidate.nombre),
       nameEs: cleanCandidateName(candidate.nombre),
       category: candidate.categoria as string | null,
       // Los índices son relativos a SU tanda: el modelo solo vio esa.
       evidence: candidate.evidencia
-        .map((index) => batch[index])
-        .filter(Boolean)
-        .map((headline) => ({
+        .map((item) => ({ item, headline: batch[item.titular] }))
+        .filter(({ item, headline }) => {
+          if (!headline) return false;
+          // La cita tiene que estar en el titular, o no hay de dónde salió.
+          const grounded = quoteIsGrounded(item.cita, headline);
+          if (!grounded) stats.droppedUngrounded += 1;
+          return grounded;
+        })
+        .map(({ headline }) => ({
           title: headline.title,
           source: headline.sourceName,
           link: headline.link,
@@ -394,6 +457,53 @@ export async function discoverCandidates(
  * por enlace, con lo nuevo delante, y las menciones suben solo por los enlaces
  * que no estaban.
  */
+/**
+ * Categorías de producto que por sí solas nunca son una tendencia.
+ *
+ * La gente lleva leggings y collares desde hace décadas: lo noticiable es el
+ * calificativo —de cuero, de eslabones, satinado—, no la prenda. El prompt lo
+ * pide, esto lo sujeta: un nombre que sea exactamente una de estas, sin nada
+ * más, se cae.
+ */
+const PRODUCT_CATEGORIES = new Set([
+  "legging", "leggings", "collar", "collares", "vestido", "vestidos",
+  "pantalon", "pantalones", "falda", "faldas", "camisa", "camisas", "blusa",
+  "blusas", "abrigo", "abrigos", "chaqueta", "chaquetas", "saco", "sacos",
+  "zapato", "zapatos", "bota", "botas", "sandalia", "sandalias", "bolso",
+  "bolsos", "bolsa", "bolsas", "cinturon", "cinturones", "jean", "jeans",
+  "sueter", "sueteres", "chaleco", "chalecos", "falda larga", "traje",
+  "trajes", "short", "shorts", "blazer", "blazers", "gorra", "gorras",
+  "sombrero", "sombreros", "anillo", "anillos", "arete", "aretes", "bufanda",
+  "bufandas", "guante", "guantes", "tacon", "tacones", "zapato de tacon",
+  "zapatos de tacon", "bailarina", "bailarinas", "mocasin", "mocasines",
+  "tenis", "playera", "playeras", "camiseta", "camisetas", "falda corta",
+]);
+
+/**
+ * Una candidata es genérica si su nombre es, tal cual, una categoría de
+ * producto. Con calificativo deja de serlo: "legging" no, "legging de cuero"
+ * sí.
+ */
+export function isGeneric(name: string): boolean {
+  return PRODUCT_CATEGORIES.has(normalizeTerm(cleanCandidateName(name)));
+}
+
+/**
+ * ¿La cita está de verdad en el titular?
+ *
+ * Es la defensa contra la alucinación, y se hace sobre la cita y no sobre el
+ * nombre a propósito: el nombre va en español y el titular puede estar en
+ * inglés, así que buscar "vestido slip" dentro de "The slip dress is back"
+ * fallaría con una extracción correcta. La cita, en cambio, viene copiada del
+ * titular en su idioma, así que o está o el modelo se la inventó.
+ */
+export function quoteIsGrounded(quote: string, headline: Headline): boolean {
+  const needle = normalizeTerm(quote);
+  // Una cita de una o dos letras casa con cualquier cosa: no prueba nada.
+  if (needle.length < 3) return false;
+  return normalizeTerm(`${headline.title} ${headline.snippet}`).includes(needle);
+}
+
 /** Los medios distintos que aparecen en la evidencia de una candidata. */
 export function outletsOf(candidate: Candidate): string[] {
   return [...new Set(candidate.evidence.map((item) => item.source))].sort();

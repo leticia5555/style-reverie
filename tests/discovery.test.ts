@@ -16,9 +16,11 @@ import {
   describeStats,
   EXTRACTION_PROMPT,
   discoverCandidates,
+  isGeneric,
   isNew,
   mergeCandidates,
   outletsOf,
+  quoteIsGrounded,
   listCandidates,
   saveCandidates,
   toSlug,
@@ -422,7 +424,9 @@ test("la línea del desglose nombra los tres filtros de después", () => {
     failedBatches: 0,
     returned: 6,
     droppedShortName: 1,
+    droppedGeneric: 4,
     droppedKnown: 2,
+    droppedUngrounded: 3,
     droppedNoEvidence: 0,
     kept: 3,
   });
@@ -435,6 +439,8 @@ test("la línea del desglose nombra los tres filtros de después", () => {
   assert.match(linea, /8 otro tema/);
   assert.match(linea, /6 candidatas/);
   assert.match(linea, /1 por nombre corto/);
+  assert.match(linea, /4 genéricas/);
+  assert.match(linea, /3 citas inventadas/);
   assert.match(linea, /2 ya en catálogo/);
   assert.match(linea, /0 sin evidencia/);
   assert.match(linea, /3 nuevas/);
@@ -647,4 +653,65 @@ test("una base anterior a outlets se rellena desde la evidencia que ya tenía", 
   } finally {
     await vieja.close();
   }
+});
+
+/* ── calidad de la extracción ──────────────────────────────────────── */
+
+test("una categoría de producto sola no es una tendencia", () => {
+  // Las que salieron en la primera tanda de 21 candidatas.
+  for (const nombre of ["legging", "collar", "zapato de tacón", "vestido", "jeans"]) {
+    assert.equal(isGeneric(nombre), true, `"${nombre}" debería caerse`);
+  }
+});
+
+test("con calificativo deja de ser genérica", () => {
+  for (const nombre of [
+    "legging de cuero",
+    "collar de eslabones",
+    "pantalón satinado",
+    "bailarina café",
+    "sandalia de cuña",
+  ]) {
+    assert.equal(isGeneric(nombre), false, `"${nombre}" debería pasar`);
+  }
+});
+
+test("el artículo delante no salva a una genérica", () => {
+  assert.equal(isGeneric("el legging"), true);
+  assert.equal(isGeneric("  Leggings  "), true);
+});
+
+test("una cita que está en el titular lo respalda", () => {
+  const h = titular("Satin trousers are the sleeper hit of the season", "");
+  assert.equal(quoteIsGrounded("Satin trousers", h), true);
+  // Sin importar acentos, mayúsculas ni puntuación.
+  assert.equal(quoteIsGrounded("satin, trousers", h), true);
+});
+
+test("una cita inventada no respalda nada", () => {
+  // El caso real: de un titular sobre exoesqueletos salieron "vestido slip" y
+  // "pantalón plisado", que no aparecen por ninguna parte.
+  const h = titular("Why wearable exoskeletons are coming for fashion", "");
+  assert.equal(quoteIsGrounded("slip dress", h), false);
+  assert.equal(quoteIsGrounded("pleated trousers", h), false);
+});
+
+test("la cita se busca también en el resumen, no solo en el título", () => {
+  const h = titular("The shoe report", "Wedge sandals return this spring");
+  assert.equal(quoteIsGrounded("Wedge sandals", h), true);
+});
+
+test("una cita de una o dos letras no prueba nada", () => {
+  const h = titular("Satin trousers are back", "");
+  assert.equal(quoteIsGrounded("a", h), false);
+  assert.equal(quoteIsGrounded("re", h), false);
+});
+
+test("el prompt exige calificativo y cita literal", () => {
+  // Es producto, no implementación: si alguien lo suaviza vuelven las
+  // candidatas tipo "legging" y las citas inventadas.
+  assert.match(EXTRACTION_PROMPT, /CALIFICATIVO/);
+  assert.match(EXTRACTION_PROMPT, /no hay candidata/);
+  assert.match(EXTRACTION_PROMPT, /CITA LITERAL/);
+  assert.match(EXTRACTION_PROMPT, /wearable exoskeletons/);
 });

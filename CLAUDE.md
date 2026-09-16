@@ -173,6 +173,17 @@ que hizo el cron.
   recorte se llevaría por delante al medio que apareció una sola vez. La lista
   se ordena por `cardinality(outlets)` y después por menciones. Un solo medio
   se marca como tal en `/alerts`: es una candidata débil por definición.
+- **Una tendencia lleva un calificativo.** "Legging", "collar" o "zapato de
+  tacón" son categorías de producto: la gente las lleva desde hace décadas y lo
+  noticiable es el calificativo —de cuero, de eslabones, satinado—. El prompt
+  lo pide y `isGeneric()` lo sujeta contra una lista de categorías desnudas.
+- **Cada candidata va con una cita literal del titular, y se verifica.** El
+  modelo copia el fragmento en el idioma del titular y el código comprueba que
+  esté ahí. Se valida la cita y no el nombre porque el nombre va en español y
+  el titular puede estar en inglés: buscar "vestido slip" dentro de "The slip
+  dress is back" tumbaría una extracción correcta. De un titular sobre
+  "wearable exoskeletons" salieron "vestido slip" y "pantalón plisado"; con
+  cita obligatoria, inventarla es lo único que queda, y eso sí se comprueba.
 - **El nombre que extrae el modelo es la prenda, no el tema**: de "los
   pantalones satinados de los 90 vuelven" sale "pantalón satinado", no "años
   90". En español, singular, como se pediría en una tienda. Décadas, estéticas

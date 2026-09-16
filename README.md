@@ -218,6 +218,12 @@ quedaría ordenada por antigüedad del feed en vez de por cuánto se habla de la
 tendencia. La evidencia se une deduplicada por enlace, con lo nuevo delante y
 un tope de 20 titulares por candidata.
 
+Dos defensas sobre lo que devuelve el modelo. Una **candidata sin calificativo**
+se cae: "legging" o "zapato de tacón" son categorías de producto, no
+tendencias. Y cada candidata llega con una **cita literal** del titular que el
+código verifica contra el texto; se valida la cita y no el nombre porque el
+nombre va en español y el titular puede estar en inglés.
+
 Cada corrida deja su desglose en `signal_runs.detail`, en una línea:
 
 ```
