@@ -160,9 +160,11 @@ const dict = {
     en: "Headlines pulled by RSS from the outlets, not sample data",
   },
   "editorial.title": { es: "Feed editorial", en: "Editorial feed" },
+  // Sin nombrar las fuentes: la lista cambia y el texto se quedaba mintiendo.
+  // Cuáles respondieron ya lo dice el contador de fuentes vivas de al lado.
   "editorial.subtitle": {
-    es: "Titulares de Vogue, WWD, Business of Fashion y Who What Wear, con las tendencias que menciona cada uno.",
-    en: "Headlines from Vogue, WWD, Business of Fashion and Who What Wear, tagged with the trends each one mentions.",
+    es: "Titulares de la prensa de moda mexicana e internacional, con las tendencias que menciona cada uno.",
+    en: "Headlines from the Mexican and international fashion press, tagged with the trends each one mentions.",
   },
   "editorial.fetchedAt": { es: "Traído", en: "Fetched" },
   "editorial.never": { es: "sin traer todavía", en: "not fetched yet" },

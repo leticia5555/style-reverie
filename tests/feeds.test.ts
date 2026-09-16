@@ -4,6 +4,7 @@ import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { FEEDS, readCache } from "@/lib/editorial";
+import { IMAGE_HOSTS } from "@/lib/editorial-image";
 
 test("Business of Fashion ya no está: no publica RSS y costaba el timeout", () => {
   const keys = FEEDS.map((feed) => feed.key);
@@ -74,4 +75,42 @@ test("leer el caché descarta los artículos de una fuente retirada", () => {
 test("data/editorial.cache.json no se versiona: es artefacto de runtime", () => {
   const ignore = readFileSync("./.gitignore", "utf8");
   assert.match(ignore, /editorial\.cache\.json/);
+});
+
+test("la entradilla de /editorial no nombra fuentes: la lista cambia", () => {
+  // Nombraba a Business of Fashion mucho después de que dejara de existir en
+  // FEEDS. El contador de fuentes vivas ya dice cuáles respondieron.
+  const i18n = readFileSync("./lib/i18n.tsx", "utf8");
+  const subtitle = i18n.slice(i18n.indexOf('"editorial.subtitle"'));
+  for (const feed of FEEDS) {
+    assert.ok(
+      !subtitle.slice(0, 400).includes(feed.name),
+      `la entradilla nombra a ${feed.name} y se quedará desactualizada`,
+    );
+  }
+});
+
+test("cada fuente tiene al menos un host de imagen anotado", () => {
+  // Si falta, la tarjeta cae al placeholder: no rompe, pero se pierde la foto.
+  const hosts = IMAGE_HOSTS.join(" ");
+  const esperados: Record<string, string> = {
+    "vogue-mx": "vogue.mx",
+    "elle-mx": "elle.mx",
+    "glamour-mx": "glamour.mx",
+    bazaar: "hearstapps.com",
+    fashionista: "fashionista.com",
+    vogue: "assets.vogue.com",
+    wwd: "wwd.com",
+    whowhatwear: "whowhatwear.com",
+  };
+  for (const feed of FEEDS) {
+    assert.ok(
+      hosts.includes(esperados[feed.key]),
+      `${feed.name} no tiene host de imagen en IMAGE_HOSTS`,
+    );
+  }
+});
+
+test("los hosts de Business of Fashion salieron con la fuente", () => {
+  assert.ok(!IMAGE_HOSTS.some((host) => host.includes("businessoffashion")));
 });

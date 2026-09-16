@@ -4,11 +4,17 @@
  */
 
 /**
- * Hosts de imagen de las cuatro fuentes. Tiene que ir en sincronía con
+ * Hosts de imagen de las fuentes. Tiene que ir en sincronía con
  * `images.remotePatterns` de next.config.ts: next/image lanza un error en
  * runtime si recibe un host que no está configurado, y eso tumbaría la página
  * entera por una sola foto. Por eso la lista se comprueba también aquí y una
  * imagen de un host desconocido cae al placeholder en vez de romper nada.
+ *
+ * Los de las fuentes nuevas se anotaron sin poder comprobarlos desde el
+ * contenedor, que no tiene salida a internet. Si alguno está mal, la tarjeta
+ * pinta el placeholder de la fuente: la lista es una red de seguridad, no un
+ * requisito para que la página funcione. `npm run editorial` y mirar el feed
+ * es lo que los confirma.
  */
 export const IMAGE_HOSTS = [
   // Condé Nast — Vogue
@@ -16,15 +22,25 @@ export const IMAGE_HOSTS = [
   "media.vogue.com",
   "media.condenast.com",
   "www.vogue.com",
+  // Condé Nast México — Vogue MX y Glamour MX
+  "www.vogue.mx",
+  "assets.vogue.mx",
+  "www.glamour.mx",
+  "assets.glamour.mx",
+  // Elle México
+  "elle.mx",
+  "www.elle.mx",
+  // Hearst — Harper's Bazaar
+  "hips.hearstapps.com",
+  "www.harpersbazaar.com",
+  // Fashionista
+  "fashionista.com",
+  "www.fashionista.com",
+  "assets.fashionista.com",
   // Penske Media — WWD
   "wwd.com",
   "www.wwd.com",
   "pmc-wwd.s3.amazonaws.com",
-  // Business of Fashion
-  "www.businessoffashion.com",
-  "businessoffashion.com",
-  "cdn.businessoffashion.com",
-  "bof-assets.s3.amazonaws.com",
   // Future plc — Who What Wear
   "www.whowhatwear.com",
   "whowhatwear.com",

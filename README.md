@@ -128,6 +128,10 @@ descarga el artículo para leer su `og:image`. La imagen se guarda junto al item
 en el caché, así que ese fetch extra se hace una sola vez por artículo; está
 acotado a 12 por refresco para que un feed sin imágenes no alargue el ciclo.
 
+Los hosts de imagen de las cinco fuentes nuevas se anotaron igual de a ciegas
+que sus URLs. Si alguno está mal la tarjeta pinta el placeholder de la fuente,
+no se rompe nada: la lista es una red de seguridad, no un requisito.
+
 Los hosts que puede cargar `next/image` viven en `IMAGE_HOSTS`
 (`lib/editorial-image.ts`) y `next.config.ts` construye desde ahí sus
 `remotePatterns`. Si un feed sirviera desde un CDN que no está en la lista, el
