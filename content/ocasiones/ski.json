@@ -1,0 +1,91 @@
+{
+  "order": 2,
+  "accent": "quiet",
+  "name": {
+    "es": "Ski",
+    "en": "Ski"
+  },
+  "tagline": {
+    "es": "El après vale más que la pista",
+    "en": "Après matters more than the slope"
+  },
+  "intro": {
+    "es": "En la pista manda el equipo técnico y la moda no entra. Donde sí entra es en lo de después: el bar, la terraza y el trayecto. Ahí es donde se decide el viaje.",
+    "en": "On the slope technical gear rules and fashion does not apply. Where it does apply is after: the bar, the terrace, the transfer. That is where the trip is decided."
+  },
+  "trends": [
+    {
+      "trendId": "borreguito-rizado",
+      "note": {
+        "es": "La prenda de après por definición. Abriga de verdad y es lo único que se fotografía bien con botas técnicas.",
+        "en": "The après piece by definition. Genuinely warm and the only thing that photographs well with technical boots."
+      }
+    },
+    {
+      "trendId": "marron-cacao",
+      "note": {
+        "es": "Sustituye al negro en la montaña sin ensuciarse a la vista como el crudo.",
+        "en": "Replaces black in the mountains without showing dirt the way ecru does."
+      }
+    },
+    {
+      "trendId": "gafas-cat-eye",
+      "note": {
+        "es": "Para el trayecto y la terraza, no para la pista. La forma cat eye funciona con gorro, que es más de lo que se puede decir de la mayoría.",
+        "en": "For the transfer and the terrace, not the slope. The cat-eye shape works with a beanie, which is more than most can claim."
+      }
+    },
+    {
+      "trendId": "lujo-silencioso",
+      "note": {
+        "es": "El código de la montaña cara sigue siendo este, aunque en ciudad ya esté cayendo.",
+        "en": "The code of the expensive mountain is still this one, even though in the city it is already falling."
+      }
+    }
+  ],
+  "pieces": [
+    {
+      "tier": "budget",
+      "retailer": "Amazon México",
+      "label": {
+        "es": "Chamarra de borreguito rizado",
+        "en": "Curly faux shearling jacket"
+      },
+      "price": 1149,
+      "currency": "MXN",
+      "url": "https://www.amazon.com.mx/s?k=chamarra%20borreguito"
+    },
+    {
+      "tier": "mid",
+      "retailer": "ASOS",
+      "label": {
+        "es": "Pantalón de nieve en cacao",
+        "en": "Snow trousers in cocoa"
+      },
+      "price": 165.95,
+      "currency": "USD",
+      "url": "https://www.asos.com/us/search/?q=cocoa%20snow%20trousers"
+    },
+    {
+      "tier": "invest",
+      "retailer": "Nordstrom",
+      "label": {
+        "es": "Abrigo de borreguito largo",
+        "en": "Long shearling coat"
+      },
+      "price": 1250,
+      "currency": "USD",
+      "url": "https://www.nordstrom.com/sr?keyword=shearling%20coat",
+      "note": {
+        "es": "Es la pieza que se usa diez inviernos. Aquí el precio por uso sale barato.",
+        "en": "This is the piece you wear for ten winters. Cost per wear works out cheap."
+      }
+    }
+  ],
+  "avoid": [
+    {
+      "es": "Crochet fino y lino: son tendencias fuertes pero no existen a menos cinco grados.",
+      "en": "Fine crochet and linen: strong trends, but they do not exist at five below."
+    }
+  ]
+}

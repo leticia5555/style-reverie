@@ -1,0 +1,98 @@
+{
+  "order": 4,
+  "accent": "lavender",
+  "name": {
+    "es": "Oficina",
+    "en": "Office"
+  },
+  "tagline": {
+    "es": "Autoridad sin traje",
+    "en": "Authority without a suit"
+  },
+  "intro": {
+    "es": "La oficina dejó de pedir traje y empezó a pedir algo más difícil: parecer que decides sin parecer que lo intentas. Estas tendencias hacen ese trabajo.",
+    "en": "The office stopped asking for a suit and started asking for something harder: looking like you decide without looking like you are trying. These trends do that job."
+  },
+  "trends": [
+    {
+      "trendId": "chaleco-sastre-largo",
+      "note": {
+        "es": "Sustituye al blazer y pesa la mitad. La prenda de oficina con más momentum del catálogo.",
+        "en": "Replaces the blazer at half the weight. The highest-momentum office piece in the catalog."
+      }
+    },
+    {
+      "trendId": "office-siren",
+      "note": {
+        "es": "El estilo entero está construido para esto. Úsalo con medida: una pieza por look, no tres.",
+        "en": "The entire style is built for this. Use it in measure: one piece per look, not three."
+      }
+    },
+    {
+      "trendId": "hombro-estructurado",
+      "note": {
+        "es": "El atajo más rápido a una silueta con autoridad, y funciona incluso sobre una camiseta.",
+        "en": "The fastest shortcut to an authoritative silhouette, and it works even over a t-shirt."
+      }
+    },
+    {
+      "trendId": "pantalon-barril",
+      "note": {
+        "es": "En pico, así que ya no distingue, pero sigue siendo el pantalón más cómodo que lee formal.",
+        "en": "Peaking, so it no longer differentiates, but it is still the most comfortable trouser that reads formal."
+      }
+    },
+    {
+      "trendId": "marron-cacao",
+      "note": {
+        "es": "El reemplazo del negro que no se ve fúnebre bajo luz de oficina.",
+        "en": "The black replacement that does not look funereal under office lighting."
+      }
+    }
+  ],
+  "pieces": [
+    {
+      "tier": "budget",
+      "retailer": "Zara México",
+      "label": {
+        "es": "Chaleco sastre largo",
+        "en": "Longline tailored waistcoat"
+      },
+      "price": 1099,
+      "currency": "MXN",
+      "url": "https://www.zara.com/mx/es/search?searchTerm=chaleco%20sastre%20largo"
+    },
+    {
+      "tier": "mid",
+      "retailer": "Liverpool",
+      "label": {
+        "es": "Pantalón barril en lana fría",
+        "en": "Barrel-leg trousers in tropical wool"
+      },
+      "price": 2899,
+      "currency": "MXN",
+      "url": "https://www.liverpool.com.mx/tienda/?s=pantalon%20barril"
+    },
+    {
+      "tier": "invest",
+      "retailer": "Nordstrom",
+      "label": {
+        "es": "Blazer de hombro estructurado",
+        "en": "Structured-shoulder blazer"
+      },
+      "price": 780,
+      "currency": "USD",
+      "url": "https://www.nordstrom.com/sr?keyword=structured%20shoulder%20blazer",
+      "note": {
+        "es": "La única pieza de oficina donde el corte caro se nota a tres metros.",
+        "en": "The one office piece where expensive tailoring shows from ten feet away."
+      }
+    }
+  ],
+  "avoid": [
+    {
+      "es": "Oversize relajado: está cayendo y en oficina se lee como falta de intención, no como relajo.",
+      "en": "Relaxed oversize: it is falling, and in an office it reads as lack of intent rather than ease."
+    }
+  ]
+}

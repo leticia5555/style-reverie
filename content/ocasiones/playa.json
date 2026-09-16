@@ -1,0 +1,81 @@
+{
+  "order": 3,
+  "accent": "sage",
+  "name": {
+    "es": "Playa",
+    "en": "Beach"
+  },
+  "tagline": {
+    "es": "Lo que se ve fuera del agua",
+    "en": "What shows outside the water"
+  },
+  "intro": {
+    "es": "El traje de baño es una decisión de cuerpo, no de tendencia. Lo que sí es decisión de tendencia es todo lo que va encima: el pareo, la camisa, la bolsa y el zapato con el que se cruza el malecón.",
+    "en": "A swimsuit is a body decision, not a trend decision. What is a trend decision is everything over it: the sarong, the shirt, the bag and the shoe you cross the boardwalk in."
+  },
+  "trends": [
+    {
+      "trendId": "crochet-fino",
+      "note": {
+        "es": "La tendencia de playa del año. Funciona porque seca rápido y porque la transparencia está permitida aquí y en ningún otro sitio.",
+        "en": "The beach trend of the year. It works because it dries fast and because sheerness is allowed here and nowhere else."
+      }
+    },
+    {
+      "trendId": "boho-renovado",
+      "note": {
+        "es": "Está en pico, lo cual en playa no es problema: aquí lo masivo no penaliza.",
+        "en": "It is peaking, which on a beach is not a problem: mass adoption carries no penalty here."
+      }
+    },
+    {
+      "trendId": "falda-cargo",
+      "note": {
+        "es": "La falda cargo maxi sobre bikini resuelve el trayecto del hotel al mar sin parecer que vas en toalla.",
+        "en": "A cargo maxi skirt over a bikini solves the hotel-to-sea walk without looking like a towel."
+      }
+    },
+    {
+      "trendId": "azul-polvo",
+      "note": {
+        "es": "Señal temprana y el único azul que no compite con el mar en una foto.",
+        "en": "An early signal, and the only blue that does not compete with the sea in a photo."
+      }
+    }
+  ],
+  "pieces": [
+    {
+      "tier": "budget",
+      "retailer": "Shein",
+      "label": {
+        "es": "Pareo de crochet fino",
+        "en": "Fine crochet sarong"
+      },
+      "price": 329,
+      "currency": "MXN",
+      "url": "https://mx.shein.com/pdsearch/pareo%20crochet/"
+    },
+    {
+      "tier": "mid",
+      "retailer": "Revolve",
+      "label": {
+        "es": "Falda cargo maxi en algodón",
+        "en": "Cotton cargo maxi skirt"
+      },
+      "price": 188,
+      "currency": "USD",
+      "url": "https://www.revolve.com/r/Search.jsp?search=cargo%20maxi%20skirt"
+    },
+    {
+      "tier": "invest",
+      "retailer": "Nordstrom",
+      "label": {
+        "es": "Vestido de crochet hecho a mano",
+        "en": "Hand-worked crochet dress"
+      },
+      "price": 520,
+      "currency": "USD",
+      "url": "https://www.nordstrom.com/sr?keyword=crochet%20dress"
+    }
+  ]
+}

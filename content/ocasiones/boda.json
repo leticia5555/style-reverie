@@ -1,0 +1,95 @@
+{
+  "order": 1,
+  "accent": "rose",
+  "name": {
+    "es": "Boda",
+    "en": "Wedding"
+  },
+  "tagline": {
+    "es": "Invitada, no novia",
+    "en": "Guest, not bride"
+  },
+  "intro": {
+    "es": "El error de la invitada no es vestir de más, es vestir de temporada pasada. Estas tendencias aguantan una foto que va a existir para siempre; las que están cayendo, no.",
+    "en": "A guest's mistake is not overdressing, it is dressing last season. These trends survive a photo that will exist forever; the falling ones do not."
+  },
+  "trends": [
+    {
+      "trendId": "linea-columna",
+      "note": {
+        "es": "La silueta más segura para una boda: alarga, no marca y se fotografía bien de lejos.",
+        "en": "The safest wedding silhouette: it lengthens, does not cling and photographs well from a distance."
+      }
+    },
+    {
+      "trendId": "lentejuela-mate",
+      "note": {
+        "es": "Brillo sin competir con la novia. La lentejuela opaca es la única que funciona de día.",
+        "en": "Shine without competing with the bride. Matte sequin is the only one that works in daylight."
+      }
+    },
+    {
+      "trendId": "burdeos-profundo",
+      "note": {
+        "es": "El color de invitada de otoño. Funciona en todas las edades de la lista de invitados.",
+        "en": "The autumn guest color. It works across every age on the guest list."
+      }
+    },
+    {
+      "trendId": "hombro-estructurado",
+      "note": {
+        "es": "Si el vestido es simple, el hombro hace todo el trabajo y ahorra accesorios.",
+        "en": "If the dress is simple, the shoulder does all the work and saves on accessories."
+      }
+    }
+  ],
+  "pieces": [
+    {
+      "tier": "budget",
+      "retailer": "Zara México",
+      "label": {
+        "es": "Vestido columna en punto con hombro",
+        "en": "Column knit dress with shoulder"
+      },
+      "price": 1799,
+      "currency": "MXN",
+      "url": "https://www.zara.com/mx/es/search?searchTerm=vestido%20columna"
+    },
+    {
+      "tier": "mid",
+      "retailer": "Revolve",
+      "label": {
+        "es": "Vestido de lentejuela mate en burdeos",
+        "en": "Matte sequin dress in burgundy"
+      },
+      "price": 298,
+      "currency": "USD",
+      "url": "https://www.revolve.com/r/Search.jsp?search=matte%20sequin%20dress",
+      "note": {
+        "es": "Pide el largo midi si la boda es de día.",
+        "en": "Ask for midi length if the wedding is daytime."
+      }
+    },
+    {
+      "tier": "invest",
+      "retailer": "Nordstrom",
+      "label": {
+        "es": "Vestido de hombro estructurado en crepé",
+        "en": "Structured-shoulder crepe dress"
+      },
+      "price": 690,
+      "currency": "USD",
+      "url": "https://www.nordstrom.com/sr?keyword=structured%20shoulder%20dress"
+    }
+  ],
+  "avoid": [
+    {
+      "es": "Amarillo mantequilla: está cayendo y en una foto de boda se va a fechar sola.",
+      "en": "Butter yellow: it is falling and in a wedding photo it will date itself."
+    },
+    {
+      "es": "Cintura caída si el código es formal. Está en pico, pero lee informal.",
+      "en": "Dropped waist if the code is formal. It is peaking, but it reads casual."
+    }
+  ]
+}

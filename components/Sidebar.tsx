@@ -11,7 +11,8 @@ type NavHref =
   | "/alerts"
   | "/editorial"
   | "/edicion"
-  | "/fashion-week";
+  | "/fashion-week"
+  | "/ocasiones";
 
 type NavLink = { href: NavHref; key: TranslationKey };
 
@@ -28,6 +29,7 @@ const DATA_LINKS: NavLink[] = [
 const EDITORIAL_LINKS: NavLink[] = [
   { href: "/edicion", key: "nav.edicion" },
   { href: "/fashion-week", key: "nav.fashionWeek" },
+  { href: "/ocasiones", key: "nav.ocasiones" },
   { href: "/editorial", key: "nav.editorial" },
 ];
 

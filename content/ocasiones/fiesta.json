@@ -1,0 +1,81 @@
+{
+  "order": 5,
+  "accent": "cream",
+  "name": {
+    "es": "Fiesta",
+    "en": "Party"
+  },
+  "tagline": {
+    "es": "Brillo con criterio",
+    "en": "Shine with judgment"
+  },
+  "intro": {
+    "es": "La fiesta es el único contexto donde conviene comprar una tendencia en pico: se usa dos veces, se fotografía mucho y no tiene que durar tres años.",
+    "en": "A party is the one context where buying a peaking trend makes sense: you wear it twice, photograph it a lot, and it does not have to last three years."
+  },
+  "trends": [
+    {
+      "trendId": "lentejuela-mate",
+      "note": {
+        "es": "La alternativa a la lentejuela brillante que lleva todo el mundo. Emergiendo: todavía distingue.",
+        "en": "The alternative to the shiny sequin everyone wears. Emerging, so it still sets you apart."
+      }
+    },
+    {
+      "trendId": "cintura-caida",
+      "note": {
+        "es": "El score más alto del catálogo. Está en pico, que para fiesta es exactamente lo que quieres.",
+        "en": "The highest score in the catalog. It is peaking, which for a party is exactly what you want."
+      }
+    },
+    {
+      "trendId": "burdeos-profundo",
+      "note": {
+        "es": "El color de noche de la temporada, y el que mejor aguanta luz cálida de bar.",
+        "en": "The evening color of the season, and the one that holds up best under warm bar lighting."
+      }
+    },
+    {
+      "trendId": "bolso-hobo-suave",
+      "note": {
+        "es": "El hobo blando reemplazó al clutch rígido. Cabe el teléfono, que es la diferencia entera.",
+        "en": "The slouchy hobo replaced the rigid clutch. A phone fits, which is the whole difference."
+      }
+    }
+  ],
+  "pieces": [
+    {
+      "tier": "budget",
+      "retailer": "Shein",
+      "label": {
+        "es": "Top de lentejuela mate",
+        "en": "Matte sequin top"
+      },
+      "price": 459,
+      "currency": "MXN",
+      "url": "https://mx.shein.com/pdsearch/top%20lentejuela%20mate/"
+    },
+    {
+      "tier": "mid",
+      "retailer": "ASOS",
+      "label": {
+        "es": "Vestido de talle bajo en burdeos",
+        "en": "Dropped-waist dress in burgundy"
+      },
+      "price": 132.95,
+      "currency": "USD",
+      "url": "https://www.asos.com/us/search/?q=drop%20waist%20dress%20burgundy"
+    },
+    {
+      "tier": "invest",
+      "retailer": "Revolve",
+      "label": {
+        "es": "Bolso hobo suave en piel",
+        "en": "Slouchy hobo bag in leather"
+      },
+      "price": 465,
+      "currency": "USD",
+      "url": "https://www.revolve.com/r/Search.jsp?search=slouchy%20hobo%20bag"
+    }
+  ]
+}
