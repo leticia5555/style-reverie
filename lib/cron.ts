@@ -145,8 +145,17 @@ export async function runDaily(
         found: saved,
         sent: result.sent,
         stats: result.stats,
+        // Una corrida que se paró a mitad de las tandas sigue siendo "ok" —se
+        // guardó lo encontrado— pero tiene que decir que le faltó feed.
+        ...(result.reason ? { reason: result.reason } : {}),
       };
-      await finishRun(db, runId, "ok", saved, breakdown);
+      await finishRun(
+        db,
+        runId,
+        "ok",
+        saved,
+        result.reason ? `${breakdown} · ${result.reason}` : breakdown,
+      );
     } else {
       discovery = {
         status: result.status,

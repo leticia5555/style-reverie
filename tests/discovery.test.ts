@@ -11,9 +11,13 @@ import {
   type Headline,
 } from "@/lib/sources/fashion-filter";
 import {
+  batchHeadlines,
+  cleanCandidateName,
   describeStats,
+  EXTRACTION_PROMPT,
   discoverCandidates,
   isNew,
+  mergeCandidates,
   listCandidates,
   saveCandidates,
   toSlug,
@@ -187,13 +191,31 @@ test("guarda una candidata nueva con su conteo", async () => {
   assert.equal(rows[0].first_seen, "2026-09-16");
 });
 
-test("LAS MENCIONES SE ACUMULAN entre días", async () => {
+test("LAS MENCIONES SE ACUMULAN entre días, contando titulares distintos", async () => {
+  // Al día siguiente vuelven los dos titulares de ayer y aparece uno nuevo.
   await saveCandidates(db, [candidata("chaqueta de motociclista", 3)], "2026-09-17");
   const rows = await listCandidates(db);
   assert.equal(rows.length, 1, "sigue siendo la misma candidata");
-  assert.equal(rows[0].mentions, 5, "2 + 3");
+  assert.equal(rows[0].mentions, 3, "2 de ayer + 1 nuevo, no 2 + 3");
+  assert.equal(rows[0].evidence.length, 3, "la evidencia tampoco se duplica");
   assert.equal(rows[0].first_seen, "2026-09-16", "la primera vez no cambia");
   assert.equal(rows[0].last_seen, "2026-09-17");
+});
+
+test("un titular repetido no vuelve a sumar", async () => {
+  // Un artículo se queda en el feed varios días. Si cada corrida volviera a
+  // sumarlo, la lista quedaría ordenada por antigüedad del feed, no por
+  // cuánto se habla de la tendencia.
+  const antes = (await listCandidates(db)).find(
+    (r) => r.slug === "chaqueta-de-motociclista",
+  )!;
+  await saveCandidates(db, [candidata("chaqueta de motociclista", 3)], "2026-09-18");
+  const despues = (await listCandidates(db)).find(
+    (r) => r.slug === "chaqueta-de-motociclista",
+  )!;
+
+  assert.equal(despues.mentions, antes.mentions, "mismos titulares, mismas menciones");
+  assert.equal(despues.last_seen, "2026-09-18", "pero sí se actualiza cuándo se vio");
 });
 
 test("se ordenan por menciones, la más repetida arriba", async () => {
@@ -204,12 +226,38 @@ test("se ordenan por menciones, la más repetida arriba", async () => {
 });
 
 test("la evidencia se acumula pero no crece sin límite", async () => {
-  for (let i = 0; i < 5; i += 1) {
-    await saveCandidates(db, [candidata("chaqueta de motociclista", 4)], "2026-09-18");
+  // 40 titulares distintos, por encima del tope de 20 que se guardan.
+  for (let i = 0; i < 4; i += 1) {
+    await saveCandidates(
+      db,
+      [
+        {
+          slug: toSlug("chaqueta de motociclista"),
+          nameEs: "chaqueta de motociclista",
+          category: "prenda",
+          evidence: Array.from({ length: 10 }, (_, j) => ({
+            title: `otro titular ${i}-${j}`,
+            source: "WWD",
+            link: `https://example.test/extra-${i}-${j}`,
+          })),
+        },
+      ],
+      "2026-09-19",
+    );
   }
-  const rows = await listCandidates(db);
-  const row = rows.find((r) => r.slug === "chaqueta-de-motociclista")!;
-  assert.ok(row.evidence.length <= 12, `evidencias: ${row.evidence.length}`);
+  const row = (await listCandidates(db)).find(
+    (r) => r.slug === "chaqueta-de-motociclista",
+  )!;
+
+  assert.equal(row.evidence.length, 20, "se recorta al tope");
+  assert.ok(row.mentions >= 40, `las menciones sí siguen subiendo: ${row.mentions}`);
+
+  // En los 20 huecos caben la última tanda entera y la anterior; lo más viejo
+  // es lo que se cae, que es el orden que quiere quien mira la lista.
+  const links = row.evidence.map((item) => item.link);
+  assert.equal(links.filter((l) => l.includes("extra-3")).length, 10);
+  assert.equal(links.filter((l) => l.includes("extra-2")).length, 10);
+  assert.ok(!links.some((l) => l.includes("extra-0")), "lo más viejo se cayó");
 });
 
 test("una candidata promovida desaparece de la lista", async () => {
@@ -369,6 +417,8 @@ test("la línea del desglose nombra los tres filtros de después", () => {
     received: 120,
     filter: { ok: 14, bloqueado: 40, "sin-moda": 58, "otro-tema": 8 },
     sent: 14,
+    batches: 1,
+    failedBatches: 0,
     returned: 6,
     droppedShortName: 1,
     droppedKnown: 2,
@@ -378,6 +428,7 @@ test("la línea del desglose nombra los tres filtros de después", () => {
 
   assert.match(linea, /120 titulares/);
   assert.match(linea, /14 pasaron el filtro/);
+  assert.match(linea, /14 al modelo en 1 tanda/);
   assert.match(linea, /40 negocio/);
   assert.match(linea, /58 sin moda/);
   assert.match(linea, /8 otro tema/);
@@ -386,4 +437,67 @@ test("la línea del desglose nombra los tres filtros de después", () => {
   assert.match(linea, /2 ya en catálogo/);
   assert.match(linea, /0 sin evidencia/);
   assert.match(linea, /3 nuevas/);
+});
+
+/* ── el feed entero, en tandas ─────────────────────────────────────── */
+
+test("el feed entero se parte en tandas, no se recorta a la primera", () => {
+  const lote = Array.from({ length: 130 }, (_, i) => titular(`Titular ${i}`));
+  const tandas = batchHeadlines(lote, 40, 6);
+
+  assert.equal(tandas.length, 4);
+  assert.deepEqual(tandas.map((t) => t.length), [40, 40, 40, 10]);
+  // Nada se pierde y nada se repite.
+  assert.equal(tandas.flat().length, 130);
+  assert.equal(new Set(tandas.flat().map((h) => h.title)).size, 130);
+});
+
+test("el tope de tandas acota el gasto de un feed desbocado", () => {
+  const lote = Array.from({ length: 1000 }, (_, i) => titular(`Titular ${i}`));
+  assert.equal(batchHeadlines(lote, 40, 6).length, 6);
+});
+
+test("una candidata que sale en dos tandas suma su evidencia, sin repetir", () => {
+  const ev = (link: string) => ({ title: `T ${link}`, source: "Vogue", link });
+  const merged = mergeCandidates([
+    [{ slug: "zueco", nameEs: "zueco", category: "prenda", evidence: [ev("a"), ev("b")] }],
+    [{ slug: "zueco", nameEs: "zueco", category: null, evidence: [ev("b"), ev("c")] }],
+    [{ slug: "bailarina", nameEs: "bailarina café", category: "prenda", evidence: [ev("d")] }],
+  ]);
+
+  assert.equal(merged.length, 2);
+  const zueco = merged.find((c) => c.slug === "zueco");
+  assert.deepEqual(zueco?.evidence.map((e) => e.link), ["a", "b", "c"]);
+  assert.equal(zueco?.category, "prenda", "la categoría de la primera tanda gana");
+});
+
+test("mergeCandidates no muta las tandas que recibe", () => {
+  const evidence = [{ title: "T", source: "Vogue", link: "a" }];
+  const batch = [{ slug: "x", nameEs: "x", category: null, evidence }];
+  mergeCandidates([batch, [{ slug: "x", nameEs: "x", category: null, evidence: [{ title: "U", source: "WWD", link: "b" }] }]]);
+  assert.equal(evidence.length, 1, "la evidencia original sigue intacta");
+});
+
+/* ── el nombre que se extrae ───────────────────────────────────────── */
+
+test("el artículo con el que arranca el modelo no crea otra candidata", () => {
+  assert.equal(toSlug("el zueco"), toSlug("zueco"));
+  assert.equal(toSlug("La bailarina café"), toSlug("bailarina café"));
+  assert.equal(cleanCandidateName("los pantalones satinados"), "pantalones satinados");
+});
+
+test("no se muerde un nombre que empieza parecido a un artículo", () => {
+  assert.equal(cleanCandidateName("lazo de seda"), "lazo de seda");
+  assert.equal(cleanCandidateName("uniforme de oficina"), "uniforme de oficina");
+  // Y si quitarlo dejara casi nada, se queda como está.
+  assert.equal(cleanCandidateName("la"), "la");
+});
+
+test("el prompt le pide la prenda y no el tema, en singular", () => {
+  // El prompt es producto, no implementación: si alguien lo suaviza, vuelven
+  // las candidatas tipo "años 90" que no se pueden cotizar ni comprar.
+  assert.match(EXTRACTION_PROMPT, /pantalón satinado/);
+  assert.match(EXTRACTION_PROMPT, /SINGULAR/);
+  assert.match(EXTRACTION_PROMPT, /no son tendencias|NO son tendencias/);
+  assert.match(EXTRACTION_PROMPT, /tienda/);
 });

@@ -24,7 +24,22 @@ import { CATEGORIES, type Trend } from "@/lib/types";
  * aquí antes ($2/$10 por millón contra $3/$15).
  */
 export const DISCOVERY_MODEL = "claude-sonnet-5";
-const MAX_HEADLINES = 40;
+
+/**
+ * El feed entero pasa por el modelo, no solo la primera tanda.
+ *
+ * El catálogo de muestra está desconectado de lo que la prensa escribe hoy:
+ * de 130 titulares cruzaban dos. Mientras eso siga así, el descubrimiento no
+ * es un extra, es la forma de poblar el catálogo, y quedarse con los primeros
+ * 40 titulares tiraba el 70% de la materia prima.
+ *
+ * Se manda en tandas porque un lote de 130 en un solo mensaje da peores
+ * extracciones —el modelo se queda con lo de arriba— y porque un fallo a mitad
+ * no puede costar la corrida entera.
+ */
+const BATCH_SIZE = 40;
+/** Tope de gasto: 7 fuentes × 20 titulares no llega ni a cinco tandas. */
+const MAX_BATCHES = 6;
 
 const CandidateSchema = z.object({
   /** Nombre en español, como lo nombraría una editora de moda. */
@@ -56,8 +71,11 @@ export type DiscoveryStats = {
   received: number;
   /** Los que pasaron el filtro de moda, y por qué cayeron los demás. */
   filter: FilterBreakdown;
-  /** Los que de verdad se mandaron, ya con el tope de MAX_HEADLINES. */
+  /** Los que de verdad se mandaron, sumando todas las tandas. */
   sent: number;
+  /** Cuántas tandas se mandaron y cuántas reventaron. */
+  batches: number;
+  failedBatches: number;
   /** Candidatas que devolvió el modelo, antes de los filtros de después. */
   returned: number;
   droppedShortName: number;
@@ -68,7 +86,14 @@ export type DiscoveryStats = {
 };
 
 export type DiscoveryResult =
-  | { status: "ok"; candidates: Candidate[]; sent: number; stats: DiscoveryStats }
+  | {
+      status: "ok";
+      candidates: Candidate[];
+      sent: number;
+      stats: DiscoveryStats;
+      /** Presente solo si se paró antes de tiempo: qué tanda falló y por qué. */
+      reason?: string;
+    }
   | { status: "skipped"; reason: string; stats: DiscoveryStats }
   | { status: "error"; reason: string; stats: DiscoveryStats };
 
@@ -76,6 +101,8 @@ const emptyStats = (received = 0): DiscoveryStats => ({
   received,
   filter: { ok: 0, bloqueado: 0, "sin-moda": 0, "otro-tema": 0 },
   sent: 0,
+  batches: 0,
+  failedBatches: 0,
   returned: 0,
   droppedShortName: 0,
   droppedKnown: 0,
@@ -90,7 +117,8 @@ export function describeStats(stats: DiscoveryStats): string {
     `${stats.received} titulares`,
     `${filter.ok} pasaron el filtro (${filter.bloqueado} negocio, ` +
       `${filter["sin-moda"]} sin moda, ${filter["otro-tema"]} otro tema)`,
-    `${stats.sent} al modelo`,
+    `${stats.sent} al modelo en ${stats.batches} tanda${stats.batches === 1 ? "" : "s"}` +
+      (stats.failedBatches ? ` (${stats.failedBatches} reventaron)` : ""),
     `${stats.returned} candidatas`,
     `descartadas ${stats.droppedShortName} por nombre corto, ` +
       `${stats.droppedKnown} ya en catálogo, ` +
@@ -99,27 +127,69 @@ export function describeStats(stats: DiscoveryStats): string {
   ].join(" · ");
 }
 
-/** Slug estable: dos extracciones del mismo nombre son la misma candidata. */
-export function toSlug(name: string): string {
-  return normalizeTerm(name).replace(/\s+/g, "-").slice(0, 60);
+/**
+ * Cuánta evidencia se guarda por candidata. Son los titulares que se enseñan
+ * en /alerts para poder juzgarla sin salir de la página.
+ */
+const MAX_EVIDENCE = 20;
+/** Desplaza la evidencia ya guardada para que la nueva gane el desempate. */
+const EVIDENCE_OFFSET = 10_000;
+
+/**
+ * Quita el artículo con el que el modelo a veces arranca el nombre.
+ *
+ * El prompt lo pide sin él, pero cuando se cuela "el zueco" no es otra
+ * tendencia que "zueco": sería otra fila, con sus menciones repartidas entre
+ * las dos. El artículo se quita solo si deja algo detrás, para no convertir
+ * "la" en cadena vacía.
+ */
+const ARTICLES = /^(el|la|los|las|un|una|unos|unas)\s+/i;
+
+export function cleanCandidateName(name: string): string {
+  const trimmed = name.trim().replace(/\s+/g, " ");
+  const withoutArticle = trimmed.replace(ARTICLES, "");
+  return withoutArticle.length >= 3 ? withoutArticle : trimmed;
 }
 
-const PROMPT = `Eres una analista de tendencias de moda para el mercado mexicano.
+/** Slug estable: dos extracciones del mismo nombre son la misma candidata. */
+export function toSlug(name: string): string {
+  return normalizeTerm(cleanCandidateName(name)).replace(/\s+/g, "-").slice(0, 60);
+}
+
+export const EXTRACTION_PROMPT = `Eres una analista de tendencias de moda para el mercado mexicano.
 
 Te doy titulares de prensa de moda del día. Extrae las tendencias de MODA
 concretas de las que hablan: prendas, colores, texturas, siluetas, accesorios
 o estilos.
 
-Reglas:
-- Solo tendencias de ropa y accesorios. Nada de belleza, maquillaje, pelo,
-  celebridades, resultados de negocio ni nombramientos.
-- El nombre va en español, corto y como lo escribiría una editora de moda
-  ("pantalón barril", "verde matcha", "hombro estructurado"). No copies el
-  titular entero.
-- Una tendencia concreta, no un tema general. "Moda de otoño" no sirve;
-  "abrigo de borreguito" sí.
+LO MÁS IMPORTANTE: saca la PRENDA, no el tema del artículo.
+
+  "Los pantalones satinados de los 90 vuelven"  -> "pantalón satinado"
+  "El regreso del zueco que arrasó en los 70"   -> "zueco"
+  "Todo lo que se llevó en la alfombra roja"    -> nada, no nombra una prenda
+  "La estética boho toma la primavera"          -> "estilo boho"
+
+Una década, una estética de época, una ciudad, una casa de moda, una
+temporada o un evento NO son tendencias: "años 90", "look retro",
+"primavera 2027", "moda de París" se descartan. Si el titular solo habla de
+eso y no nombra una prenda, un color, una textura o una silueta concretos,
+no saques nada de él.
+
+Cómo se escribe el nombre:
+- En español, SIEMPRE EN SINGULAR: "bailarina café", no "bailarinas cafés";
+  "jean recto", no "jeans rectos".
+- Como se pediría en una tienda: "sandalia de cuña", "pantalón satinado",
+  "zueco", "bolso de hombro". Corto, sin adjetivos de crónica.
+- Sin el nombre de la marca ni de la casa: "chaqueta de cuero", no
+  "la chaqueta de cuero de Prada".
+- Nada de copiar el titular ni de frases ("lo que se lleva esta temporada").
+
+Más reglas:
+- Solo ropa y accesorios. Nada de belleza, maquillaje, pelo, celebridades,
+  resultados de negocio ni nombramientos.
 - Solo si al menos un titular la respalda de verdad. No inventes ni infieras.
 - Si ningún titular contiene una tendencia concreta, devuelve lista vacía.
+  Una lista vacía es una respuesta correcta.
 
 Devuelve para cada candidata su nombre, su categoría y los índices de los
 titulares que la respaldan.`;
@@ -152,6 +222,112 @@ export function isNew(name: string, trends: Trend[]): boolean {
   );
 }
 
+/** Corta la lista en tandas del tamaño que aguanta bien una extracción. */
+export function batchHeadlines(
+  headlines: Headline[],
+  size = BATCH_SIZE,
+  maxBatches = MAX_BATCHES,
+): Headline[][] {
+  const batches: Headline[][] = [];
+  for (let i = 0; i < headlines.length && batches.length < maxBatches; i += size) {
+    batches.push(headlines.slice(i, i + size));
+  }
+  return batches;
+}
+
+/**
+ * Junta las candidatas de varias tandas. La misma tendencia sale en dos tandas
+ * distintas cuando la prensa la repite, y ahí lo que suma es su evidencia: se
+ * unen los titulares, deduplicados por enlace para no contar dos veces el
+ * mismo.
+ */
+export function mergeCandidates(batches: Candidate[][]): Candidate[] {
+  const merged = new Map<string, Candidate>();
+
+  for (const batch of batches) {
+    for (const candidate of batch) {
+      const previous = merged.get(candidate.slug);
+      if (!previous) {
+        merged.set(candidate.slug, { ...candidate, evidence: [...candidate.evidence] });
+        continue;
+      }
+      const links = new Set(previous.evidence.map((item) => item.link));
+      for (const item of candidate.evidence) {
+        if (links.has(item.link)) continue;
+        links.add(item.link);
+        previous.evidence.push(item);
+      }
+      previous.category ??= candidate.category;
+    }
+  }
+
+  return [...merged.values()];
+}
+
+function describeError(error: unknown): string {
+  if (error instanceof Anthropic.RateLimitError) {
+    return "rate limit de la API de Anthropic";
+  }
+  if (error instanceof Anthropic.AuthenticationError) {
+    return "ANTHROPIC_API_KEY inválida";
+  }
+  return error instanceof Error ? error.message : String(error);
+}
+
+/** Una tanda: la llamada al modelo y los tres filtros de después. */
+async function extractBatch(
+  client: Anthropic,
+  batch: Headline[],
+  trends: Trend[],
+  stats: DiscoveryStats,
+): Promise<Candidate[]> {
+  const response = await client.messages.parse({
+    model: DISCOVERY_MODEL,
+    max_tokens: 4000,
+    thinking: { type: "adaptive" },
+    system: EXTRACTION_PROMPT,
+    messages: [{ role: "user", content: buildInput(batch) }],
+    output_config: { format: zodOutputFormat(ExtractionSchema) },
+  });
+
+  const parsed = response.parsed_output;
+  if (!parsed) throw new Error("la respuesta no se pudo parsear");
+
+  stats.returned += parsed.candidatas.length;
+
+  return parsed.candidatas
+    .filter((candidate) => {
+      const named = candidate.nombre.trim().length > 2;
+      if (!named) stats.droppedShortName += 1;
+      return named;
+    })
+    .filter((candidate) => {
+      const fresh = isNew(candidate.nombre, trends);
+      if (!fresh) stats.droppedKnown += 1;
+      return fresh;
+    })
+    .map((candidate) => ({
+      slug: toSlug(candidate.nombre),
+      nameEs: cleanCandidateName(candidate.nombre),
+      category: candidate.categoria as string | null,
+      // Los índices son relativos a SU tanda: el modelo solo vio esa.
+      evidence: candidate.evidencia
+        .map((index) => batch[index])
+        .filter(Boolean)
+        .map((headline) => ({
+          title: headline.title,
+          source: headline.sourceName,
+          link: headline.link,
+        })),
+    }))
+    // Sin evidencia no hay candidata: el modelo pudo alucinar un índice.
+    .filter((candidate) => {
+      const backed = candidate.evidence.length > 0;
+      if (!backed) stats.droppedNoEvidence += 1;
+      return backed;
+    });
+}
+
 export async function discoverCandidates(
   headlines: Headline[],
   trends: Trend[],
@@ -164,8 +340,7 @@ export async function discoverCandidates(
 
   // El filtro corre ANTES de gastar tokens.
   stats.filter = filterBreakdown(headlines);
-  const fashion = filterFashion(headlines).slice(0, MAX_HEADLINES);
-  stats.sent = fashion.length;
+  const fashion = filterFashion(headlines);
   if (!fashion.length) {
     return {
       status: "skipped",
@@ -174,74 +349,50 @@ export async function discoverCandidates(
     };
   }
 
-  try {
-    const client = new Anthropic();
-    const response = await client.messages.parse({
-      model: DISCOVERY_MODEL,
-      max_tokens: 4000,
-      thinking: { type: "adaptive" },
-      system: PROMPT,
-      messages: [{ role: "user", content: buildInput(fashion) }],
-      output_config: { format: zodOutputFormat(ExtractionSchema) },
-    });
+  const client = new Anthropic();
+  const found: Candidate[][] = [];
+  let stopped: string | null = null;
 
-    const parsed = response.parsed_output;
-    if (!parsed) {
-      return { status: "error", reason: "la respuesta no se pudo parsear", stats };
+  for (const batch of batchHeadlines(fashion)) {
+    try {
+      found.push(await extractBatch(client, batch, trends, stats));
+      stats.batches += 1;
+      stats.sent += batch.length;
+    } catch (error) {
+      // Una tanda que revienta no puede costar las que ya salieron bien: se
+      // para ahí y se guarda lo encontrado, igual que hace Google con el 429.
+      stats.failedBatches += 1;
+      stopped = describeError(error);
+      break;
     }
-
-    stats.returned = parsed.candidatas.length;
-    const candidates: Candidate[] = parsed.candidatas
-      .filter((candidate) => {
-        const named = candidate.nombre.trim().length > 2;
-        if (!named) stats.droppedShortName += 1;
-        return named;
-      })
-      .filter((candidate) => {
-        const fresh = isNew(candidate.nombre, trends);
-        if (!fresh) stats.droppedKnown += 1;
-        return fresh;
-      })
-      .map((candidate) => ({
-        slug: toSlug(candidate.nombre),
-        nameEs: candidate.nombre.trim(),
-        category: candidate.categoria,
-        evidence: candidate.evidencia
-          .map((index) => fashion[index])
-          .filter(Boolean)
-          .map((headline) => ({
-            title: headline.title,
-            source: headline.sourceName,
-            link: headline.link,
-          })),
-      }))
-      // Sin evidencia no hay candidata: el modelo pudo alucinar un índice.
-      .filter((candidate) => {
-        const backed = candidate.evidence.length > 0;
-        if (!backed) stats.droppedNoEvidence += 1;
-        return backed;
-      });
-
-    stats.kept = candidates.length;
-    return { status: "ok", candidates, sent: fashion.length, stats };
-  } catch (error) {
-    if (error instanceof Anthropic.RateLimitError) {
-      return { status: "error", reason: "rate limit de la API de Anthropic", stats };
-    }
-    if (error instanceof Anthropic.AuthenticationError) {
-      return { status: "error", reason: "ANTHROPIC_API_KEY inválida", stats };
-    }
-    return {
-      status: "error",
-      reason: error instanceof Error ? error.message : String(error),
-      stats,
-    };
   }
+
+  if (!stats.batches) {
+    return { status: "error", reason: stopped ?? "ninguna tanda salió", stats };
+  }
+
+  const candidates = mergeCandidates(found);
+  stats.kept = candidates.length;
+
+  return {
+    status: "ok",
+    candidates,
+    sent: stats.sent,
+    stats,
+    ...(stopped ? { reason: `se paró en la tanda ${stats.batches + 1}: ${stopped}` } : {}),
+  };
 }
 
 /**
  * Acumula las candidatas. Las menciones se suman entre días: lo que la prensa
  * repite semana tras semana sube solo, y lo que salió una vez se queda abajo.
+ *
+ * Se cuentan titulares distintos, no apariciones. Un artículo se queda en el
+ * feed varios días y el mismo enlace volvía a sumar en cada corrida: la lista
+ * se ordena por menciones, así que inflarlas con repetidos era ordenarla por
+ * "cuántos días lleva el feed sin cambiar". La evidencia se une deduplicada
+ * por enlace, con lo nuevo delante, y las menciones suben solo por los enlaces
+ * que no estaban.
  */
 export async function saveCandidates(
   db: Db,
@@ -254,22 +405,44 @@ export async function saveCandidates(
          (slug, name_es, category, mentions, first_seen, last_seen, evidence)
        values ($1, $2, $3, $4, $5, $5, $6)
        on conflict (slug) do update set
-         mentions = trend_candidates.mentions + excluded.mentions,
+         mentions = trend_candidates.mentions + (
+           -- Solo los titulares que no estaban ya.
+           select count(*)
+             from jsonb_array_elements(excluded.evidence) as nuevo
+            where not exists (
+              select 1 from jsonb_array_elements(trend_candidates.evidence) as viejo
+               where viejo->>'link' = nuevo->>'link'
+            )
+         ),
          last_seen = excluded.last_seen,
          category = coalesce(trend_candidates.category, excluded.category),
-         -- Evidencia nueva primero, sin pasar de doce.
+         -- Unión deduplicada por enlace, lo nuevo primero, con tope.
          evidence = (
-           select jsonb_agg(item)
+           select coalesce(jsonb_agg(item order by orden), '[]'::jsonb)
              from (
-               select item from jsonb_array_elements(
-                 excluded.evidence || trend_candidates.evidence
-               ) as item limit 12
+               select item, orden
+                 from (
+                   select distinct on (item->>'link') item, orden
+                     from (
+                       select item, ord::int as orden
+                         from jsonb_array_elements(excluded.evidence)
+                              with ordinality as entrante(item, ord)
+                       union all
+                       select item, (ord + ${EVIDENCE_OFFSET})::int
+                         from jsonb_array_elements(trend_candidates.evidence)
+                              with ordinality as guardada(item, ord)
+                     ) as todos
+                    order by item->>'link', orden
+                 ) as unicos
+                order by orden
+                limit ${MAX_EVIDENCE}
              ) as recorte
          )`,
       [
         candidate.slug,
         candidate.nameEs,
         candidate.category,
+        // Solo cuenta en el insert; al chocar, la base recuenta los nuevos.
         candidate.evidence.length,
         date,
         JSON.stringify(candidate.evidence),
@@ -299,9 +472,14 @@ const isoDate = (value: string | Date): string =>
     ? value.toISOString().slice(0, 10)
     : String(value).slice(0, 10);
 
+/**
+ * Mientras el catálogo siga desconectado de lo que la prensa escribe, esta
+ * lista es la materia prima del catálogo, no una nota al pie: se enseñan
+ * treinta, no doce.
+ */
 export async function listCandidates(
   db: Db,
-  limit = 12,
+  limit = 30,
 ): Promise<CandidateRow[]> {
   const rows = await db.query<
     Omit<CandidateRow, "first_seen" | "last_seen"> & {
