@@ -4,6 +4,12 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import Parser from "rss-parser";
 import { matchTrends, type TrendMatch } from "@/lib/editorial-match";
+import {
+  imageFromItem,
+  isAllowedImageHost,
+  ogImageFrom,
+  type RssItemImageFields,
+} from "@/lib/editorial-image";
 import { getTrends } from "@/lib/trends";
 
 export const FEEDS = [
@@ -34,6 +40,10 @@ export type Article = {
   publishedAt: string | null;
   snippet: string;
   matches: TrendMatch[];
+  /** null = el feed no traía imagen y la página pinta el placeholder. */
+  imageUrl: string | null;
+  /** De dónde salió la imagen, para poder depurar el feed. */
+  imageFrom: "feed" | "og" | null;
 };
 
 export type FeedStatus = {
@@ -55,6 +65,17 @@ export type EditorialCache = {
 export const CACHE_TTL_MS = 60 * 60 * 1000;
 const MAX_PER_FEED = 20;
 const FETCH_TIMEOUT_MS = 10_000;
+
+/**
+ * Pedir el og:image significa descargar el artículo entero, así que se acota:
+ * solo para los que el feed dejó sin imagen, en tandas pequeñas y con tope por
+ * refresco. Lo que ya se resolvió antes se reusa del caché y no se vuelve a
+ * pedir nunca.
+ */
+const OG_TIMEOUT_MS = 6_000;
+const OG_MAX_PER_REFRESH = 12;
+const OG_CONCURRENCY = 4;
+const OG_MAX_BYTES = 512 * 1024;
 
 const REPO_CACHE = resolve(process.cwd(), "data/editorial.cache.json");
 /**
@@ -115,6 +136,69 @@ function clean(value: string | undefined): string {
     .trim();
 }
 
+/** Descarga la portada de un artículo y saca su og:image. */
+async function fetchOgImage(link: string): Promise<string | null> {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), OG_TIMEOUT_MS);
+    const response = await fetch(link, {
+      signal: controller.signal,
+      headers: { "user-agent": "StyleReverie/0.1 (+editorial feed reader)" },
+      cache: "no-store",
+    });
+    clearTimeout(timer);
+    if (!response.ok) return null;
+
+    // No hace falta el documento entero: og:image vive en el <head>.
+    const html = (await response.text()).slice(0, OG_MAX_BYTES);
+    return ogImageFrom(html);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Completa las imágenes que faltan. Primero reusa lo que ya estaba en el
+ * caché — por eso la imagen se guarda junto al item — y solo sale a la red
+ * por los artículos nuevos que siguen sin nada.
+ */
+async function fillMissingImages(
+  articles: Article[],
+  previous: Article[],
+): Promise<void> {
+  const known = new Map(
+    previous
+      .filter((article) => article.imageUrl)
+      .map((article) => [article.id, article]),
+  );
+
+  const pending: Article[] = [];
+  for (const article of articles) {
+    if (article.imageUrl) continue;
+    const cached = known.get(article.id);
+    if (cached?.imageUrl) {
+      article.imageUrl = cached.imageUrl;
+      article.imageFrom = cached.imageFrom;
+      continue;
+    }
+    pending.push(article);
+  }
+
+  const queue = pending.slice(0, OG_MAX_PER_REFRESH);
+  for (let i = 0; i < queue.length; i += OG_CONCURRENCY) {
+    const batch = queue.slice(i, i + OG_CONCURRENCY);
+    await Promise.all(
+      batch.map(async (article) => {
+        const found = await fetchOgImage(article.link);
+        if (found) {
+          article.imageUrl = found;
+          article.imageFrom = "og";
+        }
+      }),
+    );
+  }
+}
+
 async function fetchFeed(
   feed: (typeof FEEDS)[number],
   parser: Parser,
@@ -143,6 +227,7 @@ async function fetchFeed(
         const link = item.link?.trim() ?? "";
         const snippet = clean(item.contentSnippet ?? item.content).slice(0, 280);
         const published = item.isoDate ?? item.pubDate ?? null;
+        const fromFeed = imageFromItem(item as RssItemImageFields);
         return {
           id: articleId(link, title),
           title,
@@ -152,6 +237,8 @@ async function fetchFeed(
           publishedAt: published ? new Date(published).toISOString() : null,
           snippet,
           matches: matchTrends(`${title} ${snippet}`, trends),
+          imageUrl: fromFeed,
+          imageFrom: fromFeed ? ("feed" as const) : null,
         };
       })
       .filter((article) => article.title && article.link);
@@ -188,7 +275,16 @@ async function fetchFeed(
 export async function refreshEditorial({
   toRepo = false,
 }: { toRepo?: boolean } = {}): Promise<EditorialCache> {
-  const parser = new Parser();
+  // rss-parser ignora los campos que no conoce: hay que pedirlos por nombre.
+  const parser = new Parser({
+    customFields: {
+      item: [
+        ["media:content", "mediaContent", { keepArray: true }],
+        ["media:thumbnail", "mediaThumbnail"],
+        ["content:encoded", "contentEncoded"],
+      ],
+    },
+  });
   const results = await Promise.all(FEEDS.map((feed) => fetchFeed(feed, parser)));
 
   const articles = results
@@ -196,6 +292,7 @@ export async function refreshEditorial({
     .sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
 
   const previous = readCache();
+  await fillMissingImages(articles, previous.articles);
   const anyOk = results.some((result) => result.status.ok);
 
   // Si ninguna fuente respondió, se conserva lo último bueno que había.
@@ -214,6 +311,23 @@ export async function getEditorial(): Promise<EditorialCache> {
   const cache = readCache();
   if (!isStale(cache)) return cache;
   return refreshEditorial();
+}
+
+/**
+ * Anula las imágenes que next/image no puede cargar. La decisión se toma en el
+ * servidor a propósito: la lista de hosts depende de env y el cliente no la ve,
+ * así que comprobarla al renderizar daba un desajuste de hidratación. El caché
+ * conserva la URL original para poder depurar qué CDN quedó fuera.
+ */
+export function withRenderableImages(cache: EditorialCache): EditorialCache {
+  return {
+    ...cache,
+    articles: cache.articles.map((article) =>
+      article.imageUrl && !isAllowedImageHost(article.imageUrl)
+        ? { ...article, imageUrl: null, imageFrom: null }
+        : article,
+    ),
+  };
 }
 
 /** Artículos agrupados por tendencia mencionada, para el panel lateral. */

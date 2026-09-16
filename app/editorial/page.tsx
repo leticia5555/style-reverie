@@ -1,5 +1,9 @@
 import { EditorialView } from "@/components/EditorialView";
-import { getEditorial, trendMentions } from "@/lib/editorial";
+import {
+  getEditorial,
+  trendMentions,
+  withRenderableImages,
+} from "@/lib/editorial";
 import { getTrends } from "@/lib/trends";
 
 export const metadata = {
@@ -13,7 +17,7 @@ export const metadata = {
 export const revalidate = 3600;
 
 export default async function EditorialPage() {
-  const cache = await getEditorial();
+  const cache = withRenderableImages(await getEditorial());
   const trends = getTrends();
   const names = new Map(trends.map((trend) => [trend.id, trend.name]));
 

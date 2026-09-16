@@ -1,13 +1,65 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { PageHeading } from "@/components/PageHeading";
 import { useI18n } from "@/lib/i18n";
-import type { Article, EditorialCache } from "@/lib/editorial";
+import type { Article, EditorialCache, FeedKey } from "@/lib/editorial";
 import type { Localized } from "@/lib/types";
 
 type MentionRow = { trendId: string; count: number; name: Localized };
+
+/** Cada fuente tiene su pastel; el placeholder lo usa cuando no hay foto. */
+const SOURCE_TINT: Record<FeedKey, { bg: string; ink: string }> = {
+  vogue: { bg: "bg-lavender-soft", ink: "text-lavender-ink" },
+  wwd: { bg: "bg-rose-soft", ink: "text-rose-ink" },
+  bof: { bg: "bg-sage-soft", ink: "text-sage-ink" },
+  whowhatwear: { bg: "bg-cream-soft", ink: "text-cream-ink" },
+};
+
+/**
+ * Miniatura 4:3. Llega con imageUrl ya filtrada por el servidor: si el feed
+ * sirviera desde un CDN que no está en next.config.ts, next/image lanzaría en
+ * runtime y tumbaría la página, así que esas vienen en null y caen al
+ * placeholder.
+ */
+function Thumb({ article }: { article: Article }) {
+  const tint = SOURCE_TINT[article.source];
+  const usable = Boolean(article.imageUrl);
+
+  return (
+    <div
+      className={`relative aspect-4/3 w-28 shrink-0 overflow-hidden rounded-xl sm:w-36 ${
+        usable ? "bg-quiet-soft" : tint.bg
+      }`}
+    >
+      {usable ? (
+        <Image
+          src={article.imageUrl!}
+          alt=""
+          fill
+          sizes="(min-width: 640px) 144px, 112px"
+          className="object-cover"
+        />
+      ) : (
+        <span
+          className={`absolute inset-0 flex items-center justify-center px-2 text-center text-[10px] font-medium tracking-[0.12em] uppercase ${tint.ink} opacity-70`}
+        >
+          {article.sourceName}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/** Fecha corta y absoluta: es lo que se pinta en el servidor. */
+function absoluteDate(iso: string, lang: "es" | "en"): string {
+  return new Date(iso).toLocaleDateString(lang === "es" ? "es-MX" : "en-US", {
+    day: "numeric",
+    month: "short",
+  });
+}
 
 function timeAgo(iso: string | null, lang: "es" | "en"): string {
   if (!iso) return "";
@@ -22,6 +74,29 @@ function timeAgo(iso: string | null, lang: "es" | "en"): string {
   return rtf.format(-Math.round(hours / 24), "day");
 }
 
+/**
+ * La hora relativa depende de cuándo se mire, y la página se prerenderiza:
+ * calcularla en el servidor y otra vez al hidratar daba textos distintos. El
+ * HTML sale con la fecha absoluta y el cliente la cambia a relativa al montar.
+ */
+const noopSubscribe = () => () => {};
+
+function RelativeTime({ iso }: { iso: string }) {
+  const { lang } = useI18n();
+  // false en el servidor, true en el cliente: sin efecto ni setState.
+  const mounted = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
+
+  return (
+    <span className="text-[11px] text-faint">
+      {mounted ? timeAgo(iso, lang) : absoluteDate(iso, lang)}
+    </span>
+  );
+}
+
 function ArticleRow({
   article,
   names,
@@ -29,51 +104,55 @@ function ArticleRow({
   article: Article;
   names: Map<string, Localized>;
 }) {
-  const { lang, pick } = useI18n();
+  const { pick } = useI18n();
 
   return (
     <li className="border-b border-line py-4 last:border-0">
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="eyebrow">{article.sourceName}</span>
-        {article.publishedAt ? (
-          <span className="text-[11px] text-faint">
-            {timeAgo(article.publishedAt, lang)}
-          </span>
-        ) : null}
+      <div className="flex gap-4">
+        <Thumb article={article} />
+
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className="eyebrow">{article.sourceName}</span>
+            {article.publishedAt ? (
+              <RelativeTime iso={article.publishedAt} />
+            ) : null}
+          </div>
+          <h3 className="mt-1.5 text-[15px] leading-snug font-medium text-ink">
+            <a
+              href={article.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-lavender-ink hover:underline"
+            >
+              {article.title}
+            </a>
+          </h3>
+          {article.snippet ? (
+            <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted">
+              {article.snippet}
+            </p>
+          ) : null}
+          {article.matches.length ? (
+            <ul className="mt-2.5 flex flex-wrap gap-2">
+              {article.matches.map((match) => {
+                const name = names.get(match.trendId);
+                return (
+                  <li key={match.trendId}>
+                    <Link
+                      href={`/trends/${match.trendId}`}
+                      title={match.keyword}
+                      className="inline-flex rounded-full border border-lavender bg-lavender-soft px-2.5 py-0.5 text-[11px] text-lavender-ink hover:bg-lavender/25"
+                    >
+                      {name ? pick(name) : match.trendId}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
+        </div>
       </div>
-      <h3 className="mt-1.5 text-[15px] leading-snug font-medium text-ink">
-        <a
-          href={article.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-lavender-ink hover:underline"
-        >
-          {article.title}
-        </a>
-      </h3>
-      {article.snippet ? (
-        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted">
-          {article.snippet}
-        </p>
-      ) : null}
-      {article.matches.length ? (
-        <ul className="mt-2.5 flex flex-wrap gap-2">
-          {article.matches.map((match) => {
-            const name = names.get(match.trendId);
-            return (
-              <li key={match.trendId}>
-                <Link
-                  href={`/trends/${match.trendId}`}
-                  title={match.keyword}
-                  className="inline-flex rounded-full border border-lavender bg-lavender-soft px-2.5 py-0.5 text-[11px] text-lavender-ink hover:bg-lavender/25"
-                >
-                  {name ? pick(name) : match.trendId}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      ) : null}
     </li>
   );
 }
@@ -87,7 +166,7 @@ export function EditorialView({
   mentions: MentionRow[];
   names: [string, Localized][];
 }) {
-  const { t, pick, lang } = useI18n();
+  const { t, pick } = useI18n();
   const [source, setSource] = useState<string>("all");
   const [onlyMatched, setOnlyMatched] = useState(false);
 
@@ -101,15 +180,20 @@ export function EditorialView({
 
   return (
     <div className="mx-auto max-w-6xl">
-      <PageHeading titleKey="editorial.title" subtitleKey="editorial.subtitle" />
+      <PageHeading
+        titleKey="editorial.title"
+        subtitleKey="editorial.subtitle"
+      />
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3">
         <p className="text-xs text-muted">
           {t("editorial.fetchedAt")}{" "}
           <span className="text-ink-soft">
-            {cache.fetchedAt
-              ? timeAgo(cache.fetchedAt, lang)
-              : t("editorial.never")}
+            {cache.fetchedAt ? (
+              <RelativeTime iso={cache.fetchedAt} />
+            ) : (
+              t("editorial.never")
+            )}
           </span>{" "}
           · {t("editorial.refreshNote")}
         </p>

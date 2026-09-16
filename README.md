@@ -53,8 +53,22 @@ es un artefacto de runtime. En Vercel el repo es de solo lectura, así que el
 refresco escribe en el directorio temporal y la página usa además `revalidate`
 de una hora.
 
-Para probar el parser sin salir a internet, las URLs se pueden apuntar a un
-servidor local con `SR_FEED_VOGUE`, `SR_FEED_WWD`, `SR_FEED_BOF` y `SR_FEED_WWW`.
+Cada titular lleva su imagen. Se busca en el feed por orden — `media:content`
+(el tamaño mayor si viene repetido), `media:thumbnail`, `enclosure` de tipo
+imagen y la primera `<img>` de `content:encoded` — y si no hay ninguna se
+descarga el artículo para leer su `og:image`. La imagen se guarda junto al item
+en el caché, así que ese fetch extra se hace una sola vez por artículo; está
+acotado a 12 por refresco para que un feed sin imágenes no alargue el ciclo.
+
+Los hosts que puede cargar `next/image` viven en `IMAGE_HOSTS`
+(`lib/editorial-image.ts`) y `next.config.ts` construye desde ahí sus
+`remotePatterns`. Si un feed sirviera desde un CDN que no está en la lista, el
+servidor anula esa imagen y la tarjeta pinta el placeholder de la fuente en vez
+de dejar que `next/image` lance en runtime.
+
+Para probar sin salir a internet, las URLs se pueden apuntar a un servidor local
+con `SR_FEED_VOGUE`, `SR_FEED_WWD`, `SR_FEED_BOF` y `SR_FEED_WWW`, y
+`SR_IMAGE_HOSTS` acepta hosts de imagen extra separados por coma.
 
 ## Estructura
 
@@ -72,6 +86,7 @@ lib/scoring.ts          Score compuesto ponderado por fuente
 lib/lifecycle.ts        Ciclo de vida derivado de score + momentum
 lib/editorial.ts        Fetch de los RSS, caché de 1 hora y estado por fuente
 lib/editorial-match.ts  Normalización y match de tendencias en un titular
+lib/editorial-image.ts  Imagen del item, og:image y hosts permitidos
 scripts/generate-seed.ts   Generador del seed (npm run seed)
 scripts/fetch-editorial.ts Refresco manual del feed (npm run editorial)
 ```
