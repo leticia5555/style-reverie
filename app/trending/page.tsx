@@ -1,3 +1,4 @@
+import { AccumulatingSection } from "@/components/AccumulatingSection";
 import { PageLede } from "@/components/PageLede";
 import { TrendTable } from "@/components/TrendTable";
 import { trendingInsight } from "@/lib/insights";
@@ -15,7 +16,7 @@ export const metadata = {
 };
 
 export default async function TrendingPage() {
-  const { trends } = await getCatalog();
+  const { trends, accumulating } = await getCatalog();
   const rows = getTrendSummaries(trends);
 
   return (
@@ -26,6 +27,7 @@ export default async function TrendingPage() {
         insight={trendingInsight(trends)}
       />
       <TrendTable rows={rows} />
+      <AccumulatingSection trends={accumulating} />
     </div>
   );
 }

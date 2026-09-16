@@ -144,9 +144,57 @@ const dict = {
   },
   "candidates.uncategorized": { es: "Sin categoría", en: "Uncategorized" },
   "candidates.promote": { es: "Promover al catálogo", en: "Promote to catalog" },
-  "candidates.promoteSoon": {
-    es: "Todavía no hace nada: promover se implementa en la siguiente sesión.",
-    en: "Does nothing yet: promoting ships in the next session.",
+  "candidates.discard": { es: "Descartar", en: "Discard" },
+  "candidates.working": { es: "Un momento…", en: "Working…" },
+  "candidates.actionFailed": {
+    es: "No se pudo completar. Vuelve a intentarlo.",
+    en: "Could not complete. Try again.",
+  },
+  "candidates.needsAdmin": {
+    es: "Promover y descartar necesitan sesión de admin.",
+    en: "Promoting and discarding need an admin session.",
+  },
+  "candidates.signIn": { es: "Entrar", en: "Sign in" },
+  "admin.title": { es: "Admin", en: "Admin" },
+  "admin.subtitle": {
+    es: "Entra para promover o descartar candidatas desde Alertas.",
+    en: "Sign in to promote or discard candidates from Alerts.",
+  },
+  "admin.password": { es: "Contraseña", en: "Password" },
+  "admin.signIn": { es: "Entrar", en: "Sign in" },
+  "admin.signOut": { es: "Salir", en: "Sign out" },
+  "admin.signedIn": {
+    es: "Sesión iniciada. Ya puedes promover y descartar desde Alertas.",
+    en: "Signed in. You can promote and discard from Alerts now.",
+  },
+  "admin.wrong": { es: "Contraseña incorrecta.", en: "Wrong password." },
+  "admin.notConfigured": {
+    es: "Falta ADMIN_PASSWORD en el entorno. Sin ella no hay sesión de admin y las acciones quedan desactivadas.",
+    en: "ADMIN_PASSWORD is missing from the environment. Without it there is no admin session and the actions stay disabled.",
+  },
+  "accumulating.title": {
+    es: "Nuevas, acumulando datos",
+    en: "New, collecting data",
+  },
+  "accumulating.note": {
+    es: "Promovidas desde el feed de prensa. No tienen score, ciclo de vida ni predicción todavía: derivarlos de unos pocos días daría un número con la misma pinta que el de una tendencia con noventa.",
+    en: "Promoted from the press feed. No score, lifecycle or forecast yet: deriving them from a handful of days would look exactly like a number built on ninety.",
+  },
+  "accumulating.badge": { es: "nueva · sin histórico", en: "new · no history" },
+  "accumulating.since": { es: "promovida", en: "promoted" },
+  "accumulating.days": { es: "días de señal real", en: "days of real signal" },
+  "accumulating.responding": { es: "Fuentes respondiendo", en: "Sources responding" },
+  "accumulating.noSignalYet": {
+    es: "Todavía sin respuesta de ninguna fuente.",
+    en: "No source has answered yet.",
+  },
+  "accumulating.graduates": {
+    es: "Entran en la tabla solas al completar los días.",
+    en: "They join the table on their own once the days are in.",
+  },
+  "accumulating.fromAlerts": {
+    es: "Promover más desde Alertas",
+    en: "Promote more from Alerts",
   },
   "alerts.title": { es: "Alertas de emergentes", en: "Emerging alerts" },
   "alerts.subtitle": {

@@ -89,11 +89,13 @@ export function AlertsView({
   watchlist,
   insight,
   candidates = [],
+  isAdmin = false,
 }: {
   alerts: Alert[];
   watchlist: TrendSummary[];
   insight: Insight;
   candidates?: CandidateRow[];
+  isAdmin?: boolean;
 }) {
   const { t, pick } = useI18n();
 
@@ -155,7 +157,7 @@ export function AlertsView({
           </ul>
         </section>
       ) : null}
-      <CandidatesSection candidates={candidates} />
+      <CandidatesSection candidates={candidates} isAdmin={isAdmin} />
     </div>
   );
 }

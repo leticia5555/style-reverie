@@ -1,4 +1,5 @@
 import { AlertsView } from "@/components/AlertsView";
+import { isAdminSession } from "@/lib/admin-session";
 import { getDb } from "@/lib/db/client";
 import { alertsInsight } from "@/lib/insights";
 import { listCandidates } from "@/lib/sources/discovery";
@@ -33,6 +34,7 @@ export default async function AlertsPage() {
   // Sin base o con la tabla recién creada, la sección simplemente no aparece.
   const db = getDb();
   const candidates = db ? await listCandidates(db).catch(() => []) : [];
+  const admin = await isAdminSession();
 
   /**
    * Las que suben y siguen por debajo de 60 pero aún no llegan al umbral de
@@ -54,6 +56,7 @@ export default async function AlertsPage() {
       watchlist={watchlist}
       insight={alertsInsight(trends)}
       candidates={candidates}
+      isAdmin={admin}
     />
   );
 }

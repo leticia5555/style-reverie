@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import type { CandidateRow } from "@/lib/sources/discovery";
@@ -13,9 +15,9 @@ import type { CandidateRow } from "@/lib/sources/discovery";
  * salir de la página: cuántos titulares distintos la mencionan, cuáles son y
  * desde cuándo aparece.
  *
- * Promover es una decisión humana: el botón existe para que se vea dónde va a
- * estar, y no hace nada todavía. Un botón que promete y no cumple es peor que
- * uno desactivado, así que va deshabilitado y dice por qué.
+ * Promover y descartar son decisiones humanas y van detrás de la sesión de
+ * admin: sin ella los botones no se enseñan siquiera, con un enlace a /admin
+ * en su lugar. Un botón que no se puede pulsar no explica nada.
  */
 
 /** Cuántos titulares se ven sin desplegar: bastan para juzgar de un vistazo. */
@@ -29,9 +31,41 @@ type Category =
   | "category.accesorio"
   | "category.estilo";
 
-function CandidateCard({ candidate }: { candidate: CandidateRow }) {
+function CandidateCard({
+  candidate,
+  isAdmin,
+}: {
+  candidate: CandidateRow;
+  isAdmin: boolean;
+}) {
   const { t, lang } = useI18n();
+  const router = useRouter();
   const [expanded, setExpanded] = useState(false);
+  const [busy, setBusy] = useState<"promote" | "discard" | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function act(action: "promote" | "discard") {
+    setBusy(action);
+    setError(null);
+    try {
+      const response = await fetch("/api/admin/candidates", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ slug: candidate.slug, action }),
+      });
+      if (!response.ok) {
+        const body = (await response.json().catch(() => ({}))) as { error?: string };
+        setError(body.error ?? t("candidates.actionFailed"));
+        return;
+      }
+      // La fila desaparece de la lista: hay que releerla del servidor.
+      router.refresh();
+    } catch {
+      setError(t("candidates.actionFailed"));
+    } finally {
+      setBusy(null);
+    }
+  }
 
   const fecha = (iso: string) =>
     new Date(`${iso}T12:00:00Z`).toLocaleDateString(
@@ -119,16 +153,30 @@ function CandidateCard({ candidate }: { candidate: CandidateRow }) {
               </span>
             </span>
           </span>
-          <button
-            type="button"
-            disabled
-            title={t("candidates.promoteSoon")}
-            className="cursor-not-allowed rounded-full border border-line-strong px-3 py-1.5 text-xs text-faint"
-          >
-            {t("candidates.promote")}
-          </button>
+          {isAdmin ? (
+            <span className="flex flex-col gap-1.5">
+              <button
+                type="button"
+                onClick={() => act("promote")}
+                disabled={busy !== null}
+                className="rounded-full border border-line-strong px-3 py-1.5 text-xs text-ink-soft hover:border-lavender-ink hover:text-lavender-ink disabled:opacity-50"
+              >
+                {busy === "promote" ? t("candidates.working") : t("candidates.promote")}
+              </button>
+              <button
+                type="button"
+                onClick={() => act("discard")}
+                disabled={busy !== null}
+                className="rounded-full px-3 py-1.5 text-xs text-faint hover:text-rose-ink disabled:opacity-50"
+              >
+                {busy === "discard" ? t("candidates.working") : t("candidates.discard")}
+              </button>
+            </span>
+          ) : null}
         </div>
       </div>
+
+      {error ? <p className="mt-2 text-xs text-rose-ink">{error}</p> : null}
 
       {candidate.evidence.length ? (
         <div className="mt-3 border-t border-line pt-3">
@@ -168,8 +216,10 @@ function CandidateCard({ candidate }: { candidate: CandidateRow }) {
 
 export function CandidatesSection({
   candidates,
+  isAdmin = false,
 }: {
   candidates: CandidateRow[];
+  isAdmin?: boolean;
 }) {
   const { t } = useI18n();
   if (!candidates.length) return null;
@@ -183,10 +233,22 @@ export function CandidatesSection({
       <p className="eyebrow mt-2">
         {candidates.length} · {t("candidates.rank")}
       </p>
+      {!isAdmin ? (
+        <p className="mt-2 text-xs text-muted">
+          {t("candidates.needsAdmin")}{" "}
+          <Link href="/admin" className="underline underline-offset-2 hover:text-lavender-ink">
+            {t("candidates.signIn")}
+          </Link>
+        </p>
+      ) : null}
 
       <ul className="mt-4 space-y-3">
         {candidates.map((candidate) => (
-          <CandidateCard key={candidate.slug} candidate={candidate} />
+          <CandidateCard
+            key={candidate.slug}
+            candidate={candidate}
+            isAdmin={isAdmin}
+          />
         ))}
       </ul>
     </section>
