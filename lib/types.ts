@@ -73,6 +73,8 @@ export type Trend = {
    * Los usa el match del feed editorial.
    */
   keywords: string[];
+  /** Hex del color, solo en las tendencias de categoría color. */
+  swatch?: string;
   shopping: Record<ShopTier, ShopLink[]>;
 };
 

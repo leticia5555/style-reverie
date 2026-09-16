@@ -18,6 +18,8 @@ export type TrendSpec = {
    * match del feed editorial; el nombre y el término ya se incluyen solos.
    */
   synonyms: string[];
+  /** Solo para categoría color: el hex del swatch que se pinta en /paleta. */
+  swatch?: string;
   target: Lifecycle;
 };
 
@@ -129,6 +131,7 @@ export const TREND_SPECS: TrendSpec[] = [
       "buttery yellow",
       "butter tone",
     ],
+    swatch: "#F2E2A9",
     target: "CAYENDO",
   },
   {
@@ -149,6 +152,7 @@ export const TREND_SPECS: TrendSpec[] = [
       "wine red",
       "bordeaux",
     ],
+    swatch: "#6E2438",
     target: "PICO",
   },
   {
@@ -168,6 +172,7 @@ export const TREND_SPECS: TrendSpec[] = [
       "pistachio green",
       "verde pistache",
     ],
+    swatch: "#A7B89A",
     target: "SUBIENDO",
   },
   {
@@ -181,6 +186,7 @@ export const TREND_SPECS: TrendSpec[] = [
     },
     term: { es: "azul polvo", en: "powder blue" },
     synonyms: ["powder blue", "azul polvo", "dusty blue", "azul empolvado"],
+    swatch: "#A9BAD1",
     target: "EMERGIENDO",
   },
   {
@@ -200,6 +206,7 @@ export const TREND_SPECS: TrendSpec[] = [
       "mocha",
       "cafe chocolate",
     ],
+    swatch: "#6B4A35",
     target: "SUBIENDO",
   },
   {

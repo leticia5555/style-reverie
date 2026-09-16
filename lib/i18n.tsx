@@ -230,6 +230,22 @@ const dict = {
     en: "Hand-curated selection. Scores and lifecycles come from the catalog.",
   },
   "oc.count": { es: "tendencias", en: "trends" },
+  "paleta.title": { es: "Paleta de temporada", en: "Season palette" },
+  "paleta.subtitle": {
+    es: "Los colores del catálogo ordenados por score, con su fase y las tendencias que recorren su misma curva.",
+    en: "Catalog colors ranked by score, with their phase and the trends tracking the same curve.",
+  },
+  "paleta.pairs": { es: "Combina con", en: "Pairs with" },
+  "paleta.pairsNote": {
+    es: "Derivado: tendencias cuya curva de 90 días correlaciona con la del color. Con datos de muestra esto agrupa sobre todo por fase del ciclo.",
+    en: "Derived: trends whose 90-day curve correlates with the color's. On sample data this mostly groups by lifecycle phase.",
+  },
+  "paleta.noPairs": {
+    es: "Ninguna tendencia sigue su curva de cerca.",
+    en: "No trend tracks its curve closely.",
+  },
+  "paleta.correlation": { es: "correlación", en: "correlation" },
+  "paleta.strip": { es: "La temporada de un vistazo", en: "The season at a glance" },
   "lifecycle.EMERGIENDO": { es: "Emergiendo", en: "Emerging" },
   "lifecycle.SUBIENDO": { es: "Subiendo", en: "Rising" },
   "lifecycle.PICO": { es: "Pico", en: "Peak" },

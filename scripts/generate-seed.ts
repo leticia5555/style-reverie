@@ -374,6 +374,7 @@ function buildTrend(spec: TrendSpec): Trend {
       history,
       scoreYearAgo: scoreYearAgo(spec.target, score, rng),
       keywords: buildKeywords(spec),
+      ...(spec.swatch ? { swatch: spec.swatch } : {}),
       shopping: buildShopping(spec, rng),
     };
   }
