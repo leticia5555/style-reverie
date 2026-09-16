@@ -244,6 +244,16 @@ const dict = {
     en: "Hand-curated selection. Scores and lifecycles come from the catalog.",
   },
   "oc.count": { es: "tendencias", en: "trends" },
+  "season.title": { es: "Color de temporada", en: "Color of the season" },
+  "season.basis": {
+    es: "Ordenados por score y momentum; el puesto en cada uno va al lado.",
+    en: "Ranked by score and momentum; each rank is shown alongside.",
+  },
+  "season.leader": { es: "Encabeza", en: "Leading" },
+  "season.notForecast": {
+    es: "Derivado del catálogo de hoy. No es un pronóstico: describe dónde están los colores ahora, no dónde van a estar. La única proyección del producto es la estimación a siete días de cada ficha.",
+    en: "Derived from today's catalog. Not a forecast: it describes where the colors are now, not where they are heading. The product's only projection is the seven-day estimate on each trend page.",
+  },
   "paleta.title": { es: "Paleta de temporada", en: "Season palette" },
   "paleta.subtitle": {
     es: "Los colores del catálogo ordenados por score, con su fase y con qué combinan.",

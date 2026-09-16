@@ -171,7 +171,16 @@ export function paletaInsight(trends: Trend[] = getTrends()): Insight {
 
   const figures: Figure[] = [
     { value: String(now.length), label: { es: "colores", en: "colors" } },
-    { value: leader.score.toFixed(1), label: { es: `lidera ${leader.name.es.toLowerCase()}`, en: `${leader.name.en.toLowerCase()} leads` } },
+    {
+      // "por score" explícito: el bloque de color de temporada ordena por
+      // score Y momentum y puede encabezarlo otro color. Sin decir según qué,
+      // la página muestra dos líderes distintos y parece un error.
+      value: leader.score.toFixed(1),
+      label: {
+        es: `${leader.name.es.toLowerCase()}, el más alto por score`,
+        en: `${leader.name.en.toLowerCase()}, highest by score`,
+      },
+    },
     {
       value: `${fastest.momentum7d > 0 ? "+" : ""}${fastest.momentum7d.toFixed(1)}`,
       label: { es: "mejor semana", en: "best week" },

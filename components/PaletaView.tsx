@@ -4,18 +4,21 @@ import Link from "next/link";
 import { Delta } from "@/components/Delta";
 import { LifecycleBadge } from "@/components/LifecycleBadge";
 import { PageLede } from "@/components/PageLede";
+import { SeasonPalette } from "@/components/SeasonPalette";
 import { Sparkline } from "@/components/Sparkline";
 import { useI18n } from "@/lib/i18n";
 import { LIFECYCLE_STYLES } from "@/lib/lifecycle";
 import type { Insight } from "@/lib/insights";
-import type { PaletteEntry } from "@/lib/paleta";
+import type { PaletteEntry, SeasonPalette as SeasonPaletteData } from "@/lib/paleta";
 
 export function PaletaView({
   entries,
   insight,
+  season,
 }: {
   entries: PaletteEntry[];
   insight: Insight;
+  season: SeasonPaletteData | null;
 }) {
   const { t, pick } = useI18n();
 
@@ -26,6 +29,12 @@ export function PaletaView({
         subtitleKey="paleta.subtitle"
         insight={insight}
       />
+
+      {season ? (
+        <div className="mb-10">
+          <SeasonPalette data={season} />
+        </div>
+      ) : null}
 
       {/* Tira continua: la temporada entera en una línea, ordenada por score. */}
       <section>
