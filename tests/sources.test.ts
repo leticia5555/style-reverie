@@ -12,8 +12,12 @@ import {
 import {
   averageInterest,
   backoffDelay,
+  gapDelay,
   googleTrendsConnector,
-  pendingTrends,
+  isRateLimited,
+  MAX_PER_RUN,
+  staleTrends,
+  withTimeout,
 } from "@/lib/sources/google-trends";
 import { getTrends } from "@/lib/trends";
 
@@ -145,18 +149,81 @@ after(async () => {
   await pg.close();
 });
 
-test("la base hace de caché: una tendencia con valor de hoy no se vuelve a consultar", async () => {
-  const antes = await pendingTrends(db, trends, "2026-09-25");
-  assert.equal(antes.length, trends.length, "al principio faltan todas");
+test("como mucho cinco tendencias por corrida", async () => {
+  const lote = await staleTrends(db, trends, "2026-09-25");
+  assert.equal(lote.length, MAX_PER_RUN);
+  assert.ok(MAX_PER_RUN < trends.length, "el tope tiene que morder");
+});
 
+test("la base hace de caché: una tendencia con valor de hoy no entra al lote", async () => {
   await db.query(
     `insert into signals (trend_id, source, date, value, origin)
      values ('falda-cargo', 'google_trends', '2026-09-25', 42, 'real')`,
   );
 
-  const despues = await pendingTrends(db, trends, "2026-09-25");
-  assert.equal(despues.length, trends.length - 1);
-  assert.ok(!despues.some((trend) => trend.id === "falda-cargo"));
+  const lote = await staleTrends(db, trends, "2026-09-25", 25);
+  assert.ok(!lote.some((trend) => trend.id === "falda-cargo"));
+});
+
+test("LA ROTACIÓN: primero la que lleva más tiempo sin consultarse", async () => {
+  // Tres tendencias con fechas distintas; el resto nunca se ha consultado.
+  for (const [id, date] of [
+    ["verde-matcha", "2026-09-20"],
+    ["boho-renovado", "2026-09-10"],
+    ["cintura-caida", "2026-09-24"],
+  ] as const) {
+    await db.query(
+      `insert into signals (trend_id, source, date, value, origin)
+       values ($1, 'google_trends', $2, 50, 'real')
+       on conflict (trend_id, source, date) do update set origin = 'real'`,
+      [id, date],
+    );
+  }
+
+  const lote = await staleTrends(db, trends, "2026-09-25", 25);
+  const posicion = (id: string) => lote.findIndex((trend) => trend.id === id);
+
+  // Las nunca consultadas van antes que cualquiera con fecha.
+  assert.ok(
+    posicion("boho-renovado") > posicion("pantalon-barril"),
+    "una nunca consultada va antes que una consultada hace 15 días",
+  );
+  // Y entre las consultadas, manda la más vieja.
+  assert.ok(
+    posicion("boho-renovado") < posicion("verde-matcha"),
+    "10 de septiembre va antes que el 20",
+  );
+  assert.ok(
+    posicion("verde-matcha") < posicion("cintura-caida"),
+    "el 20 va antes que el 24",
+  );
+});
+
+test("un 429 se reconoce por el mensaje, venga como venga", () => {
+  assert.equal(isRateLimited(new Error("Request failed with status 429")), true);
+  assert.equal(isRateLimited(new Error("Too Many Requests")), true);
+  assert.equal(isRateLimited("rate limit exceeded"), true);
+  assert.equal(isRateLimited(new Error("ECONNRESET")), false);
+  assert.equal(isRateLimited(new Error("timeout tras 15000ms")), false);
+});
+
+test("la pausa entre consultas está entre 5 y 10 segundos", () => {
+  for (let i = 0; i < 40; i += 1) {
+    const gap = gapDelay();
+    assert.ok(gap >= 5000 && gap <= 10000, `${gap}ms fuera de rango`);
+  }
+});
+
+test("EL TIMEOUT: una promesa colgada se abandona, no se espera", async () => {
+  const colgada = new Promise<string>(() => {});
+  await assert.rejects(
+    () => withTimeout(colgada, 50, "prueba"),
+    /timeout tras 50ms/,
+  );
+});
+
+test("withTimeout deja pasar lo que sí responde a tiempo", async () => {
+  assert.equal(await withTimeout(Promise.resolve("ok"), 1000, "prueba"), "ok");
 });
 
 test("si ya están todas, el conector se salta sin llamar a Google", async () => {
@@ -164,7 +231,7 @@ test("si ya están todas, el conector se salta sin llamar a Google", async () =>
     await db.query(
       `insert into signals (trend_id, source, date, value, origin)
        values ($1, 'google_trends', '2026-09-26', 50, 'real')
-       on conflict do nothing`,
+       on conflict (trend_id, source, date) do update set origin = 'real'`,
       [trend.id],
     );
   }
