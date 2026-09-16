@@ -258,6 +258,14 @@ const dict = {
     en: "No curated pairings yet.",
   },
   "paleta.strip": { es: "La temporada de un vistazo", en: "The season at a glance" },
+  "origin.mockSegment": { es: "tramo de muestra", en: "sample segment" },
+  "origin.realSince": { es: "datos reales desde", en: "real data since" },
+  "origin.mockPoint": { es: "dato de muestra", en: "sample data" },
+  "badge.mixed": { es: "Datos parciales", en: "Partial data" },
+  "badge.mixedLong": {
+    es: "Parte del histórico son datos de muestra; la gráfica marca dónde empieza el dato real",
+    en: "Part of the history is sample data; the chart marks where real data starts",
+  },
   "pinterest.title": { es: "Señal Pinterest hoy", en: "Pinterest signal today" },
   "pinterest.note": {
     es: "Lectura en vivo, región México. No se guarda: no hay histórico de Pinterest.",

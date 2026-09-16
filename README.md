@@ -27,6 +27,10 @@ npm run build  # build de producción
 npm run lint
 npm run seed      # regenera data/trends.seed.json (determinista)
 npm run editorial # trae los feeds RSS y escribe data/editorial.cache.json
+npm test          # suite completa con node --test
+npm run db:migrate # aplica el esquema a DATABASE_URL
+npm run db:seed    # carga el catálogo en Postgres con origen mock
+npm run golden     # regenera el test de oro (solo si cambian pesos/umbrales)
 ```
 
 Rutas:

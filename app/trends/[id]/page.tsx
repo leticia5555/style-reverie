@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { TrendDetailView } from "@/components/TrendDetailView";
+import { splitByOrigin } from "@/lib/origin";
 import {
   getCatalog,
   getTrendById,
@@ -27,9 +28,14 @@ export default async function TrendDetailPage({
   params,
 }: PageProps<"/trends/[id]">) {
   const { id } = await params;
-  const { trends } = await getCatalog();
+  const { trends, origins } = await getCatalog();
   const detail = getTrendDetail(id, trends);
   if (!detail) notFound();
 
-  return <TrendDetailView detail={detail} />;
+  return (
+    <TrendDetailView
+      detail={detail}
+      split={splitByOrigin(detail.series, origins.get(id))}
+    />
+  );
 }

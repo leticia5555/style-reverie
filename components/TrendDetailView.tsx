@@ -10,10 +10,17 @@ import { SourceBreakdown } from "@/components/SourceBreakdown";
 import { StatTile } from "@/components/StatTile";
 import { useI18n } from "@/lib/i18n";
 import { trendInsight } from "@/lib/insights-trend";
+import type { ChartRow } from "@/lib/origin";
 import type { TrendDetail } from "@/lib/trends";
 import { SOURCES } from "@/lib/types";
 
-export function TrendDetailView({ detail }: { detail: TrendDetail }) {
+export function TrendDetailView({
+  detail,
+  split,
+}: {
+  detail: TrendDetail;
+  split?: { rows: ChartRow[]; firstRealDate: string } | null;
+}) {
   const { t, pick } = useI18n();
   const { summary } = detail;
   const line = trendInsight(summary, detail.forecast);
@@ -80,6 +87,7 @@ export function TrendDetailView({ detail }: { detail: TrendDetail }) {
             series={detail.series}
             lifecycle={summary.lifecycle}
             forecast={detail.forecast}
+            split={split}
           />
         </div>
       </section>

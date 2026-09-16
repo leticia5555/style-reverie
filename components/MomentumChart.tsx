@@ -14,19 +14,29 @@ import {
 import { useI18n } from "@/lib/i18n";
 import { LIFECYCLE_STYLES } from "@/lib/lifecycle";
 import type { Forecast } from "@/lib/forecast";
+import type { ChartRow } from "@/lib/origin";
 import type { Lifecycle } from "@/lib/types";
 
 type Point = { date: string; score: number };
-type Row = { date: string; score: number | null; forecast: number | null };
+type Row = {
+  date: string;
+  score: number | null;
+  forecast: number | null;
+  mock: number | null;
+  real: number | null;
+};
 
 export function MomentumChart({
   series,
   lifecycle,
   forecast,
+  split,
 }: {
   series: Point[];
   lifecycle: Lifecycle;
   forecast?: Forecast | null;
+  /** Corte mock→real. null cuando toda la serie tiene el mismo origen. */
+  split?: { rows: ChartRow[]; firstRealDate: string } | null;
 }) {
   const { t, lang } = useI18n();
   const color = LIFECYCLE_STYLES[lifecycle].hex;
@@ -39,15 +49,25 @@ export function MomentumChart({
    * día real lleva también valor de estimación para que la punteada arranque
    * pegada a la línea y no flotando.
    */
+  const byDate = new Map(split?.rows.map((row) => [row.date, row]) ?? []);
+
   const rows: Row[] = [
-    ...series.map((point, index) => ({
-      date: point.date,
-      score: point.score,
-      forecast: forecast && index === series.length - 1 ? point.score : null,
-    })),
+    ...series.map((point, index) => {
+      const partido = byDate.get(point.date);
+      return {
+        date: point.date,
+        // Con corte, la serie se dibuja en dos columnas en vez de una.
+        score: split ? null : point.score,
+        mock: partido?.mock ?? null,
+        real: partido?.real ?? null,
+        forecast: forecast && index === series.length - 1 ? point.score : null,
+      };
+    }),
     ...(forecast?.points ?? []).map((point) => ({
       date: point.date,
       score: null,
+      mock: null,
+      real: null,
       forecast: point.forecast,
     })),
   ];
@@ -69,6 +89,21 @@ export function MomentumChart({
 
   return (
     <div className="w-full">
+      {split ? (
+        <p className="mb-2 flex flex-wrap items-center gap-2 text-xs text-muted">
+          <span
+            className="inline-block h-0.5 w-5 opacity-35"
+            style={{ backgroundColor: color }}
+            aria-hidden
+          />
+          {t("origin.mockSegment")}
+          <span className="text-faint">·</span>
+          {t("origin.realSince")}{" "}
+          <span className="text-ink-soft">
+            {formatDate(split.firstRealDate, true)}
+          </span>
+        </p>
+      ) : null}
       {forecast ? (
         <p className="mb-2 flex flex-wrap items-center gap-2 text-xs text-muted">
           <span
@@ -118,9 +153,10 @@ export function MomentumChart({
               content={({ active, payload, label }) => {
                 if (!active || !payload?.length) return null;
                 const row = payload[0].payload as Row;
-                const isForecast = row.score === null;
-                const value = isForecast ? row.forecast : row.score;
-                if (value === null) return null;
+                const medido = row.score ?? row.real ?? row.mock;
+                const isForecast = medido === null || medido === undefined;
+                const value = isForecast ? row.forecast : medido;
+                if (value === null || value === undefined) return null;
                 return (
                   <div className="rounded-lg border border-line bg-canvas px-3 py-2 text-xs shadow-sm">
                     <p className="text-muted">
@@ -133,11 +169,46 @@ export function MomentumChart({
                       <p className="mt-0.5 text-[11px] text-faint">
                         {t("detail.forecast")}
                       </p>
+                    ) : row.mock !== null && row.real === null ? (
+                      <p className="mt-0.5 text-[11px] text-faint">
+                        {t("origin.mockPoint")}
+                      </p>
                     ) : null}
                   </div>
                 );
               }}
             />
+            {split ? (
+              <>
+                {/* Tramo mock: mismo trazo, atenuado. No es otro dato, es el
+                      mismo dato medido de otra manera. */}
+                <Area
+                  type="monotone"
+                  dataKey="mock"
+                  stroke={color}
+                  strokeOpacity={0.35}
+                  strokeWidth={1.75}
+                  fill="url(#scoreFill)"
+                  fillOpacity={0.4}
+                  dot={false}
+                  connectNulls={false}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="real"
+                  stroke={color}
+                  strokeWidth={1.75}
+                  fill="url(#scoreFill)"
+                  dot={false}
+                  connectNulls={false}
+                />
+                <ReferenceLine
+                  x={split.firstRealDate}
+                  stroke="#dcd6e3"
+                  strokeDasharray="2 3"
+                />
+              </>
+            ) : null}
             <Area
               type="monotone"
               dataKey="score"

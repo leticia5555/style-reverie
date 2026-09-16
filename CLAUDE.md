@@ -53,8 +53,13 @@ preguntar, no improvisar.
 - **La UI nunca mezcla ambas en una misma serie sin marcarlo.** Si una curva
   tiene 90 días mock y 3 reales, eso se ve; no se dibuja una línea continua que
   insinúe que todo se midió igual.
-- La etiqueta **"Datos de muestra"** aparece en toda página cuyos datos sigan
-  siendo mock. `components/AppShell.tsx` lo decide por ruta (`LIVE_ROUTES`).
+- La etiqueta de origen la calcula `app/layout.tsx` con `summarizeCatalog()`:
+  **"Datos de muestra"** si nada es real, **"Datos parciales"** si hay mezcla, y
+  desaparece solo cuando TODO es real. Basta un día mock en una tendencia para
+  que el catálogo entero siga siendo mixto.
+- En las gráficas, `splitByOrigin()` parte la serie: el tramo mock va atenuado,
+  el real a plena intensidad, con una vertical en el corte y la fecha desde la
+  que hay dato real. Si toda la serie tiene el mismo origen no se parte nada.
 - Hoy `/editorial` es la única ruta con dato real: los titulares vienen por RSS.
   Las tendencias contra las que se cruzan siguen siendo el catálogo de muestra,
   y la página lo dice.
@@ -78,6 +83,11 @@ Tres reglas, y la primera no es negociable.
 
 - Son la base del histórico. Se guardan con snapshot diario y origen `real`.
 - Mercado Libre Trends es la fuente primaria para México.
+- **Pendiente de decisión:** las lecturas de Mercado Libre se guardan bajo la
+  clave `mercadolibre` y **no entran al score compuesto**. Meterlas como
+  séptima señal cambiaría los 25 scores del catálogo y contradiría la regla de
+  las seis señales de arriba; es una decisión de producto que hay que tomar
+  explícitamente, decidiendo los pesos nuevos y regenerando el test de oro.
 
 ### Nunca en el request del usuario
 
@@ -107,6 +117,30 @@ módulo que lea `fs` — arrastra `node:fs` al bundle del navegador y Turbopack
 aborta el build con un error poco obvio. Por eso los estilos por ocasión viven
 en `lib/ocasiones-accent.ts`, separados de `lib/ocasiones.ts`. Los `import type`
 sí son seguros: se borran en compilación.
+
+## Base de datos
+
+- Neon Postgres. `lib/db/schema.sql` es el esquema; `npm run db:migrate` lo
+  aplica y `npm run db:seed` carga el catálogo con origen `mock`.
+- **Los valores van en `numeric`, nunca en `real`.** float4 no representa 36.8
+  exactamente y el round-trip movería los scores en el último decimal. El
+  driver devuelve `numeric` como string: hay que parsearlo.
+- `migrate()` manda las sentencias una a una; ni Neon ni PGlite aceptan varias
+  en un statement preparado.
+- `getCatalog()` lee de Postgres y cae al seed si la base no responde. El
+  fallback es silencioso pero no invisible: `source` viaja en el resultado.
+- Las funciones de `lib/trends.ts` aceptan el catálogo como parámetro con el
+  seed por defecto. Así el test de oro sigue siendo síncrono y las páginas le
+  pasan el catálogo de la base.
+
+## Tests
+
+- `npm test` corre `node --test` sobre `tests/`. Verde antes de cada commit.
+- **El test de oro** (`tests/golden.test.ts`) congela los 25 scores. Solo se
+  regenera con `npm run golden` cuando los pesos o los umbrales cambian a
+  propósito; hacerlo por cualquier otra razón esconde el problema.
+- Los tests de base levantan **PGlite** (Postgres en wasm) y corren el esquema
+  y las consultas de verdad, sin red.
 
 ## Proceso
 

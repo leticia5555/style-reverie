@@ -15,7 +15,14 @@ export const DATA_AS_OF = "2026-09-14";
  */
 const LIVE_ROUTES = ["/editorial"];
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({
+  children,
+  origin = "mock",
+}: {
+  children: ReactNode;
+  /** Origen agregado del catálogo, calculado en el layout. */
+  origin?: "mock" | "mixed" | "real";
+}) {
   const { lang, t } = useI18n();
   const pathname = usePathname();
   const isLive = LIVE_ROUTES.some((route) => pathname.startsWith(route));
@@ -32,7 +39,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <p className="eyebrow">
             {t("common.updated")} · {asOf}
           </p>
-          {isLive ? null : <SampleDataBadge />}
+          {isLive ? null : <SampleDataBadge state={origin} />}
         </header>
         <main className="flex-1 px-5 py-8 md:px-8 md:py-10">{children}</main>
       </div>
