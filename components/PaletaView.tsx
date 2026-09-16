@@ -122,27 +122,35 @@ export function PaletaView({
                 <div className="mt-4 border-t border-line pt-3">
                   <p className="eyebrow">{t("paleta.pairs")}</p>
                   {entry.pairs.length ? (
-                    <ul className="mt-2 flex flex-wrap gap-2">
+                    <ul className="mt-2 space-y-2">
                       {entry.pairs.map((pair) => (
                         <li key={pair.summary.id}>
                           <Link
                             href={`/trends/${pair.summary.id}`}
-                            title={`${t("paleta.correlation")} ${pair.correlation.toFixed(3)}`}
-                            className="inline-flex items-baseline gap-1.5 rounded-full border border-line-strong px-2.5 py-0.5 text-xs text-ink-soft transition-colors hover:border-lavender hover:bg-lavender-soft hover:text-lavender-ink"
+                            className="group block"
                           >
-                            {pick(pair.summary.name)}
-                            {/* Tres decimales: a dos, un 0.998 se redondea a
-                                1.00 y se lee como correlación perfecta. */}
-                            <span className="tabular text-[10px] text-faint">
-                              {pair.correlation.toFixed(3)}
+                            <span className="flex items-baseline gap-2">
+                              <span className="text-sm text-ink group-hover:text-lavender-ink">
+                                {pick(pair.summary.name)}
+                              </span>
+                              <span className="tabular text-xs text-faint">
+                                {pair.summary.score.toFixed(1)}
+                              </span>
                             </span>
+                            {pair.note ? (
+                              <span className="mt-0.5 block text-xs leading-relaxed text-muted">
+                                {pick(pair.note)}
+                              </span>
+                            ) : null}
                           </Link>
                         </li>
                       ))}
                     </ul>
                   ) : (
                     <p className="mt-2 text-xs text-muted">
-                      {t("paleta.noPairs")}
+                      {entry.uncurated
+                        ? t("paleta.uncurated")
+                        : t("paleta.noPairs")}
                     </p>
                   )}
                 </div>

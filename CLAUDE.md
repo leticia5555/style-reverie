@@ -99,6 +99,7 @@ Las páginas que lo consumen se prerenderizan, así que cambiar un archivo de
 content/ediciones/YYYY-MM-DD.json   Sobreescribe la edición de ese domingo
 content/fashion-week/<slug>.json    Una colección de pasarela
 content/ocasiones/<slug>.json       Una ocasión
+content/paleta/<trend-id>.json      Con qué combina ese color
 ```
 
 **Trampa conocida:** un componente cliente no puede importar un *valor* desde un

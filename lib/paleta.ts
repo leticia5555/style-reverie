@@ -1,33 +1,36 @@
-import { scoreSeries } from "@/lib/scoring";
-import { getTrends, toSummary } from "@/lib/trends";
-import type { Category, TrendSummary } from "@/lib/types";
+import { readContent } from "@/lib/content";
+import { getTrendById, getTrends, toSummary } from "@/lib/trends";
+import type { Category, Localized, TrendSummary } from "@/lib/types";
+
+const CONTENT_FOLDER = "paleta";
 
 /**
- * Correlación de Pearson entre dos series. Se aplica sobre los scores diarios
- * de 90 días: dos tendencias con correlación alta han recorrido la misma
- * curva, que es lo más cercano a "van juntas" que se puede derivar del
- * catálogo sin escribirlo a mano.
+ * Con qué combina cada color. Es contenido curado a mano, no derivado.
+ *
+ * Antes salía de la correlación entre las curvas de 90 días, y con datos de
+ * muestra esa correlación no decía nada útil: las curvas están modeladas por
+ * ciclo de vida, así que cada color emparejaba con las tendencias de su misma
+ * fase y la lista se leía como una repetición del badge. Combinar es un juicio
+ * de estilo, no una coincidencia estadística.
  */
-function correlation(a: number[], b: number[]): number {
-  const n = Math.min(a.length, b.length);
-  if (n < 2) return 0;
+export type PaletaFile = {
+  /** En orden de preferencia; la app respeta el orden del archivo. */
+  pairs: { trendId: string; note?: Localized }[];
+};
 
-  const meanA = a.reduce((x, y) => x + y, 0) / n;
-  const meanB = b.reduce((x, y) => x + y, 0) / n;
+export type PairedTrend = {
+  summary: TrendSummary;
+  note: Localized | null;
+};
 
-  let num = 0;
-  let varA = 0;
-  let varB = 0;
-  for (let i = 0; i < n; i += 1) {
-    const da = a[i] - meanA;
-    const db = b[i] - meanB;
-    num += da * db;
-    varA += da * da;
-    varB += db * db;
-  }
-  const den = Math.sqrt(varA * varB);
-  return den === 0 ? 0 : num / den;
-}
+export type PaletteEntry = {
+  summary: TrendSummary;
+  swatch: string;
+  dark: boolean;
+  pairs: PairedTrend[];
+  /** true si el color todavía no tiene archivo en content/paleta/. */
+  uncurated: boolean;
+};
 
 /** Luminancia relativa, para decidir si el hex lleva tinta clara u oscura. */
 export function isDarkSwatch(hex: string): boolean {
@@ -42,52 +45,38 @@ export function isDarkSwatch(hex: string): boolean {
   return luminance < 0.25;
 }
 
-export type PairedTrend = {
-  summary: TrendSummary;
-  correlation: number;
-};
-
-export type PaletteEntry = {
-  summary: TrendSummary;
-  swatch: string;
-  dark: boolean;
-  /** Tendencias cuya curva de 90 días más se parece a la de este color. */
+function resolvePairs(colorId: string): {
   pairs: PairedTrend[];
-};
+  uncurated: boolean;
+} {
+  const file = readContent<PaletaFile>(CONTENT_FOLDER, colorId);
+  if (!file?.pairs?.length) return { pairs: [], uncurated: true };
 
-const PAIRS_PER_COLOR = 4;
-/** Por debajo de esto las dos curvas no se parecen lo suficiente. */
-const MIN_CORRELATION = 0.9;
+  const pairs = file.pairs
+    // Un color no combina consigo mismo; si se cuela en el archivo, se ignora.
+    .filter((pair) => pair.trendId !== colorId)
+    .map((pair) => {
+      const trend = getTrendById(pair.trendId);
+      return trend
+        ? { summary: toSummary(trend), note: pair.note ?? null }
+        : null;
+    })
+    .filter((pair): pair is PairedTrend => Boolean(pair));
+
+  return { pairs, uncurated: false };
+}
 
 export function getPaleta(): PaletteEntry[] {
-  const trends = getTrends();
-  const series = new Map(
-    trends.map((trend) => [trend.id, scoreSeries(trend.history)]),
-  );
-
-  return trends
+  return getTrends()
     .filter(
       (trend): trend is typeof trend & { swatch: string } =>
         trend.category === ("color" satisfies Category) && Boolean(trend.swatch),
     )
-    .map((color) => {
-      const own = series.get(color.id)!;
-      const pairs = trends
-        .filter((other) => other.id !== color.id)
-        .map((other) => ({
-          summary: toSummary(other),
-          correlation: correlation(own, series.get(other.id)!),
-        }))
-        .filter((pair) => pair.correlation >= MIN_CORRELATION)
-        .sort((a, b) => b.correlation - a.correlation)
-        .slice(0, PAIRS_PER_COLOR);
-
-      return {
-        summary: toSummary(color),
-        swatch: color.swatch,
-        dark: isDarkSwatch(color.swatch),
-        pairs,
-      };
-    })
+    .map((color) => ({
+      summary: toSummary(color),
+      swatch: color.swatch,
+      dark: isDarkSwatch(color.swatch),
+      ...resolvePairs(color.id),
+    }))
     .sort((a, b) => b.summary.score - a.summary.score);
 }

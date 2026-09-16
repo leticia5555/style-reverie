@@ -41,7 +41,7 @@ Rutas:
 | `/edicion` | Cinco prendas por domingo, con archivo | Mock + curado |
 | `/fashion-week` | Colecciones: looks, paleta y qué comprar | Curado |
 | `/ocasiones` | Boda, ski, playa, oficina y fiesta | Curado |
-| `/paleta` | Colores del catálogo por score | Mock |
+| `/paleta` | Colores del catálogo por score | Mock + curado |
 
 `/` redirige a `/trending`.
 
@@ -55,7 +55,18 @@ de `content/` requiere un nuevo deploy**. El contenido pasa por git a propósito
 content/ediciones/YYYY-MM-DD.json   Sobreescribe la edición de ese domingo
 content/fashion-week/<slug>.json    Una colección de pasarela
 content/ocasiones/<slug>.json       Una ocasión
+content/paleta/<trend-id>.json      Con qué combina ese color
 ```
+
+Las combinaciones de `/paleta` se nombran por id de tendencia
+(`content/paleta/verde-matcha.json`) y llevan una pareja de ejemplo cada una:
+
+```json
+{ "pairs": [{ "trendId": "crochet-fino", "note": { "es": "…", "en": "…" } }] }
+```
+
+El orden del array es el orden en que se muestran. Un color sin archivo sale
+con "todavía sin combinaciones curadas" en vez de un hueco.
 
 La edición semanal funciona sin archivo: se genera sola con las cinco
 tendencias de mayor momentum entre SUBIENDO y EMERGIENDO de esa semana. El
@@ -117,7 +128,7 @@ lib/editorial-image.ts  Imagen del item, og:image y hosts permitidos
 lib/edicion.ts          Edición semanal: selección, razones y archivo
 lib/fashion-week.ts     Carga de colecciones curadas
 lib/ocasiones.ts        Carga de ocasiones curadas
-lib/paleta.ts           Colores por score y correlación entre curvas
+lib/paleta.ts           Colores por score y sus combinaciones curadas
 lib/forecast.ts         Regresión lineal a 7 días
 lib/content.ts          Lectura de los JSON de content/
 scripts/generate-seed.ts   Generador del seed (npm run seed)
