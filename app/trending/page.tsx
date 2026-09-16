@@ -21,7 +21,7 @@ export default async function TrendingPage() {
   const rows = getTrendSummaries(trends);
   // Se resuelven en el servidor: lib/trend-image lee del disco y arrastrarlo
   // a un componente cliente metería node:fs en el bundle del navegador.
-  const images = Object.fromEntries(trendImages(rows.map((row) => row.id)));
+  const images = Object.fromEntries(await trendImages(rows.map((row) => row.id)));
 
   return (
     <div className="mx-auto max-w-6xl">

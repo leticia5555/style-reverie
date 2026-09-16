@@ -116,3 +116,29 @@ update trend_candidates
 -- citan cinco medios.
 create index if not exists trend_candidates_rank_idx
   on trend_candidates (cardinality(outlets) desc, mentions desc, last_seen desc);
+
+-- Fotos curadas a mano desde /admin/imagenes.
+--
+-- Viven aquí y no en content/ porque content/ se lee con fs durante el build y
+-- en Vercel el disco es de solo lectura: una página web no puede escribir un
+-- JSON del repo. content/trends/ sigue existiendo como fallback versionado.
+--
+-- El crédito y el enlace son NOT NULL a propósito: una foto prestada sin decir
+-- de quién es no se enseña, y dejar que la columna admita null abriría ese
+-- camino desde el primer insert descuidado.
+create table if not exists trend_images (
+  trend_id    text primary key references trends(id) on delete cascade,
+  image_url   text not null,
+  credit      text not null,
+  credit_url  text not null,
+  updated_at  timestamptz not null default now()
+);
+
+-- Hosts de imagen aprobados desde el panel, además de los de IMAGE_HOSTS.
+--
+-- Es lo que hace seguro al proxy de /api/image: sin esta lista sería un proxy
+-- abierto y cualquiera podría usar el dominio para pedir lo que quisiera.
+create table if not exists image_hosts (
+  host        text primary key,
+  added_at    timestamptz not null default now()
+);

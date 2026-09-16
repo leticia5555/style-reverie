@@ -24,7 +24,7 @@ export default async function EdicionPage() {
   const archive = await listArchive(getDb(), trends);
 
   const images = Object.fromEntries(
-    trendImages(edicion.picks.map((pick) => pick.summary.id)),
+    await trendImages(edicion.picks.map((pick) => pick.summary.id)),
   );
 
   return (

@@ -1,19 +1,23 @@
 import { listContent, readContent } from "@/lib/content";
+import { listCuratedImages } from "@/lib/curated-images";
+import { getDb } from "@/lib/db/client";
 import { readCache, withRenderableImages, type Article } from "@/lib/editorial";
 import type { Localized } from "@/lib/types";
 
 /**
  * De dónde sale la foto de una tendencia.
  *
- * Tres fuentes, en este orden, y ninguna más:
+ * Cuatro fuentes, en este orden, y ninguna más:
  *
- *  1. La curada a mano en `content/trends/<slug>.json`. Manda siempre: si
- *     alguien eligió una foto, es la que se pone.
- *  2. La del artículo más reciente que menciona la tendencia. Ya viene en el
+ *  1. La curada desde `/admin/imagenes`, que vive en la base. Va primero
+ *     porque es la acción humana más reciente y porque para eso existe el
+ *     panel: curar sin esperar un deploy.
+ *  2. La curada a mano en `content/trends/<slug>.json`, que pasa por git.
+ *  3. La del artículo más reciente que menciona la tendencia. Ya viene en el
  *     caché del feed, ya pasó el filtro de hosts permitidos y ya trae su
  *     enlace al original.
- *  3. Nada. Entonces se pinta un pastel con el nombre, que es honesto: no
- *     tenemos foto de esto.
+ *  4. Nada. Entonces se pinta un campo de color con el nombre, que es honesto:
+ *     no tenemos foto de esto.
  *
  * **Nunca se bajan imágenes de Pinterest ni de Google Imágenes.** Solo de
  * fuentes que las publican para ser usadas: el medio que las sirve en su
@@ -40,9 +44,20 @@ export type TrendImage = {
   credit: string;
   creditUrl: string;
   /** Para poder auditar de dónde salió cada foto de la página. */
-  from: "curated" | "editorial";
+  from: "db" | "curated" | "editorial";
   alt?: Localized;
 };
+
+/**
+ * Las curadas desde el panel se piden por el proxy propio.
+ *
+ * Su host puede haberse aprobado hoy, y `remotePatterns` de next.config es de
+ * tiempo de compilación: pedirla directa la rechazaría next/image hasta el
+ * siguiente deploy. Por el proxy, next/image solo ve una ruta de este origen.
+ */
+export function proxiedImageUrl(src: string): string {
+  return `/api/image?src=${encodeURIComponent(src)}`;
+}
 
 /** Los slugs con foto curada, para poder listarlos en un test. */
 export function curatedSlugs(): string[] {
@@ -87,7 +102,11 @@ export function editorialImage(
 export function resolveTrendImage(
   trendId: string,
   articles: Article[],
+  fromDb?: Map<string, TrendImage>,
 ): TrendImage | null {
+  const stored = fromDb?.get(trendId);
+  if (stored) return stored;
+
   const curated = curatedImage(trendId);
   if (curated) {
     return {
@@ -108,12 +127,33 @@ export function resolveTrendImage(
  * módulo lee del disco y arrastrarlo a un componente cliente metería node:fs
  * en el bundle del navegador.
  */
-export function trendImages(trendIds: string[]): Map<string, TrendImage> {
+export async function trendImages(
+  trendIds: string[],
+): Promise<Map<string, TrendImage>> {
   const { articles } = withRenderableImages(readCache());
-  const resolved = new Map<string, TrendImage>();
 
+  // Las de la base, si hay base. Sin ella el panel no existe y el orden de
+  // prioridad simplemente empieza en content/.
+  const fromDb = new Map<string, TrendImage>();
+  const db = getDb();
+  if (db) {
+    try {
+      for (const row of await listCuratedImages(db)) {
+        fromDb.set(row.trendId, {
+          url: proxiedImageUrl(row.imageUrl),
+          credit: row.credit,
+          creditUrl: row.creditUrl,
+          from: "db",
+        });
+      }
+    } catch {
+      // Base caída: se sirve lo de content/ y el feed, como siempre.
+    }
+  }
+
+  const resolved = new Map<string, TrendImage>();
   for (const id of trendIds) {
-    const image = resolveTrendImage(id, articles);
+    const image = resolveTrendImage(id, articles, fromDb);
     if (image) resolved.set(id, image);
   }
   return resolved;

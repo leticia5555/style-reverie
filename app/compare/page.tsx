@@ -41,7 +41,7 @@ export default async function ComparePage({
   }));
 
   const images = Object.fromEntries(
-    trendImages([comparison.a.summary.id, comparison.b.summary.id]),
+    await trendImages([comparison.a.summary.id, comparison.b.summary.id]),
   );
 
   return (

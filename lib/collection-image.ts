@@ -10,9 +10,9 @@ import { trendImages, type TrendImage } from "@/lib/trend-image";
  * en orden y gana la primera tendencia que tenga foto, porque el primer look
  * con imagen es el que la colección pone por delante.
  */
-export function collectionImages(
+export async function collectionImages(
   collections: Collection[],
-): Record<string, TrendImage> {
+): Promise<Record<string, TrendImage>> {
   const ids = [
     ...new Set(
       collections.flatMap((collection) =>
@@ -20,7 +20,7 @@ export function collectionImages(
       ),
     ),
   ];
-  const byTrend = trendImages(ids);
+  const byTrend = await trendImages(ids);
 
   const result: Record<string, TrendImage> = {};
   for (const collection of collections) {
@@ -40,9 +40,9 @@ export function collectionImages(
  * que tenga una. El orden del archivo curado es el orden editorial, así que
  * la primera con foto es la que la ocasión pone por delante.
  */
-export function ocasionImages(
+export async function ocasionImages(
   ocasiones: { slug: string; trends: { summary: { id: string } }[] }[],
-): Record<string, TrendImage> {
+): Promise<Record<string, TrendImage>> {
   const ids = [
     ...new Set(
       ocasiones.flatMap((ocasion) =>
@@ -50,7 +50,7 @@ export function ocasionImages(
       ),
     ),
   ];
-  const byTrend = trendImages(ids);
+  const byTrend = await trendImages(ids);
 
   const result: Record<string, TrendImage> = {};
   for (const ocasion of ocasiones) {

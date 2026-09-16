@@ -27,7 +27,7 @@ export default async function OcasionPage({
   if (!ocasion) notFound();
 
   const images = Object.fromEntries(
-    trendImages(ocasion.trends.map((trend) => trend.summary.id)),
+    await trendImages(ocasion.trends.map((trend) => trend.summary.id)),
   );
 
   return <OcasionView ocasion={ocasion} images={images} />;

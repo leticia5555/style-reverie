@@ -52,7 +52,7 @@ export default async function AlertsPage() {
     .sort((a, b) => b.momentum7d - a.momentum7d);
 
   const images = Object.fromEntries(
-    trendImages([...alerts.map((a) => a.id), ...watchlist.map((w) => w.id)]),
+    await trendImages([...alerts.map((a) => a.id), ...watchlist.map((w) => w.id)]),
   );
 
   return (

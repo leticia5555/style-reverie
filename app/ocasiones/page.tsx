@@ -5,9 +5,9 @@ import { listOcasiones } from "@/lib/ocasiones";
 
 export const metadata = { title: "Ocasiones — Style Reverie" };
 
-export default function OcasionesPage() {
+export default async function OcasionesPage() {
   const ocasiones = listOcasiones();
-  const images = ocasionImages(ocasiones);
+  const images = await ocasionImages(ocasiones);
 
   return (
     <OcasionesIndex

@@ -5,9 +5,9 @@ import { fashionWeekInsight } from "@/lib/insights";
 
 export const metadata = { title: "Fashion Week — Style Reverie" };
 
-export default function FashionWeekPage() {
+export default async function FashionWeekPage() {
   const collections = listCollections();
-  const images = collectionImages(collections);
+  const images = await collectionImages(collections);
 
   return (
     <FashionWeekIndex

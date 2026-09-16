@@ -167,7 +167,15 @@ test("el cron aplica el esquema sobre una base recién creada", async () => {
   );
   assert.deepEqual(
     tables.map((row) => row.table_name),
-    ["ediciones", "signal_runs", "signals", "trend_candidates", "trends"],
+    [
+      "ediciones",
+      "image_hosts",
+      "signal_runs",
+      "signals",
+      "trend_candidates",
+      "trend_images",
+      "trends",
+    ],
   );
 });
 

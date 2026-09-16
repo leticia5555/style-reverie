@@ -29,7 +29,7 @@ export default async function CollectionPage({
   if (!collection) notFound();
 
   const images = Object.fromEntries(
-    trendImages(collection.trends.map((trend) => trend.id)),
+    await trendImages(collection.trends.map((trend) => trend.id)),
   );
 
   return <CollectionView collection={collection} images={images} />;
