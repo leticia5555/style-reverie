@@ -1,15 +1,113 @@
 "use client";
 
 import Link from "next/link";
-import { Delta } from "@/components/Delta";
-import { LifecycleBadge } from "@/components/LifecycleBadge";
-import { PageLede } from "@/components/PageLede";
 import { SeasonPalette } from "@/components/SeasonPalette";
-import { Sparkline } from "@/components/Sparkline";
+import {
+  joinPhrases,
+  momentumPhrase,
+  scorePhrase,
+  yoyPhrase,
+} from "@/lib/editorial-phrases";
 import { useI18n } from "@/lib/i18n";
-import { LIFECYCLE_STYLES } from "@/lib/lifecycle";
 import type { Insight } from "@/lib/insights";
 import type { PaletteEntry, SeasonPalette as SeasonPaletteData } from "@/lib/paleta";
+
+/**
+ * Modo editorial. Aquí la imagen que manda es el propio color: un color se
+ * juzga por área, así que cada uno ocupa un campo grande y no una muestra.
+ *
+ * La retícula alterna: campos que ocupan toda la fila y campos a media, con
+ * el texto al lado. Una cuadrícula de tarjetas iguales convierte la paleta en
+ * un catálogo de pintura, que es lo contrario de lo que hace una revista.
+ */
+function ColorBlock({
+  entry,
+  index,
+}: {
+  entry: PaletteEntry;
+  index: number;
+}) {
+  const { t, pick } = useI18n();
+  const wide = index % 3 === 0;
+  const flipped = index % 2 === 1;
+
+  const numbers = joinPhrases([
+    scorePhrase(entry.summary.score),
+    momentumPhrase(entry.summary.momentum7d),
+    yoyPhrase(entry.summary.yoyPct),
+  ]);
+
+  return (
+    <article className={wide ? "sm:col-span-2" : ""}>
+      <div
+        className={`grid gap-6 ${wide ? "sm:grid-cols-2 sm:items-center sm:gap-10" : ""}`}
+      >
+        <div
+          className={`relative w-full overflow-hidden rounded-sm ${
+            wide ? "aspect-3/2" : "aspect-4/5"
+          } ${flipped && wide ? "sm:order-2" : ""}`}
+          style={{ backgroundColor: entry.swatch }}
+        >
+          <span
+            className={`tabular absolute top-4 left-4 text-[11px] tracking-[0.12em] uppercase ${
+              entry.dark ? "text-white/80" : "text-ink/60"
+            }`}
+          >
+            {entry.swatch}
+          </span>
+        </div>
+
+        <div className={flipped && wide ? "sm:order-1" : ""}>
+          <p className="eyebrow">
+            {t(`category.${entry.summary.category}`)} · {entry.summary.season}
+          </p>
+          <h2
+            className={`mt-2 font-serif leading-[1.05] tracking-tight text-ink ${
+              wide ? "text-4xl sm:text-5xl" : "text-3xl"
+            }`}
+          >
+            <Link
+              href={`/trends/${entry.summary.id}`}
+              className="hover:text-lavender-ink"
+            >
+              {pick(entry.summary.name)}
+            </Link>
+          </h2>
+
+          <p className="tabular mt-4 text-sm leading-relaxed text-ink-soft">
+            {pick(numbers)}
+          </p>
+
+          <div className="mt-5 border-t border-line pt-4">
+            <p className="eyebrow">{t("paleta.pairs")}</p>
+            {entry.pairs.length ? (
+              <ul className="mt-2 space-y-3">
+                {entry.pairs.map((pair) => (
+                  <li key={pair.summary.id}>
+                    <Link href={`/trends/${pair.summary.id}`} className="group block">
+                      <span className="font-serif text-lg text-ink group-hover:text-lavender-ink">
+                        {pick(pair.summary.name)}
+                      </span>
+                      {pair.note ? (
+                        <span className="mt-1 block text-sm leading-relaxed text-muted">
+                          {pick(pair.note)}
+                        </span>
+                      ) : null}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-sm text-muted">
+                {entry.uncurated ? t("paleta.uncurated") : t("paleta.noPairs")}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
 
 export function PaletaView({
   entries,
@@ -21,157 +119,63 @@ export function PaletaView({
   season: SeasonPaletteData | null;
 }) {
   const { t, pick } = useI18n();
+  const lead = entries[0];
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <PageLede
-        titleKey="paleta.title"
-        subtitleKey="paleta.subtitle"
-        insight={insight}
-      />
-
-      {season ? (
-        <div className="mb-10">
-          <SeasonPalette data={season} />
+    <div>
+      {/* Portada: el color de arriba a sangre, y el titular encima. */}
+      <header className="-mx-5 md:-mx-8">
+        <div
+          className="h-[46vh] min-h-[300px] w-full"
+          style={{ backgroundColor: lead?.swatch ?? "var(--color-quiet-soft)" }}
+        />
+        <div className="mx-auto max-w-5xl px-5 md:px-8">
+          <h1 className="mt-8 font-serif text-5xl leading-[0.95] tracking-tight text-ink sm:text-6xl lg:text-7xl">
+            {t("paleta.title")}
+          </h1>
+          <p className="mt-5 max-w-2xl font-serif text-xl leading-relaxed text-ink-soft">
+            {t("paleta.subtitle")}
+          </p>
+          {insight.line ? (
+            <p className="mt-4 max-w-2xl text-sm text-muted">
+              {pick(insight.line)}
+            </p>
+          ) : null}
         </div>
-      ) : null}
+      </header>
 
-      {/* Tira continua: la temporada entera en una línea, ordenada por score. */}
-      <section>
-        <p className="eyebrow">{t("paleta.strip")}</p>
-        <span className="mt-2 flex h-14 w-full overflow-hidden rounded-xl border border-line">
-          {entries.map((entry) => (
-            <span
-              key={entry.summary.id}
-              className="flex-1"
-              style={{ backgroundColor: entry.swatch }}
-              title={`${pick(entry.summary.name)} · ${entry.swatch}`}
-            />
-          ))}
-        </span>
-      </section>
+      <div className="mx-auto max-w-5xl">
+        {season ? (
+          <div className="mt-14">
+            <SeasonPalette data={season} />
+          </div>
+        ) : null}
 
-      <ul className="mt-8 space-y-4">
-        {entries.map((entry) => (
-          <li
-            key={entry.summary.id}
-            className="overflow-hidden rounded-xl border border-line bg-surface"
-          >
-            <div className="grid md:grid-cols-[200px_minmax(0,1fr)]">
-              {/* El swatch ocupa un bloque real: un color se juzga por área. */}
-              <div
-                className="flex min-h-32 flex-col justify-between p-4"
+        {/* La temporada entera en una línea, ordenada por score. */}
+        <section className="mt-14">
+          <p className="eyebrow">{t("paleta.strip")}</p>
+          <span className="mt-3 flex h-20 w-full overflow-hidden rounded-sm">
+            {entries.map((entry) => (
+              <span
+                key={entry.summary.id}
+                className="flex-1"
                 style={{ backgroundColor: entry.swatch }}
-              >
-                <span
-                  className={`tabular text-[11px] tracking-[0.12em] uppercase ${
-                    entry.dark ? "text-white/80" : "text-ink/60"
-                  }`}
-                >
-                  {entry.swatch}
-                </span>
-                <span
-                  className={`font-serif text-3xl leading-none ${
-                    entry.dark ? "text-white" : "text-ink"
-                  }`}
-                >
-                  {entry.summary.score.toFixed(1)}
-                </span>
-              </div>
+                title={`${pick(entry.summary.name)} · ${entry.swatch}`}
+              />
+            ))}
+          </span>
+        </section>
 
-              <div className="p-5">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <h2 className="font-serif text-2xl tracking-tight text-ink">
-                      <Link
-                        href={`/trends/${entry.summary.id}`}
-                        className="hover:text-lavender-ink"
-                      >
-                        {pick(entry.summary.name)}
-                      </Link>
-                    </h2>
-                    <p className="eyebrow mt-1">{entry.summary.season}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Sparkline
-                      values={entry.summary.spark}
-                      color={LIFECYCLE_STYLES[entry.summary.lifecycle].hex}
-                      width={90}
-                      height={26}
-                    />
-                    <LifecycleBadge lifecycle={entry.summary.lifecycle} />
-                  </div>
-                </div>
+        <div className="mt-16 grid gap-16 sm:grid-cols-2 sm:gap-x-10">
+          {entries.map((entry, index) => (
+            <ColorBlock key={entry.summary.id} entry={entry} index={index} />
+          ))}
+        </div>
 
-                <dl className="mt-3 flex flex-wrap gap-x-6 gap-y-1">
-                  <div className="flex items-baseline gap-2">
-                    <dt className="eyebrow">{t("common.momentum7d")}</dt>
-                    <dd className="text-sm">
-                      <Delta value={entry.summary.momentum7d} />
-                    </dd>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <dt className="eyebrow">{t("common.yoy")}</dt>
-                    <dd className="text-sm">
-                      <Delta
-                        value={entry.summary.yoyPct}
-                        suffix="%"
-                        decimals={0}
-                      />
-                    </dd>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <dt className="eyebrow">{t("common.sources")}</dt>
-                    <dd className="tabular text-sm text-ink">
-                      {entry.summary.sourceCount}/{entry.summary.sourceTotal}
-                    </dd>
-                  </div>
-                </dl>
-
-                <div className="mt-4 border-t border-line pt-3">
-                  <p className="eyebrow">{t("paleta.pairs")}</p>
-                  {entry.pairs.length ? (
-                    <ul className="mt-2 space-y-2">
-                      {entry.pairs.map((pair) => (
-                        <li key={pair.summary.id}>
-                          <Link
-                            href={`/trends/${pair.summary.id}`}
-                            className="group block"
-                          >
-                            <span className="flex items-baseline gap-2">
-                              <span className="text-sm text-ink group-hover:text-lavender-ink">
-                                {pick(pair.summary.name)}
-                              </span>
-                              <span className="tabular text-xs text-faint">
-                                {pair.summary.score.toFixed(1)}
-                              </span>
-                            </span>
-                            {pair.note ? (
-                              <span className="mt-0.5 block text-xs leading-relaxed text-muted">
-                                {pick(pair.note)}
-                              </span>
-                            ) : null}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="mt-2 text-xs text-muted">
-                      {entry.uncurated
-                        ? t("paleta.uncurated")
-                        : t("paleta.noPairs")}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      <p className="mt-6 text-[11px] leading-relaxed text-faint">
-        {t("paleta.pairsNote")}
-      </p>
+        <p className="mt-16 text-[11px] leading-relaxed text-faint">
+          {t("paleta.pairsNote")}
+        </p>
+      </div>
     </div>
   );
 }
