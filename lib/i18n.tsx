@@ -86,6 +86,11 @@ const dict = {
   "detail.invest": { es: "Invest", en: "Invest" },
   "detail.peak": { es: "Máximo 90d", en: "90d high" },
   "detail.low": { es: "Mínimo 90d", en: "90d low" },
+  "detail.forecast": { es: "Estimación 7d", en: "7d estimate" },
+  "detail.forecastNote": {
+    es: "regresión lineal sobre los últimos 30 días",
+    en: "linear regression over the last 30 days",
+  },
   "detail.notFound": { es: "Tendencia no encontrada", en: "Trend not found" },
   "compare.title": { es: "Comparador", en: "Compare" },
   "compare.subtitle": {

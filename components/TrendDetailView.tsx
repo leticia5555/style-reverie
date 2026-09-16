@@ -68,7 +68,11 @@ export function TrendDetailView({ detail }: { detail: TrendDetail }) {
           <p className="text-xs text-muted">{t("detail.momentumNote")}</p>
         </div>
         <div className="mt-4 rounded-xl border border-line bg-surface p-4">
-          <MomentumChart series={detail.series} lifecycle={summary.lifecycle} />
+          <MomentumChart
+            series={detail.series}
+            lifecycle={summary.lifecycle}
+            forecast={detail.forecast}
+          />
         </div>
       </section>
 

@@ -1,4 +1,5 @@
 import seed from "@/data/trends.seed.json";
+import { forecast, type Forecast } from "@/lib/forecast";
 import { deriveLifecycle } from "@/lib/lifecycle";
 import {
   activeSourceCount,
@@ -66,6 +67,8 @@ export type TrendDetail = {
   breakdown: SourceBreakdownRow[];
   high: number;
   low: number;
+  /** Proyección a 7 días. null si la serie es demasiado corta. */
+  forecast: Forecast | null;
 };
 
 export function getTrendDetail(id: string): TrendDetail | undefined {
@@ -73,18 +76,20 @@ export function getTrendDetail(id: string): TrendDetail | undefined {
   if (!trend) return undefined;
 
   const series = scoreSeries(trend.history);
+  const points = trend.history.map((point, index) => ({
+    date: point.date,
+    score: series[index],
+  }));
 
   return {
     summary: toSummary(trend),
     description: trend.summary,
     shopping: trend.shopping,
-    series: trend.history.map((point, index) => ({
-      date: point.date,
-      score: series[index],
-    })),
+    series: points,
     breakdown: sourceBreakdown(trend),
     high: Math.max(...series),
     low: Math.min(...series),
+    forecast: forecast(points),
   };
 }
 

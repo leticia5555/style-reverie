@@ -38,8 +38,35 @@ Rutas:
 | `/compare?a=&b=` | Comparador A vs B | Mock |
 | `/alerts` | Emergentes: momentum 7d ≥ 3 y score < 60 | Mock |
 | `/editorial` | Titulares RSS cruzados con el catálogo | **Real** |
+| `/edicion` | Cinco prendas por domingo, con archivo | Mock + curado |
+| `/fashion-week` | Colecciones: looks, paleta y qué comprar | Curado |
+| `/ocasiones` | Boda, ski, playa, oficina y fiesta | Curado |
+| `/paleta` | Colores del catálogo por score | Mock |
 
 `/` redirige a `/trending`.
+
+## Contenido curado
+
+Lo que se edita a mano vive en `content/` y se lee con `fs` durante el build;
+todas las páginas que lo consumen se prerenderizan, así que **cambiar un archivo
+de `content/` requiere un nuevo deploy**. El contenido pasa por git a propósito.
+
+```
+content/ediciones/YYYY-MM-DD.json   Sobreescribe la edición de ese domingo
+content/fashion-week/<slug>.json    Una colección de pasarela
+content/ocasiones/<slug>.json       Una ocasión
+```
+
+La edición semanal funciona sin archivo: se genera sola con las cinco
+tendencias de mayor momentum entre SUBIENDO y EMERGIENDO de esa semana. El
+archivo solo hace falta para cambiar la selección o escribir los textos; si
+trae `picks`, reemplaza la selección automática, y lo que no venga cae en lo
+generado.
+
+Importante para componentes cliente: no importar valores desde un módulo que
+lea `fs`. Los estilos por ocasión viven en `lib/ocasiones-accent.ts` separados
+de `lib/ocasiones.ts` justo por eso — importarlos juntos arrastra `node:fs` al
+bundle del navegador y Turbopack aborta el build.
 
 ## Feed editorial
 
@@ -87,6 +114,12 @@ lib/lifecycle.ts        Ciclo de vida derivado de score + momentum
 lib/editorial.ts        Fetch de los RSS, caché de 1 hora y estado por fuente
 lib/editorial-match.ts  Normalización y match de tendencias en un titular
 lib/editorial-image.ts  Imagen del item, og:image y hosts permitidos
+lib/edicion.ts          Edición semanal: selección, razones y archivo
+lib/fashion-week.ts     Carga de colecciones curadas
+lib/ocasiones.ts        Carga de ocasiones curadas
+lib/paleta.ts           Colores por score y correlación entre curvas
+lib/forecast.ts         Regresión lineal a 7 días
+lib/content.ts          Lectura de los JSON de content/
 scripts/generate-seed.ts   Generador del seed (npm run seed)
 scripts/fetch-editorial.ts Refresco manual del feed (npm run editorial)
 ```
