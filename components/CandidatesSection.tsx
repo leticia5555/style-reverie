@@ -57,6 +57,14 @@ function CandidateCard({ candidate }: { candidate: CandidateRow }) {
           <p className="font-serif text-xl leading-tight text-ink">
             {candidate.name_es}
           </p>
+          {candidate.sources === 1 ? (
+            <p
+              title={t("candidates.onlyOneWhy")}
+              className="mt-1.5 inline-block rounded-full bg-quiet-soft px-2 py-0.5 text-[11px] text-quiet-ink"
+            >
+              {t("candidates.onlyOne")}
+            </p>
+          ) : null}
           <p className="eyebrow mt-1.5 flex flex-wrap items-baseline gap-x-1.5">
             <span className="whitespace-nowrap">
               {candidate.category
@@ -76,17 +84,39 @@ function CandidateCard({ candidate }: { candidate: CandidateRow }) {
               </>
             ) : null}
           </p>
+          {candidate.outlets.length ? (
+            <p className="mt-1 text-xs text-muted">
+              {candidate.outlets.join(" · ")}
+            </p>
+          ) : null}
         </div>
 
         <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
-          <span className="text-right">
-            <span className="tabular block font-serif text-2xl leading-none text-ink">
-              {candidate.mentions}
+          {/*
+            Dos cuentas, y la de medios manda. Un listicle de una sola revista
+            produce cinco candidatas con un titular cada una; ninguna vale lo
+            que una tendencia que están viendo cinco redacciones distintas.
+          */}
+          <span className="flex items-baseline gap-4">
+            <span className="text-right">
+              <span className="tabular block font-serif text-2xl leading-none text-ink">
+                {candidate.sources}
+              </span>
+              <span className="eyebrow mt-1 block">
+                {candidate.sources === 1
+                  ? t("candidates.source")
+                  : t("candidates.sources")}
+              </span>
             </span>
-            <span className="eyebrow mt-1 block">
-              {candidate.mentions === 1
-                ? t("candidates.mention")
-                : t("candidates.mentions")}
+            <span className="text-right">
+              <span className="tabular block font-serif text-xl leading-none text-muted">
+                {candidate.mentions}
+              </span>
+              <span className="eyebrow mt-1 block">
+                {candidate.mentions === 1
+                  ? t("candidates.mention")
+                  : t("candidates.mentions")}
+              </span>
             </span>
           </span>
           <button

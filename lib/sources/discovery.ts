@@ -394,6 +394,11 @@ export async function discoverCandidates(
  * por enlace, con lo nuevo delante, y las menciones suben solo por los enlaces
  * que no estaban.
  */
+/** Los medios distintos que aparecen en la evidencia de una candidata. */
+export function outletsOf(candidate: Candidate): string[] {
+  return [...new Set(candidate.evidence.map((item) => item.source))].sort();
+}
+
 export async function saveCandidates(
   db: Db,
   candidates: Candidate[],
@@ -402,9 +407,15 @@ export async function saveCandidates(
   for (const candidate of candidates) {
     await db.query(
       `insert into trend_candidates
-         (slug, name_es, category, mentions, first_seen, last_seen, evidence)
-       values ($1, $2, $3, $4, $5, $5, $6)
+         (slug, name_es, category, mentions, first_seen, last_seen, outlets, evidence)
+       values ($1, $2, $3, $4, $5, $5, $6, $7)
        on conflict (slug) do update set
+         -- Unión de medios: una vez que un medio la mencionó, cuenta para
+         -- siempre, aunque su titular se caiga del recorte de evidencia.
+         outlets = (
+           select coalesce(array_agg(distinct medio), '{}')
+             from unnest(trend_candidates.outlets || excluded.outlets) as medio
+         ),
          mentions = trend_candidates.mentions + (
            -- Solo los titulares que no estaban ya.
            select count(*)
@@ -445,6 +456,7 @@ export async function saveCandidates(
         // Solo cuenta en el insert; al chocar, la base recuenta los nuevos.
         candidate.evidence.length,
         date,
+        outletsOf(candidate),
         JSON.stringify(candidate.evidence),
       ],
     );
@@ -456,7 +468,11 @@ export type CandidateRow = {
   slug: string;
   name_es: string;
   category: string | null;
+  /** Titulares distintos que la mencionan. */
   mentions: number;
+  /** Medios distintos que la mencionan: `outlets.length`, ya contado. */
+  sources: number;
+  outlets: string[];
   first_seen: string;
   last_seen: string;
   evidence: { title: string; source: string; link: string }[];
@@ -482,23 +498,31 @@ export async function listCandidates(
   limit = 30,
 ): Promise<CandidateRow[]> {
   const rows = await db.query<
-    Omit<CandidateRow, "first_seen" | "last_seen"> & {
+    Omit<CandidateRow, "first_seen" | "last_seen" | "sources"> & {
       first_seen: string | Date;
       last_seen: string | Date;
     }
   >(
-    `select slug, name_es, category, mentions, first_seen, last_seen, evidence
+    `select slug, name_es, category, mentions, outlets, first_seen, last_seen,
+            evidence
        from trend_candidates
       where promoted_at is null
-      order by mentions desc, last_seen desc
+      -- Medios distintos primero: cinco candidatas sacadas del mismo listicle
+      -- no valen lo que una que citan cinco redacciones.
+      order by cardinality(outlets) desc, mentions desc, last_seen desc
       limit $1`,
     [limit],
   );
 
-  return rows.map((row) => ({
-    ...row,
-    mentions: Number(row.mentions),
-    first_seen: isoDate(row.first_seen),
-    last_seen: isoDate(row.last_seen),
-  }));
+  return rows.map((row) => {
+    const outlets = row.outlets ?? [];
+    return {
+      ...row,
+      outlets,
+      mentions: Number(row.mentions),
+      sources: outlets.length,
+      first_seen: isoDate(row.first_seen),
+      last_seen: isoDate(row.last_seen),
+    };
+  });
 }

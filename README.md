@@ -204,6 +204,14 @@ titulares cruzaban dos con el catálogo, así que quedarse con los primeros 40
 tiraba el 70% de la materia prima. Una tanda que revienta para las siguientes
 pero no tira las que ya salieron bien.
 
+Se cuentan dos cosas y manda la primera: **medios distintos** que la mencionan
+y **titulares distintos**. Un listicle de una sola revista produce cinco
+candidatas con un titular cada una, y ninguna vale lo que una tendencia que
+están viendo cinco redacciones. Los medios se guardan como lista en
+`trend_candidates.outlets`, aparte de la evidencia, porque los titulares se
+recortan a 20 y el recorte se llevaría por delante al medio que apareció una
+sola vez.
+
 Las menciones cuentan **titulares distintos**, no apariciones: un artículo se
 queda en el feed varios días, y si cada corrida volviera a sumarlo la lista
 quedaría ordenada por antigüedad del feed en vez de por cuánto se habla de la

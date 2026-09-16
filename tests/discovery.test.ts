@@ -18,6 +18,7 @@ import {
   discoverCandidates,
   isNew,
   mergeCandidates,
+  outletsOf,
   listCandidates,
   saveCandidates,
   toSlug,
@@ -500,4 +501,150 @@ test("el prompt le pide la prenda y no el tema, en singular", () => {
   assert.match(EXTRACTION_PROMPT, /SINGULAR/);
   assert.match(EXTRACTION_PROMPT, /no son tendencias|NO son tendencias/);
   assert.match(EXTRACTION_PROMPT, /tienda/);
+});
+
+/* ── medios distintos: un listicle no es cinco tendencias ──────────── */
+
+test("outletsOf saca los medios distintos, sin repetir", () => {
+  const candidate = {
+    slug: "x", nameEs: "x", category: null,
+    evidence: [
+      { title: "a", source: "Vogue México", link: "https://x.test/a" },
+      { title: "b", source: "Vogue México", link: "https://x.test/b" },
+      { title: "c", source: "WWD", link: "https://x.test/c" },
+    ],
+  };
+  assert.deepEqual(outletsOf(candidate), ["Vogue México", "WWD"]);
+});
+
+test("cinco candidatas del mismo listicle quedan por debajo de una citada por tres medios", async () => {
+  // El caso real: "12 Fall Shoe Trends" de una sola revista producía cinco
+  // candidatas con una mención cada una, arriba del todo.
+  const listicle = {
+    title: "12 Fall Shoe Trends",
+    source: "Fashionista",
+    link: "https://x.test/12-fall-shoe-trends",
+  };
+  await saveCandidates(
+    db,
+    ["zueco lista", "mocasín lista", "bota alta lista"].map((nombre) => ({
+      slug: toSlug(nombre), nameEs: nombre, category: "prenda", evidence: [listicle],
+    })),
+    "2026-09-20",
+  );
+  await saveCandidates(
+    db,
+    [{
+      slug: "pantalon-satinado", nameEs: "pantalón satinado", category: "prenda",
+      evidence: [
+        { title: "a", source: "Vogue México", link: "https://x.test/sat-a" },
+        { title: "b", source: "WWD", link: "https://x.test/sat-b" },
+        { title: "c", source: "Glamour México", link: "https://x.test/sat-c" },
+      ],
+    }],
+    "2026-09-20",
+  );
+
+  const rows = await listCandidates(db);
+  const satinado = rows.findIndex((r) => r.slug === "pantalon-satinado");
+  const delListicle = rows
+    .map((row, i) => ({ row, i }))
+    .filter(({ row }) => row.slug.endsWith("-lista"));
+
+  assert.equal(rows[satinado].sources, 3);
+  assert.equal(rows[satinado].mentions, 3);
+  for (const { row, i } of delListicle) {
+    assert.equal(row.sources, 1, `${row.slug} sale de un solo medio`);
+    assert.ok(
+      satinado < i,
+      `${row.slug} (1 medio) quedó por encima de una de 3 medios`,
+    );
+  }
+});
+
+test("el mismo medio otro día suma titular pero no medio", async () => {
+  await saveCandidates(
+    db,
+    [{
+      slug: "pantalon-satinado", nameEs: "pantalón satinado", category: "prenda",
+      evidence: [{ title: "d", source: "WWD", link: "https://x.test/sat-d" }],
+    }],
+    "2026-09-21",
+  );
+  const row = (await listCandidates(db)).find((r) => r.slug === "pantalon-satinado")!;
+
+  assert.equal(row.sources, 3, "WWD ya contaba: sigue habiendo tres medios");
+  assert.equal(row.mentions, 4, "pero es un titular más");
+});
+
+test("un medio cuenta aunque su titular se caiga del recorte de evidencia", async () => {
+  // Por esto los medios se guardan aparte y no se derivan de evidence: el
+  // recorte a 20 titulares se llevaría por delante al medio que apareció una
+  // sola vez hace meses, y la candidata parecería más débil de lo que es.
+  await saveCandidates(
+    db,
+    [{
+      slug: "recorte", nameEs: "prueba de recorte", category: "prenda",
+      evidence: [{ title: "viejo", source: "Harper's Bazaar", link: "https://x.test/viejo" }],
+    }],
+    "2026-09-20",
+  );
+  for (let i = 0; i < 3; i += 1) {
+    await saveCandidates(
+      db,
+      [{
+        slug: "recorte", nameEs: "prueba de recorte", category: "prenda",
+        evidence: Array.from({ length: 10 }, (_, j) => ({
+          title: `nuevo ${i}-${j}`, source: "WWD", link: `https://x.test/nuevo-${i}-${j}`,
+        })),
+      }],
+      "2026-09-21",
+    );
+  }
+
+  const row = (await listCandidates(db)).find((r) => r.slug === "recorte")!;
+  assert.equal(row.evidence.length, 20, "la evidencia sí se recortó");
+  assert.ok(
+    !row.evidence.some((item) => item.source === "Harper's Bazaar"),
+    "y el titular viejo ya no está",
+  );
+  assert.equal(row.sources, 2, "pero el medio se sigue contando");
+  assert.ok(row.outlets.includes("Harper's Bazaar"));
+});
+
+test("una base anterior a outlets se rellena desde la evidencia que ya tenía", async () => {
+  // Sin esto, las candidatas que ya estaban guardadas aparecerían con cero
+  // medios —y al final de la lista— hasta que la prensa volviera a nombrarlas.
+  const vieja = new PGlite();
+  const viejaDb: Db = {
+    async query<T>(sql: string, params: unknown[] = []) {
+      return (await vieja.query(sql, params)).rows as T[];
+    },
+  };
+  try {
+    await migrate(viejaDb);
+    await vieja.query("alter table trend_candidates drop column outlets");
+    await vieja.query(
+      `insert into trend_candidates
+         (slug, name_es, category, mentions, first_seen, last_seen, evidence)
+       values ('vieja', 'candidata vieja', 'prenda', 3, '2026-09-01', '2026-09-10', $1)`,
+      [
+        JSON.stringify([
+          { title: "a", source: "Vogue México", link: "https://x.test/a" },
+          { title: "b", source: "WWD", link: "https://x.test/b" },
+          { title: "c", source: "WWD", link: "https://x.test/c" },
+        ]),
+      ],
+    );
+
+    await migrate(viejaDb);
+    // Repetir la migración no puede volver a tocarla.
+    await migrate(viejaDb);
+
+    const row = (await listCandidates(viejaDb))[0];
+    assert.equal(row.sources, 2);
+    assert.deepEqual(row.outlets, ["Vogue México", "WWD"]);
+  } finally {
+    await vieja.close();
+  }
 });

@@ -72,11 +72,35 @@ create table if not exists trend_candidates (
   mentions      integer not null default 0,
   first_seen    date not null,
   last_seen     date not null,
+  -- Medios distintos que la han mencionado alguna vez.
+  --
+  -- Se guarda la lista, no el conteo, y aparte de evidence: los titulares se
+  -- recortan a los 20 más recientes y el recorte se llevaría por delante al
+  -- medio que solo apareció una vez hace meses. Son cuatro nombres, caben.
+  outlets       text[] not null default '{}',
   -- Titulares que la respaldan, los más recientes primero.
   evidence      jsonb not null default '[]'::jsonb,
   -- Se marca al promover al catálogo; por ahora nunca se pone.
   promoted_at   timestamptz
 );
 
-create index if not exists trend_candidates_mentions_idx
-  on trend_candidates (mentions desc, last_seen desc);
+-- Para las bases que se crearon antes de que outlets existiera.
+alter table trend_candidates
+  add column if not exists outlets text[] not null default '{}';
+
+-- Y las candidatas que ya estaban guardadas se rellenan desde su evidencia,
+-- o aparecerían con cero medios hasta que la prensa volviera a nombrarlas.
+-- Solo toca las que están vacías, así que repetir la migración no hace nada.
+update trend_candidates
+   set outlets = (
+     select coalesce(array_agg(distinct item->>'source'), '{}')
+       from jsonb_array_elements(evidence) as item
+   )
+ where cardinality(outlets) = 0
+   and jsonb_array_length(evidence) > 0;
+
+-- Primero por medios distintos: un listicle de una sola revista produce cinco
+-- candidatas con una mención cada una, y ninguna vale lo que una tendencia que
+-- citan cinco medios.
+create index if not exists trend_candidates_rank_idx
+  on trend_candidates (cardinality(outlets) desc, mentions desc, last_seen desc);

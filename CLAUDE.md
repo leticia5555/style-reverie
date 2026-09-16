@@ -165,6 +165,14 @@ que hizo el cron.
 - **Las menciones cuentan titulares distintos, no apariciones.** Un artículo se
   queda en el feed varios días; sumarlo cada corrida ordenaría la lista por
   antigüedad del feed. La evidencia se une deduplicada por enlace.
+- **Mandan los medios distintos, no los titulares.** Un listicle —"12 Fall Shoe
+  Trends" de una sola revista— produce cinco candidatas con un titular cada
+  una, y ninguna vale lo que una tendencia que están viendo cinco redacciones.
+  `trend_candidates.outlets` guarda la lista de medios, no el conteo, y **va
+  aparte de `evidence`**: los titulares se recortan a los 20 más recientes y el
+  recorte se llevaría por delante al medio que apareció una sola vez. La lista
+  se ordena por `cardinality(outlets)` y después por menciones. Un solo medio
+  se marca como tal en `/alerts`: es una candidata débil por definición.
 - **El nombre que extrae el modelo es la prenda, no el tema**: de "los
   pantalones satinados de los 90 vuelven" sale "pantalón satinado", no "años
   90". En español, singular, como se pediría en una tienda. Décadas, estéticas
