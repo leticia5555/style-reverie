@@ -5,12 +5,27 @@ import { usePathname } from "next/navigation";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 
-type NavHref = "/trending" | "/compare" | "/alerts" | "/editorial";
+type NavHref =
+  | "/trending"
+  | "/compare"
+  | "/alerts"
+  | "/editorial"
+  | "/edicion";
 
-const LIVE_LINKS: { href: NavHref; key: TranslationKey }[] = [
+type NavLink = { href: NavHref; key: TranslationKey };
+
+/**
+ * Dos secciones: los datos crudos del catálogo y lo que se lee como revista.
+ * Son dos modos de uso distintos y mezclarlos en una lista los aplanaba.
+ */
+const DATA_LINKS: NavLink[] = [
   { href: "/trending", key: "nav.trending" },
   { href: "/compare", key: "nav.compare" },
   { href: "/alerts", key: "nav.alerts" },
+];
+
+const EDITORIAL_LINKS: NavLink[] = [
+  { href: "/edicion", key: "nav.edicion" },
   { href: "/editorial", key: "nav.editorial" },
 ];
 
@@ -37,10 +52,37 @@ export function Sidebar() {
         <nav className="px-3 py-5">
           <p className="eyebrow px-3 pb-2">{t("nav.section")}</p>
           <ul className="space-y-0.5">
-            {LIVE_LINKS.map((link) => {
+            {DATA_LINKS.map((link) => {
               const active =
                 pathname === link.href ||
                 (link.href === "/trending" && pathname.startsWith("/trends/"));
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${
+                      active
+                        ? "bg-lavender-soft font-medium text-lavender-ink"
+                        : "text-ink-soft hover:bg-quiet-soft"
+                    }`}
+                  >
+                    {t(link.key)}
+                    {active ? (
+                      <span
+                        className="h-1.5 w-1.5 rounded-full bg-lavender"
+                        aria-hidden
+                      />
+                    ) : null}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+
+          <p className="eyebrow px-3 pt-6 pb-2">{t("nav.sectionEdicion")}</p>
+          <ul className="space-y-0.5">
+            {EDITORIAL_LINKS.map((link) => {
+              const active = pathname.startsWith(link.href);
               return (
                 <li key={link.href}>
                   <Link

@@ -1,0 +1,23 @@
+{
+  "intro": {
+    "es": "Semana de transición: la mitad del armario de verano ya está en rebajas y lo que viene todavía no llega a tienda. Estas cinco aguantan el cambio de estación.",
+    "en": "A transition week: half the summer wardrobe is already on sale and what comes next has not landed yet. These five carry across the season change."
+  },
+  "picks": [
+    {
+      "trendId": "falda-cargo",
+      "reason": {
+        "es": "El momentum dice que sube, pero la razón real es otra: es la única falda del catálogo que funciona con botas y con sandalias. Sirve los dos meses de en medio.",
+        "en": "Momentum says it is climbing, but that is not the real reason: it is the only skirt in the catalog that works with boots and with sandals. It covers the two months in between."
+      },
+      "note": {
+        "es": "En Liverpool el largo midi sale mejor que el maxi si mides menos de 1.65.",
+        "en": "At Liverpool the midi length works better than the maxi if you are under 5'5\"."
+      }
+    },
+    { "trendId": "chaleco-sastre-largo" },
+    { "trendId": "verde-matcha" },
+    { "trendId": "cinturon-obi" },
+    { "trendId": "crochet-fino" }
+  ]
+}

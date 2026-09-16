@@ -88,6 +88,25 @@ export function getTrendDetail(id: string): TrendDetail | undefined {
   };
 }
 
+/**
+ * El catálogo tal y como se veía en una fecha del histórico: corta la serie ahí
+ * y recalcula. Lo usa el archivo de ediciones semanales, para que una edición
+ * pasada muestre los scores de su semana y no los de hoy.
+ *
+ * La variación anual sí queda aproximada: scoreYearAgo es un único valor fijo
+ * por tendencia, no una serie, así que se compara contra el mismo punto.
+ */
+export function summaryAsOf(trend: Trend, date: string): TrendSummary | undefined {
+  const index = trend.history.findIndex((point) => point.date === date);
+  if (index < 0) return undefined;
+  return toSummary({ ...trend, history: trend.history.slice(0, index + 1) });
+}
+
+/** Todas las fechas del histórico, de la más antigua a la más reciente. */
+export function historyDates(): string[] {
+  return getTrends()[0].history.map((point) => point.date);
+}
+
 /* ── Comparador A vs B ─────────────────────────────────────────────── */
 
 export type CompareSide = {
